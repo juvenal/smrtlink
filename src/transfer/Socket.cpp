@@ -47,24 +47,26 @@ Socket::~Socket() {
 void Socket::send(bytes data) {
 
 	unsigned char * a = &data[0];
-	/*socket_.async_send_to(asio::buffer(a, data.size()), broadcast_endpoint_,
-	 [this](asio::error_code ec, std::size_t bytes_sent)
-	 {
-	 listen();
-	 });
-	 */
+
 	remote_endpoint_ = broadcast_endpoint_;
+
+	socket_.async_send_to(asio::buffer(a, data.size()), broadcast_endpoint_,
+			[this](asio::error_code ec, std::size_t bytes_sent)
+			{
+				listen();
+				char reply[max_length];
+				size_t reply_length = socket_.receive_from(asio::buffer(reply, max_length),
+						remote_endpoint_);
+				printf("Received %d\n", reply_length);
+
+				reply_length = socket_.receive_from(asio::buffer(reply, max_length),
+						remote_endpoint_);
+				printf("Received %d\n", reply_length);
+			});
+
 	printf("Send\n");
-	socket_.send_to(asio::buffer(a, data.size()), remote_endpoint_);
+	//socket_.send_to(asio::buffer(a, data.size()), remote_endpoint_);
 
-	char reply[max_length];
-	size_t reply_length = socket_.receive_from(asio::buffer(reply, max_length),
-			remote_endpoint_);
-	printf("Received %d\n", reply_length);
-
-	reply_length = socket_.receive_from(asio::buffer(reply, max_length),
-			remote_endpoint_);
-	printf("Received %d\n", reply_length);
 //asio::buffer(data_, length)
 
 }
