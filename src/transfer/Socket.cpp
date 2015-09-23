@@ -34,8 +34,6 @@ Socket::Socket(asio::io_service& io_service, short dst_port, short src_port) :
 	socket_.open(asio::ip::udp::v4());
 	socket_.bind(local_endpoint_); //TODO reuse Address
 
-	//socket_.open(asio::ip::udp::v4());
-
 	//socket_.set_option(asio::ip::multicast::outbound_interface(local_addr)); // TODO broadcast outbound interface
 	socket_.set_option(asio::socket_base::broadcast(true));
 	socket_.set_option(asio::socket_base::reuse_address(true));
