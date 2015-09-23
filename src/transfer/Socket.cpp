@@ -7,7 +7,6 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
-#include <arpa/inet.h>
 #include <stdio.h>
 #include <unistd.h>
 #include <errno.h>
@@ -17,6 +16,8 @@
 #include <asio.hpp>
 #include "Socket.h"
 #include "../Types.h"
+#include "../device/Host.h"
+#include "Packet.h"
 
 Socket::Socket(asio::io_service& io_service, short dst_port, short src_port) :
 		socket_(io_service) {
@@ -48,26 +49,13 @@ void Socket::send(bytes data) {
 
 	unsigned char * a = &data[0];
 
-	remote_endpoint_ = broadcast_endpoint_;
-
 	socket_.async_send_to(asio::buffer(a, data.size()), broadcast_endpoint_,
 			[this](asio::error_code ec, std::size_t bytes_sent)
 			{
 				listen();
-				char reply[max_length];
-				size_t reply_length = socket_.receive_from(asio::buffer(reply, max_length),
-						remote_endpoint_);
-				printf("Received %d\n", reply_length);
-
-				reply_length = socket_.receive_from(asio::buffer(reply, max_length),
-						remote_endpoint_);
-				printf("Received %d\n", reply_length);
 			});
 
 	printf("Send\n");
-	//socket_.send_to(asio::buffer(a, data.size()), remote_endpoint_);
-
-//asio::buffer(data_, length)
 
 }
 
@@ -76,15 +64,19 @@ void Socket::listen() {
 			remote_endpoint_,
 			[this](asio::error_code ec, std::size_t bytes_recvd)
 			{
-				listen();
-
-				if (!ec && bytes_recvd > 0)
-				{
+				if (ec || bytes_recvd == 0) {
+					listen();
+				} else {
 					printf("Receive %s\n", data_);
-					bytes a = {72, 97, 108, 108, 111, 32, 87, 101, 108, 116, 33};
-					send(a); //bytes_recvd
+					bytes b = { 255, 255, 0, 0};
+					Host h = Host();
+					Packet p = Packet(Packet::DISCOVERY);
+					p.setBody(b);
+					p.setHostMac(h.getMac());
+					bytes a = p.getBytes();
+					p.encode(a);
+					send(a);
 				}
-
 			});
 
 	printf("Listen\n");
