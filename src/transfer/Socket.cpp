@@ -62,6 +62,7 @@ void Socket::listen() {
 			remote_endpoint_,
 			[this](asio::error_code ec, std::size_t bytes_recvd)
 			{
+				printf("Echo");
 				if (ec || bytes_recvd == 0) {
 					listen();
 				} else {
