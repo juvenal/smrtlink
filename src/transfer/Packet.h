@@ -19,9 +19,10 @@ public:
 		DISCOVERY, GET, SET
 	};
 	Packet(OpCode);
-	virtual ~Packet();
+	virtual ~Packet(){};
 	void encode(bytes&);
 	bytes getBytes();
+	void parse(bytes);
 	short getLength() const ;
 	int getCheckSum() const;
 	short getSequenceId() const;
@@ -47,7 +48,7 @@ private:
 	short sequenceId;
 	short tokenId = 0;
 	short fragmentOffset = 0;
-	int err = 0;
+	int errorCode = 0;
 	int checkSum = 0;
 	short flag = 0;
 
@@ -59,7 +60,12 @@ private:
 	void push(bytes&, int&, byte);
 	void push(bytes&, int&, bytes);
 	void push(bytes&, int&, dataset);
-	void push(bytes&, int&, datasets);
+
+	void pull(bytes&, int&, short&);
+	void pull(bytes&, int&, int&);
+	void pull(bytes&, int&, byte&);
+	void pull(bytes&, int&, bytes&, unsigned);
+	void pull(bytes&, int&, dataset&);
 };
 
 #endif /* PACKET_H_ */

@@ -5,11 +5,13 @@
  *      Author: jdi
  */
 
-#include <string.h>
+#include <cstring>
 #include <cstdlib>
-#include <time.h>
+#include <cstdio>
+#include <ctime>
 #include "Packet.h"
 #include "../Types.h"
+#include "../Utils.h"
 
 Packet::Packet(OpCode c) {
 	srand(time(NULL));
@@ -17,13 +19,10 @@ Packet::Packet(OpCode c) {
 	opCode = c;
 }
 
-Packet::~Packet() {
-	// TODO Auto-generated destructor stub
-}
-
 bytes Packet::getBytes() {
 	int i = 0;
-	push(body, i, payload);
+	for (unsigned j = 0; j < payload.size(); j++)
+		push(body, i, payload[j]);
 	push(body, i, (int) PACKET_END);
 	i = 0;
 	push(head, i, version);
@@ -31,14 +30,42 @@ bytes Packet::getBytes() {
 	push(head, i, switchMac);
 	push(head, i, hostMac);
 	push(head, i, sequenceId);
-	push(head, i, err);
+	push(head, i, errorCode);
 	push(head, i, this->getLength());
 	push(head, i, fragmentOffset);
 	push(head, i, flag);
 	push(head, i, tokenId);
 	push(head, i, checkSum);
 	bytes data = head + body;
+	utils::printBytes("Send Head:\t",head);
 	return data;
+}
+
+void Packet::parse(bytes data) {
+	memcpy(&head[0], &data[0], HEADER_LEN);
+	body.resize(data.size() - HEADER_LEN);
+	memcpy(&body[0], &data[HEADER_LEN], data.size() - HEADER_LEN);
+	utils::printBytes("Receive Head:\t",head);
+	int i = 0;
+	short checkLen = 0x0;
+	pull(head, i, version);
+	pull(head, i, opCode);
+	pull(head, i, switchMac, switchMac.size());
+	pull(head, i, hostMac, hostMac.size());
+	pull(head, i, sequenceId);
+	pull(head, i, errorCode);
+	pull(head, i, checkLen);
+	pull(head, i, fragmentOffset);
+	pull(head, i, flag);
+	pull(head, i, tokenId);
+	pull(head, i, checkSum);
+	utils::printBytes("MAC: ", switchMac);
+	utils::printBytes("MAC: ", hostMac);
+	if(this->getLength()!= checkLen){
+		printf("Packet Length doesn't match: %hd != %hd\n", this->getLength(), checkLen);
+	}
+	dataset d;
+	payload = {};
 }
 
 void Packet::setBody(bytes data) {
@@ -118,8 +145,7 @@ void Packet::encode(bytes &data) {
 }
 
 void Packet::push(bytes &arr, int &index, byte data) {
-	arr[index] = data;
-	index++;
+	arr[index++] = data;
 }
 
 void Packet::push(bytes &arr, int &index, bytes data) {
@@ -151,7 +177,31 @@ void Packet::push(bytes &arr, int &index, dataset data) {
 	push(arr, index, data.value);
 }
 
-void Packet::push(bytes &arr, int &index, datasets data) {
-	for (unsigned j = 0; j < data.size(); j++)
-		push(arr, index, data[j]);
+void Packet::pull(bytes &arr, int &index, byte &ret) {
+	ret = arr[index++];
+}
+
+void Packet::pull(bytes &arr, int &index, bytes &ret, unsigned len) {
+	ret.resize(len);
+	memcpy(&ret[0], &arr[index], len);
+	index+=len;
+}
+
+void Packet::pull(bytes &arr, int &index, short &ret) {
+	ret = (arr[index++] << 8);
+	ret |= arr[index++] & 0xFF;
+	ret &=0xFFFF;
+}
+
+void Packet::pull(bytes &arr, int &index, int &ret) {
+	ret = arr[index++] << 24;
+	ret |= (arr[index++] & 0xFF) << 16;
+	ret |= (arr[index++] & 0xFF) << 8;
+	ret |= arr[index++] & 0xFF;
+}
+
+void Packet::pull(bytes &arr, int &index, dataset &ret) {
+	pull(arr, index, ret.type);
+	pull(arr, index, ret.len);
+	pull(arr, index, ret.value, (unsigned) ret.len);
 }

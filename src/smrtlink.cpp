@@ -84,14 +84,6 @@ int main(int argc, char *argv[]) {
 		optind++;
 	}
 
-	if (p.src_port != 0) {
-		printf("src_port = %d\n", p.src_port);
-	}
-
-	if (p.dst_port != 0) {
-		printf("dst_port = %d\n", p.dst_port);
-	}
-
 	if (p.run())
 		exit(EXIT_SUCCESS);
 	else

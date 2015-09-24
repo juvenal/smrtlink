@@ -11,21 +11,23 @@
 #include <asio.hpp>
 #include "../Types.h"
 
+#define MAX_LENGTH 1024
+
 class Socket {
 public:
-	Socket(asio::io_service&, short, short);
-	virtual ~Socket();
+	Socket(asio::io_service&);
+	virtual ~Socket(){};
+	void init(short, short);
 	void send(bytes);
 	void listen();
 private:
-	asio::ip::udp::socket socket_;
+	asio::ip::udp::socket send_socket_;
+	asio::ip::udp::socket receive_socket_;
 	asio::ip::udp::endpoint broadcast_endpoint_;
 	asio::ip::udp::endpoint remote_endpoint_;
+	asio::ip::udp::endpoint wildcard_endpoint_;
 	asio::ip::udp::endpoint local_endpoint_;
-	enum {
-		max_length = 1024
-	};
-	char data_[max_length];
+	bytes data_ = bytes(MAX_LENGTH);
 
 };
 

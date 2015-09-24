@@ -6,11 +6,12 @@
  */
 #include <stdio.h>
 
+#include "Utils.h"
 #include "Program.h"
-#include "Device.h"
-#include "Host.h"
-#include "Socket.h"
-#include "Packet.h"
+#include "device/Device.h"
+#include "device/Host.h"
+#include "transfer/Socket.h"
+#include "transfer/Packet.h"
 
 Program::Program() {
 	// TODO Auto-generated constructor stub
@@ -22,28 +23,20 @@ Program::~Program() {
 
 int Program::run() {
 	Device d = Device();
-	printf(" %d", d.getName());
+	printf(" %d\n", d.getName());
 
-	bytes b = { 255, 255, 0, 0};
-
+	bytes b = { 255, 255, 0, 0 };
 	Host h = Host();
 	Packet p = Packet(Packet::DISCOVERY);
 	p.setBody(b);
 	p.setHostMac(h.getMac());
 	bytes a = p.getBytes();
-	printf("\na =");
-	for (unsigned i = 0; i < sizeof(a); i++)
-		printf(" %d", a[i]);
 	p.encode(a);
-	printf("\nb =");
-	for (unsigned i = 0; i < sizeof(a); i++)
-		printf(" %d", a[i]);
-	printf("\n");
 
 	try {
 		asio::io_service io_service;
-		Socket s(io_service, dst_port, src_port);
-		//s.listen();
+		Socket s(io_service);
+		s.init(dst_port, src_port);
 		s.send(a);
 		io_service.run();
 	} catch (std::exception& e) {
