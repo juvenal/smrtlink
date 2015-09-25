@@ -33,8 +33,8 @@ int main(int argc, char *argv[]) {
 
 	const struct option longopts[] = { { "version", no_argument, 0, 'v' }, {
 			"help", no_argument, 0, 'h' },
-			{ "port", required_argument, 0, 'p' },
-			{ "srcport", required_argument, 0, 's' },
+			{ "port", required_argument, 0, 'p' }, { "srcport",
+			required_argument, 0, 's' },
 			{ "dstport", required_argument, 0, 'p' }, { 0, 0, 0, 0 }, };
 
 	Program p = Program();
@@ -75,18 +75,22 @@ int main(int argc, char *argv[]) {
 		exit(EXIT_FAILURE);
 	}
 
-	while (optind < argc) {
+	if (optind < argc) {
 		if (strcmp(argv[optind], "list") == 0) {
-			printf("List:\n\tA B C\n");
-		}else {
-			printf("->%s\n", argv[optind]);
+			if (p.list())
+				exit(EXIT_SUCCESS);
+			else
+				exit(EXIT_FAILURE);
+		} else {
+			printf("Unknown Command: %s\n", argv[optind]);
+			while (optind < argc) {
+				printf("->%s\n", argv[optind]);
+				optind++;
+			}
+			exit(EXIT_FAILURE);
 		}
 		optind++;
 	}
 
-	if (p.run())
-		exit(EXIT_SUCCESS);
-	else
-		exit(EXIT_FAILURE);
 }
 

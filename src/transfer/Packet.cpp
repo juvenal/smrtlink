@@ -37,7 +37,9 @@ bytes Packet::getBytes() {
 	push(head, i, tokenId);
 	push(head, i, checkSum);
 	bytes data = head + body;
-	utils::printBytes("Send Head:\t",head);
+	//printf("Send Header:\t");
+	//utils::printHex(head);
+	//printf("\n");
 	return data;
 }
 
@@ -45,7 +47,9 @@ void Packet::parse(bytes data) {
 	memcpy(&head[0], &data[0], HEADER_LEN);
 	body.resize(data.size() - HEADER_LEN);
 	memcpy(&body[0], &data[HEADER_LEN], data.size() - HEADER_LEN);
-	utils::printBytes("Receive Head:\t",head);
+	//printf("Receive Header:\t");
+	//utils::printHex(head);
+	//printf("\n");
 	int i = 0;
 	short checkLen = 0x0;
 	pull(head, i, version);
@@ -59,13 +63,20 @@ void Packet::parse(bytes data) {
 	pull(head, i, flag);
 	pull(head, i, tokenId);
 	pull(head, i, checkSum);
-	utils::printBytes("MAC: ", switchMac);
-	utils::printBytes("MAC: ", hostMac);
-	if(this->getLength()!= checkLen){
-		printf("Packet Length doesn't match: %hd != %hd\n", this->getLength(), checkLen);
+	if (this->getLength() != checkLen) {
+		printf("Packet Length doesn't match: %hd != %hd\n", this->getLength(),
+				checkLen);
 	}
+	i = 0;
 	dataset d;
 	payload = {};
+	while (i < (int) body.size() - 4) {
+		pull(body, i, d.type);
+		pull(body, i, d.len);
+		pull(body, i, d.value, d.len);
+		payload[d.type] = d;
+	}
+
 }
 
 void Packet::setBody(bytes data) {
@@ -184,13 +195,13 @@ void Packet::pull(bytes &arr, int &index, byte &ret) {
 void Packet::pull(bytes &arr, int &index, bytes &ret, unsigned len) {
 	ret.resize(len);
 	memcpy(&ret[0], &arr[index], len);
-	index+=len;
+	index += len;
 }
 
 void Packet::pull(bytes &arr, int &index, short &ret) {
 	ret = (arr[index++] << 8);
 	ret |= arr[index++] & 0xFF;
-	ret &=0xFFFF;
+	ret &= 0xFFFF;
 }
 
 void Packet::pull(bytes &arr, int &index, int &ret) {

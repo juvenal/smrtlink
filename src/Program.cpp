@@ -21,9 +21,11 @@ Program::~Program() {
 	// TODO Auto-generated destructor stub
 }
 
-int Program::run() {
+int Program::list() {
+
+	printf("List:\n");
 	Device d = Device();
-	printf(" %d\n", d.getName());
+	//printf(" %d\n", d.getName());
 
 	bytes b = { 255, 255, 0, 0 };
 	Host h = Host();
@@ -44,8 +46,4 @@ int Program::run() {
 	}
 
 	return 1;
-}
-
-int Program::discover() {
-	return 0;
 }

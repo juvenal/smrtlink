@@ -9,6 +9,7 @@
 #define TYPES_H_
 
 #include <vector>
+#include <map>
 
 template <typename T>
 std::vector<T> operator+(const std::vector<T> &A, const std::vector<T> &B)
@@ -37,6 +38,7 @@ struct dataset{
  bytes value;
 };
 
-typedef std::vector<dataset> datasets;
+//typedef std::vector<dataset> datasets;
+typedef std::map<short,dataset> datasets;
 
 #endif /* TYPES_H_ */

@@ -12,13 +12,11 @@ class Program {
 public:
 	Program();
 	virtual ~Program();
-	int run();
+	int list();
 	void setPort(int);
 	void setPort();
 	int src_port = 29809;
 	int dst_port = 29808;
-private:
-	int discover();
 };
 
 #endif /* PROGRAM_H_ */
