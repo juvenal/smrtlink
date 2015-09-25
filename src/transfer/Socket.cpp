@@ -67,20 +67,9 @@ void Socket::listen() {
 					p.encode(data_);
 					p.parse(data_);
 					datasets l = p.getPayload();
-					utils::printSets(l);
-
-					/*
-					 sleep(1);
-					 bytes b = {255, 255, 0, 0};
-					 Host h = Host();
-					 p = Packet(Packet::DISCOVERY);
-					 p.setBody(b);
-					 p.setHostMac(h.getMac());
-					 bytes a = p.getBytes();
-					 p.encode(a);
-					 send(a);
-					 */
-					listen();
+					if(!callback(p)) {
+						listen();
+					}
 				}
 			});
 

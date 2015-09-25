@@ -39,6 +39,22 @@ int Program::list() {
 		asio::io_service io_service;
 		Socket s(io_service);
 		s.init(dst_port, src_port);
+		s.callback = [](Packet a) {
+			utils::printSets(a.getPayload());
+
+			/*
+			 sleep(1);
+			 bytes b = {255, 255, 0, 0};
+			 Host h = Host();
+			 p = Packet(Packet::DISCOVERY);
+			 p.setBody(b);
+			 p.setHostMac(h.getMac());
+			 bytes a = p.getBytes();
+			 p.encode(a);
+			 send(a);
+			 */
+			return 1;
+		};
 		s.send(a);
 		io_service.run();
 	} catch (std::exception& e) {

@@ -9,6 +9,7 @@
 #define SOCKET_H_
 
 #include <asio.hpp>
+#include "Packet.h"
 #include "../Types.h"
 
 #define MAX_LENGTH 1024
@@ -16,10 +17,15 @@
 class Socket {
 public:
 	Socket(asio::io_service&);
-	virtual ~Socket(){};
+	virtual ~Socket() {
+	}
 	void init(short, short);
 	void send(bytes);
 	void listen();
+	int (*callback)(Packet)=[](Packet a) {
+		return 0;
+	};
+
 private:
 	asio::ip::udp::socket send_socket_;
 	asio::ip::udp::socket receive_socket_;

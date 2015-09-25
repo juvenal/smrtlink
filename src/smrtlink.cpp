@@ -17,7 +17,7 @@
 
 #include "Program.h"
 
-#define USAGE "Usage: smrtlink [-p n|--port n] [-h|--help] [-v|--version] name\n"
+#define USAGE "Usage: smrtlink [-p n|--port n] [-h|--help] [-v|--version] <command>\n"
 
 #define flag_version 1
 #define flag_help 2
@@ -77,19 +77,20 @@ int main(int argc, char *argv[]) {
 
 	if (optind < argc) {
 		if (strcmp(argv[optind], "list") == 0) {
+			optind++;
 			if (p.list())
 				exit(EXIT_SUCCESS);
 			else
 				exit(EXIT_FAILURE);
 		} else {
-			printf("Unknown Command: %s\n", argv[optind]);
+			printf("Unknown command: %s\n", argv[optind]);
+			optind++;
 			while (optind < argc) {
 				printf("->%s\n", argv[optind]);
 				optind++;
 			}
 			exit(EXIT_FAILURE);
 		}
-		optind++;
 	}
 
 }
