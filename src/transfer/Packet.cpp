@@ -163,7 +163,12 @@ void Packet::encode(bytes &data) {
 }
 
 void Packet::push(bytes &arr, int &index, byte data) {
-	arr[index++] = data;
+	if (arr.size() > index) {
+		arr[index++] = data;
+	} else {
+		arr.push_back(data);
+		index++;
+	}
 }
 
 void Packet::push(bytes &arr, int &index, bytes data) {

@@ -9,7 +9,7 @@
 #define PACKET_H_
 
 #define HEADER_LEN 32
-#define PACKET_END -65536
+#define PACKET_END 0xFFFF0000
 
 #include "../Types.h"
 
@@ -19,11 +19,12 @@ public:
 		DISCOVERY, GET, SET, READ
 	};
 	Packet(OpCode);
-	virtual ~Packet(){};
+	virtual ~Packet() {
+	}
 	void encode(bytes&);
 	bytes getBytes();
 	void parse(bytes);
-	short getLength() const ;
+	short getLength() const;
 	int getCheckSum() const;
 	short getSequenceId() const;
 	const bytes& getSwitchMac() const;
@@ -39,13 +40,13 @@ public:
 
 private:
 	bytes head = bytes(32);
-	bytes body;
+	bytes body = bytes(0);
 	datasets payload;
 
 	byte version = 1;
 	byte opCode;
 	bytes switchMac = { 0, 0, 0, 0, 0, 0 };
-	bytes hostMac = { 0, 0, 0, 0, 0, 0 };// TODO set Mac
+	bytes hostMac = { 0, 0, 0, 0, 0, 0 }; // TODO set Mac
 	bytes broadcastMac = { 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF };
 	short sequenceId;
 	short tokenId = 0;

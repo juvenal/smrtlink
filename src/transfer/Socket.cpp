@@ -73,7 +73,4 @@ void Socket::listen() {
 					}
 				}
 			});
-
-	//printf("Listen\n");
-
 }

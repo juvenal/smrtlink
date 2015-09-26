@@ -27,11 +27,10 @@ int Program::list() {
 	//Device d = Device();
 	//printf(" %d\n", d.getName());
 
-	bytes b = { 255, 255, 0, 0 };
 	Host h = Host();
 	Packet p = Packet(Packet::DISCOVERY);
-	p.setBody(b);
 	p.setHostMac(h.getMac());
+	p.setPayload({});
 	bytes a = p.getBytes();
 	p.encode(a);
 
