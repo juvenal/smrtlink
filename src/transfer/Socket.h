@@ -33,7 +33,7 @@ private:
 	asio::ip::udp::endpoint remote_endpoint_;
 	asio::ip::udp::endpoint wildcard_endpoint_;
 	asio::ip::udp::endpoint local_endpoint_;
-	bytes data_ = bytes(MAX_LENGTH);
+	bytes data = bytes(MAX_LENGTH);
 
 };
 

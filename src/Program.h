@@ -13,6 +13,7 @@ public:
 	Program();
 	virtual ~Program();
 	int list();
+	int sniff();
 	void setPort(int);
 	void setPort();
 	int src_port = 29809;

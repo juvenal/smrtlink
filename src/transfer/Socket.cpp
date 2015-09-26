@@ -55,17 +55,18 @@ void Socket::send(bytes data) {
 }
 
 void Socket::listen() {
-	receive_socket_.async_receive_from(asio::buffer(data_, MAX_LENGTH),
+	data.resize(MAX_LENGTH);
+	receive_socket_.async_receive_from(asio::buffer(data, MAX_LENGTH),
 			remote_endpoint_,
 			[this](asio::error_code ec, std::size_t bytes_recvd)
 			{
 				if (ec || bytes_recvd == 0) {
 					listen();
 				} else {
-					data_.resize(bytes_recvd);
-					Packet p = Packet(Packet::DISCOVERY);
-					p.encode(data_);
-					p.parse(data_);
+					data.resize(bytes_recvd);
+					Packet p = Packet(Packet::READ);
+					p.encode(data);
+					p.parse(data);
 					datasets l = p.getPayload();
 					if(!callback(p)) {
 						listen();

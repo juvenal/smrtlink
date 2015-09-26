@@ -16,7 +16,7 @@
 class Packet {
 public:
 	enum OpCode {
-		DISCOVERY, GET, SET
+		DISCOVERY, GET, SET, READ
 	};
 	Packet(OpCode);
 	virtual ~Packet(){};
@@ -27,6 +27,8 @@ public:
 	int getCheckSum() const;
 	short getSequenceId() const;
 	const bytes& getSwitchMac() const;
+	const bytes& getBody() const;
+	const bytes& getHead() const;
 	const datasets& getPayload() const;
 	void setBody(bytes);
 	void setHostMac(bytes);

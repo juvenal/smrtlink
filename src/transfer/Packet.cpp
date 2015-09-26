@@ -64,7 +64,7 @@ void Packet::parse(bytes data) {
 	pull(head, i, tokenId);
 	pull(head, i, checkSum);
 	if (this->getLength() != checkLen) {
-		printf("Packet Length doesn't match: %hd != %hd\n", this->getLength(),
+		printf("Packet Length doesn't match: %hd != %hd\n", data.size(),
 				checkLen);
 	}
 	i = 0;
@@ -76,7 +76,14 @@ void Packet::parse(bytes data) {
 		pull(body, i, d.value, d.len);
 		payload[d.type] = d;
 	}
+}
 
+const bytes& Packet::getBody() const {
+	return body;
+}
+
+const bytes& Packet::getHead() const {
+	return head;
 }
 
 void Packet::setBody(bytes data) {

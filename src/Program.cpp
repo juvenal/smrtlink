@@ -24,7 +24,7 @@ Program::~Program() {
 int Program::list() {
 
 	printf("List:\n");
-	Device d = Device();
+	//Device d = Device();
 	//printf(" %d\n", d.getName());
 
 	bytes b = { 255, 255, 0, 0 };
@@ -40,22 +40,41 @@ int Program::list() {
 		Socket s(io_service);
 		s.init(dst_port, src_port);
 		s.callback = [](Packet a) {
-			utils::printSets(a.getPayload());
-
-			/*
-			 sleep(1);
-			 bytes b = {255, 255, 0, 0};
-			 Host h = Host();
-			 p = Packet(Packet::DISCOVERY);
-			 p.setBody(b);
-			 p.setHostMac(h.getMac());
-			 bytes a = p.getBytes();
-			 p.encode(a);
-			 send(a);
-			 */
+			datasets d =a.getPayload();
+			printf("%s (%s)\tMAC: ", &d[2].value[0], &d[1].value[0]);
+			utils::printHex(d[3].value);
+			printf("\tIP: ");
+			utils::printDec(d[4].value);
+			printf("\n");
 			return 1;
 		};
 		s.send(a);
+		io_service.run();
+	} catch (std::exception& e) {
+		std::cerr << "Exception: " << e.what() << "\n";
+	}
+
+	return 1;
+}
+
+int Program::sniff() {
+
+	printf("Listening:\n");
+
+	try {
+		asio::io_service io_service;
+		Socket s(io_service);
+		s.init(src_port, dst_port);
+		s.callback = [](Packet p) {
+			printf("Receive Head:\t");
+			utils::printHex(p.getHead());
+			printf("\nReceive Body:\t");
+			utils::printHex(p.getBody());
+			printf("\n");
+			printf("\n");
+			return 0;
+		};
+		s.listen();
 		io_service.run();
 	} catch (std::exception& e) {
 		std::cerr << "Exception: " << e.what() << "\n";

@@ -80,8 +80,10 @@ int main(int argc, char *argv[]) {
 			optind++;
 			if (p.list())
 				exit(EXIT_SUCCESS);
-			else
-				exit(EXIT_FAILURE);
+		}else if (strcmp(argv[optind], "sniff") == 0) {
+			optind++;
+			if (p.sniff())
+				exit(EXIT_SUCCESS);
 		} else {
 			printf("Unknown command: %s\n", argv[optind]);
 			optind++;
@@ -92,6 +94,7 @@ int main(int argc, char *argv[]) {
 			exit(EXIT_FAILURE);
 		}
 	}
+	exit(EXIT_FAILURE);
 
 }
 
