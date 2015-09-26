@@ -30,7 +30,7 @@ int Program::list() {
 	Host h = Host();
 	Packet p = Packet(Packet::DISCOVERY);
 	p.setHostMac(h.getMac());
-	p.setPayload({});
+	p.setPayload( { });
 	bytes a = p.getBytes();
 	p.encode(a);
 
@@ -69,6 +69,12 @@ int Program::sniff() {
 			utils::printHex(p.getHead());
 			printf("\nReceive Body:\t");
 			utils::printHex(p.getBody());
+			printf("\n");
+			for(auto a : p.getPayload()) {
+				dataset d = a.second;
+				printf("#%d\tLength: %d Value: %s\n",d.type,d.len,&d.value[0]);
+			}
+			printf("\n");
 			printf("\n");
 			printf("\n");
 			return 0;

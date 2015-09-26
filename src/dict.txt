@@ -1,0 +1,11 @@
+change Password:
+#512	Length: 6 Value: admin
+#513	Length: 6 Value: admin
+#514	Length: 10 Value: <oldPassword>
+#515	Length: 10 Value: <newPassword>
+
+login:
+#2305	Length: 0 Value: (null)
+
+#512	Length: 6 Value: admin
+#514	Length: 10 Value: <oldPassword>
