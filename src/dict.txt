@@ -8,4 +8,8 @@ login:
 #2305	Length: 0 Value: (null)
 
 #512	Length: 6 Value: admin
-#514	Length: 10 Value: <oldPassword>
+#514	Length: 10 Value: <Password>
+
+#10	Length: 0 Value: (null)
+
+#2	Length: 0 Value: (null)
