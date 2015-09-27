@@ -75,7 +75,7 @@ void Packet::parse(bytes data) {
 	pull(head, i, tokenId);
 	pull(head, i, checkSum);
 	if (this->getLength() != checkLen) {
-		printf("Packet Length doesn't match: %hd != %hd\n", data.size(),
+		printf("Packet Length doesn't match: %lu != %hd\n", data.size(),
 				checkLen);
 	}
 	i = 0;

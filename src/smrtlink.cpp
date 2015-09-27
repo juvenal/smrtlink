@@ -16,6 +16,7 @@
 #include <stdio.h>
 
 #include "Options.h"
+#include "Host.h"
 #include "Program.h"
 
 #define no_argument 0
@@ -65,15 +66,15 @@ int main(int argc, char *argv[]) {
 			break;
 
 		case 'p':
-			//TODO add password
+			options.password= std::string(optarg);
 			break;
 
 		case 'u':
-			//TODO add username
+			options.user= std::string(optarg);
 			break;
 
 		case 'i':
-			//TODO add interface
+			options.interface= std::string(optarg);
 			break;
 
 		default: /* '?' */

@@ -15,7 +15,7 @@ public:
 	Host();
 	virtual ~Host() {}
 	bytes getMac();
-	bytes getIp();
+	bytes getIp(std::string);
 };
 
 #endif /* HOST_H_ */

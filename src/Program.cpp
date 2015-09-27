@@ -21,11 +21,13 @@ Program::Program() {
 
 int Program::list() {
 
-	printf("List:\n");
 	//Device d = Device();
 	//printf(" %d\n", d.getName());
 
 	Host h = Host();
+	printf("IP:\t");
+	utils::printDec(h.getIp(options.interface));
+	printf("\nList:\n");
 	Packet p = Packet(Packet::DISCOVERY);
 	p.setHostMac(h.getMac());
 	p.setPayload( { });

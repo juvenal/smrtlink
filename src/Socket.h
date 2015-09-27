@@ -29,7 +29,7 @@ public:
 private:
 	asio::ip::udp::socket send_socket_;
 	asio::ip::udp::socket receive_socket_;
-	asio::ip::udp::resolver resolver;
+	//asio::ip::udp::resolver resolver;
 	asio::ip::udp::endpoint broadcast_endpoint_;
 	asio::ip::udp::endpoint remote_endpoint_;
 	asio::ip::udp::endpoint wildcard_endpoint_;
