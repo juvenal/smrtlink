@@ -8,16 +8,19 @@
 #ifndef PROGRAM_H_
 #define PROGRAM_H_
 
+#include "Types.h"
+
+#define SRC_PORT 29809
+#define DST_PORT 29808
+
 class Program {
 public:
 	Program();
-	virtual ~Program();
+	virtual ~Program() {
+	}
 	int list();
 	int sniff();
-	void setPort(int);
-	void setPort();
-	int src_port = 29809;
-	int dst_port = 29808;
+	int encode(std::string);
 };
 
 #endif /* PROGRAM_H_ */

@@ -11,7 +11,7 @@
 #define HEADER_LEN 32
 #define PACKET_END 0xFFFF0000
 
-#include "../Types.h"
+#include "Types.h"
 
 class Packet {
 public:
@@ -24,6 +24,8 @@ public:
 	void encode(bytes&);
 	bytes getBytes();
 	void parse(bytes);
+	void printHeader();
+	std::string opCodeToString();
 	short getLength() const;
 	int getCheckSum() const;
 	short getSequenceId() const;

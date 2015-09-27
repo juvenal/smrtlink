@@ -42,5 +42,11 @@ typedef std::map<short, dataset> datasets;
 
 //std::function<int()>;
 //typedef int receiveCallback;
+struct Options {
+	unsigned flags = 0x00;
+	std::string user;
+	std::string password;
+	std::string interface;
+};
 
 #endif /* TYPES_H_ */

@@ -10,13 +10,24 @@
 #include <cstdio>
 #include <ctime>
 #include "Packet.h"
-#include "../Types.h"
-#include "../Utils.h"
+#include "Types.h"
+#include "Utils.h"
 
 Packet::Packet(OpCode c) {
 	srand(time(NULL));
 	sequenceId = rand() % 1000;
 	opCode = c;
+}
+
+void Packet::printHeader() {
+	printf("Header:\n\tOpCode:\t\t%s\n\tID:\t\t%d\n\tVersion:\t%hhd\n\tError:\t\t%.8X\n\tSwitch MAC:\t", opCodeToString().c_str(),sequenceId, version, errorCode);
+	utils::printHex(switchMac);
+	printf("\n\tHost MAC:\t");
+	utils::printHex(hostMac);
+	printf("\n\tLength:\t%hd",this->getLength());
+	printf("\n\tOffset:\t%hd",fragmentOffset);
+	printf("\n\tFlags:\t%.4hX",flag);
+	printf("\n\tChecksum:\t%d",checkSum);
 }
 
 bytes Packet::getBytes() {
@@ -128,6 +139,22 @@ const datasets& Packet::getPayload() const {
 
 void Packet::setPayload(const datasets& payload) {
 	this->payload = payload;
+}
+
+std::string Packet::opCodeToString() {
+	switch (opCode) {
+	case DISCOVERY:
+		return "DISCOVERY";
+	case GET:
+		return "GET";
+	case SET:
+		return "SET";
+	case READ:
+		return "READ";
+	default:
+		return "NONE";
+	}
+	return "NONE";
 }
 
 void Packet::encode(bytes &data) {
