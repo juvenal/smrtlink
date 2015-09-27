@@ -22,6 +22,7 @@ public:
 	void init(short, short);
 	void send(bytes);
 	void listen();
+	void setHostIp(bytes);
 	int (*callback)(Packet)=[](Packet a) {
 		return 0;
 	};
@@ -35,6 +36,7 @@ private:
 	asio::ip::udp::endpoint wildcard_endpoint_;
 	asio::ip::udp::endpoint local_endpoint_;
 	bytes data = bytes(MAX_LENGTH);
+	bytes local_ip = bytes(4);
 
 };
 

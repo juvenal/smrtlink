@@ -8,6 +8,7 @@
 #include <cerrno>
 #include <cstring>
 #include <cstdlib>
+#include <array>
 #include <unistd.h>
 #include <asio.hpp>
 #include "Socket.h"
@@ -29,10 +30,15 @@ void Socket::init(short dst_port, short src_port) {
 		src_port = p;
 	}
 
+	printf("IP:\t");
+	utils::printDec(local_ip);
+	printf("\n");
+
+	std::array<unsigned char, 4> ip = { local_ip[0], local_ip[1],	local_ip[21], local_ip[3] };
 	wildcard_endpoint_ = asio::ip::udp::endpoint(
-			asio::ip::address::from_string("0.0.0.0"), src_port);
-	local_endpoint_ = asio::ip::udp::endpoint(
-			asio::ip::address::from_string("192.168.0.3"), src_port);
+			asio::ip::address_v4::from_string("0.0.0.0"), src_port);
+	local_endpoint_ = asio::ip::udp::endpoint(asio::ip::address_v4(ip),
+			src_port);
 	broadcast_endpoint_ = asio::ip::udp::endpoint(
 			asio::ip::address_v4::from_string("255.255.255.255"), dst_port);
 
@@ -46,6 +52,10 @@ void Socket::init(short dst_port, short src_port) {
 	receive_socket_.set_option(asio::socket_base::reuse_address(true));
 	receive_socket_.bind(wildcard_endpoint_); //TODO reuse Address
 
+}
+
+void Socket::setHostIp(bytes ip) {
+	local_ip=ip;
 }
 
 void Socket::send(bytes data) {

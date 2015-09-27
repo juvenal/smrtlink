@@ -25,9 +25,7 @@ int Program::list() {
 	//printf(" %d\n", d.getName());
 
 	Host h = Host();
-	printf("IP:\t");
-	utils::printDec(h.getIp(options.interface));
-	printf("\nList:\n");
+	printf("List:\n");
 	Packet p = Packet(Packet::DISCOVERY);
 	p.setHostMac(h.getMac());
 	p.setPayload( { });
@@ -37,6 +35,7 @@ int Program::list() {
 	try {
 		asio::io_service io_service;
 		Socket s(io_service);
+		s.setHostIp(h.getIp(options.interface));
 		s.init(DST_PORT, SRC_PORT);
 		s.callback = [](Packet a) {
 			if (options.flags & FLAG_HEADER) {
@@ -70,7 +69,9 @@ int Program::sniff() {
 	printf("Listening:\n");
 	try {
 		asio::io_service io_service;
+		Host h = Host();
 		Socket s(io_service);
+		s.setHostIp(h.getIp(options.interface));
 		s.init(DST_PORT,SRC_PORT);
 		s.callback = [](Packet p) {
 			if (options.flags & FLAG_HEADER) {
