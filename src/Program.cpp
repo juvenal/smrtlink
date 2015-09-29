@@ -10,7 +10,6 @@
 #include "Utils.h"
 #include "Options.h"
 #include "Program.h"
-#include "Device.h"
 #include "Host.h"
 #include "Socket.h"
 #include "Packet.h"

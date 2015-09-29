@@ -10,6 +10,7 @@
 
 #include <functional>
 #include <vector>
+#include <array>
 #include <map>
 
 template<typename T>
@@ -28,6 +29,8 @@ std::vector<T> &operator+=(std::vector<T> &A, const std::vector<T> &B) {
 	return A;
 }
 
+template<size_t N>
+using byteArray = std::array<unsigned char, N>;
 typedef std::vector<unsigned char> bytes;
 typedef unsigned char byte;
 
@@ -47,6 +50,8 @@ struct Options {
 	std::string user;
 	std::string password;
 	std::string interface;
+	std::string file;
+	long timeout;
 };
 
 #endif /* TYPES_H_ */

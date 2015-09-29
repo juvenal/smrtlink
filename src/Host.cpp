@@ -25,14 +25,16 @@ Host::Host() {
 
 }
 
-bytes Host::getMac() {
-	return {0x08,0x3e,0x8e,0x16,0x17,0x2c};
+byteArray<6> Host::getMac() {
+	byteArray<6> ret = { 0x08, 0x3e, 0x8e, 0x16, 0x17, 0x2c };
+	//TODO find actual MAC Address
+	return ret;
 }
 
-bytes Host::getIp(std::string iface) {
+byteArray<4> Host::getIp(std::string iface) {
 	struct ifaddrs *ifaddr, *ifa;
 	int n;
-	bytes data = { 0, 0, 0, 0 };
+	byteArray<4> data = { 0, 0, 0, 0 };
 
 	if (getifaddrs(&ifaddr) == -1) {
 		perror("getifaddrs");
@@ -45,7 +47,6 @@ bytes Host::getIp(std::string iface) {
 
 		if (ifa->ifa_addr->sa_family == AF_INET) {
 			if (iface.compare(ifa->ifa_name) == 0) {
-				data.resize(4);
 				memcpy(&data[0], &ifa->ifa_addr->sa_data[2], 4);
 				return data;
 			}

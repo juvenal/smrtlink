@@ -30,14 +30,16 @@ int main(int argc, char *argv[]) {
 
 	const struct option longopts[] = { { "version", no_argument, 0, 'v' }, {
 			"help", no_argument, 0, 'h' }, { "reverse", no_argument, 0, 'r' }, {
-			"password", required_argument, 0, 'p' }, { "user",
+			"permanent", no_argument, 0, 's' }, { "password", required_argument,
+			0, 'p' }, { "user",
 	required_argument, 0, 'u' }, { "interface", required_argument, 0, 'i' }, {
 			"header", required_argument, 0, 'b' }, { "hex", required_argument,
-			0, 'x' }, { 0, 0, 0, 0 }, };
+			0, 'x' }, { "file", required_argument, 0, 'f' }, { "timeout",
+			required_argument, 0, 't' }, { 0, 0, 0, 0 }, };
 
 	Program p = Program();
 
-	while ((opt = getopt_long(argc, argv, "bhrvxp:u:i:", longopts, &index))
+	while ((opt = getopt_long(argc, argv, "bhrsvxp:u:i:f:t:", longopts, &index))
 			!= -1) {
 		switch (opt) {
 
@@ -65,16 +67,28 @@ int main(int argc, char *argv[]) {
 			options.flags |= FLAG_HEX;
 			break;
 
+		case 's':
+			options.flags |= FLAG_PERMANENT;
+			break;
+
+		case 't':
+			options.timeout = atoi(optarg);
+			break;
+
+		case 'f':
+			options.file = std::string(optarg);
+			break;
+
 		case 'p':
-			options.password= std::string(optarg);
+			options.password = std::string(optarg);
 			break;
 
 		case 'u':
-			options.user= std::string(optarg);
+			options.user = std::string(optarg);
 			break;
 
 		case 'i':
-			options.interface= std::string(optarg);
+			options.interface = std::string(optarg);
 			break;
 
 		default: /* '?' */
@@ -96,6 +110,14 @@ int main(int argc, char *argv[]) {
 			fprintf(stderr, USAGE, argv[0]);
 			fprintf(stderr, HELP);
 			exit(EXIT_SUCCESS);
+		} else if (strcmp(argv[optind], "get") == 0
+				|| strcmp(argv[optind], "set") == 0
+				|| strcmp(argv[optind], "reboot") == 0
+				|| strcmp(argv[optind], "reset") == 0
+				|| strcmp(argv[optind], "flash") == 0) {
+			optind++;
+			fprintf(stderr, "Not yet implemented.\n");
+			exit(EXIT_FAILURE);
 		} else if (strcmp(argv[optind], "list") == 0) {
 			optind++;
 			if (p.list())

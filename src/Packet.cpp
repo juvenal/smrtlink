@@ -20,14 +20,16 @@ Packet::Packet(OpCode c) {
 }
 
 void Packet::printHeader() {
-	printf("Header:\n\tOpCode:\t\t%s\n\tID:\t\t%d\n\tVersion:\t%hhd\n\tError:\t\t%.8X\n\tSwitch MAC:\t", opCodeToString().c_str(),sequenceId, version, errorCode);
-	utils::printHex(switchMac);
+	printf(
+			"Header:\n\tOpCode:\t\t%s\n\tID:\t\t%d\n\tVersion:\t%hhd\n\tError:\t\t%.8X\n\tSwitch MAC:\t",
+			opCodeToString().c_str(), sequenceId, version, errorCode);
+	utils::print(switchMac);
 	printf("\n\tHost MAC:\t");
-	utils::printHex(hostMac);
-	printf("\n\tLength:\t%hd",this->getLength());
-	printf("\n\tOffset:\t%hd",fragmentOffset);
-	printf("\n\tFlags:\t%.4hX",flag);
-	printf("\n\tChecksum:\t%d",checkSum);
+	utils::print(hostMac);
+	printf("\n\tLength:\t%hd", this->getLength());
+	printf("\n\tOffset:\t%hd", fragmentOffset);
+	printf("\n\tFlags:\t%.4hX", flag);
+	printf("\n\tChecksum:\t%d", checkSum);
 }
 
 bytes Packet::getBytes() {
@@ -65,8 +67,8 @@ void Packet::parse(bytes data) {
 	short checkLen = 0x0;
 	pull(head, i, version);
 	pull(head, i, opCode);
-	pull(head, i, switchMac, switchMac.size());
-	pull(head, i, hostMac, hostMac.size());
+	pull(head, i, switchMac);
+	pull(head, i, hostMac);
 	pull(head, i, sequenceId);
 	pull(head, i, errorCode);
 	pull(head, i, checkLen);
@@ -101,7 +103,7 @@ void Packet::setBody(bytes data) {
 	this->body = data;
 }
 
-void Packet::setHostMac(bytes mac) {
+void Packet::setHostMac(byteArray<6> mac) {
 	this->hostMac = mac;
 }
 
@@ -125,11 +127,11 @@ void Packet::setSequenceId(short sequenceId) {
 	this->sequenceId = sequenceId;
 }
 
-const bytes& Packet::getSwitchMac() const {
+const byteArray<6>& Packet::getSwitchMac() const {
 	return switchMac;
 }
 
-void Packet::setSwitchMac(bytes switchMac) {
+void Packet::setSwitchMac(byteArray<6> switchMac) {
 	this->switchMac = switchMac;
 }
 
@@ -198,8 +200,15 @@ void Packet::push(bytes &arr, int &index, byte data) {
 	}
 }
 
+
 void Packet::push(bytes &arr, int &index, bytes data) {
 	for (unsigned j = 0; j < data.size(); j++)
+		push(arr, index, data[j]);
+}
+
+template<size_t N>
+void Packet::push(bytes &arr, int &index, byteArray<N> data) {
+	for (unsigned j = 0; j < N; j++)
 		push(arr, index, data[j]);
 }
 
@@ -235,6 +244,12 @@ void Packet::pull(bytes &arr, int &index, bytes &ret, unsigned len) {
 	ret.resize(len);
 	memcpy(&ret[0], &arr[index], len);
 	index += len;
+}
+
+template<size_t N>
+void Packet::pull(bytes &arr, int &index, byteArray<N> &ret) {
+	memcpy(&ret[0], &arr[index], N);
+	index += N;
 }
 
 void Packet::pull(bytes &arr, int &index, short &ret) {

@@ -22,6 +22,20 @@ static void printHex(bytes d) {
 	}
 }
 
+static void print(byteArray<6> d) {
+	printf("%.2X", d[0]);
+	for (unsigned i = 1; i < 6; i++) {
+		printf(":%.2X", d[i]);
+	}
+}
+
+static void print(byteArray<4> d) {
+	printf("%.1d", d[0]);
+	for (unsigned i = 1; i < 4; i++) {
+		printf(".%.1d", d[i]);
+	}
+}
+
 static void printDec(bytes d) {
 	if (d.size() > 0)
 		printf("%.1d", d[0]);

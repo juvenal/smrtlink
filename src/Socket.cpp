@@ -34,10 +34,9 @@ void Socket::init(short dst_port, short src_port) {
 	utils::printDec(local_ip);
 	printf("\n");
 
-	std::array<unsigned char, 4> ip = { local_ip[0], local_ip[1],	local_ip[21], local_ip[3] };
 	wildcard_endpoint_ = asio::ip::udp::endpoint(
 			asio::ip::address_v4::from_string("0.0.0.0"), src_port);
-	local_endpoint_ = asio::ip::udp::endpoint(asio::ip::address_v4(ip),
+	local_endpoint_ = asio::ip::udp::endpoint(asio::ip::address_v4(local_ip),
 			src_port);
 	broadcast_endpoint_ = asio::ip::udp::endpoint(
 			asio::ip::address_v4::from_string("255.255.255.255"), dst_port);

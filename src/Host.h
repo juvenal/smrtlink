@@ -13,9 +13,8 @@
 class Host {
 public:
 	Host();
-	virtual ~Host() {}
-	bytes getMac();
-	bytes getIp(std::string);
+	byteArray<6> getMac();
+	byteArray<4> getIp(std::string);
 };
 
 #endif /* HOST_H_ */

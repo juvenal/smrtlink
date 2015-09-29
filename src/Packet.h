@@ -29,15 +29,15 @@ public:
 	short getLength() const;
 	int getCheckSum() const;
 	short getSequenceId() const;
-	const bytes& getSwitchMac() const;
+	const byteArray<6>& getSwitchMac() const;
 	const bytes& getBody() const;
 	const bytes& getHead() const;
 	const datasets& getPayload() const;
 	void setBody(bytes);
-	void setHostMac(bytes);
+	void setHostMac(byteArray<6>);
+	void setSwitchMac(byteArray<6>);
 	void setCheckSum(int);
 	void setSequenceId(short);
-	void setSwitchMac(bytes);
 	void setPayload(const datasets& payload);
 
 private:
@@ -47,9 +47,9 @@ private:
 
 	byte version = 1;
 	byte opCode;
-	bytes switchMac = { 0, 0, 0, 0, 0, 0 };
-	bytes hostMac = { 0, 0, 0, 0, 0, 0 }; // TODO set Mac
-	bytes broadcastMac = { 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF };
+	byteArray<6> switchMac = { 0, 0, 0, 0, 0, 0 };
+	byteArray<6> hostMac = { 0, 0, 0, 0, 0, 0 };
+	byteArray<6> broadcastMac = { 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF };
 	short sequenceId;
 	short tokenId = 0;
 	short fragmentOffset = 0;
