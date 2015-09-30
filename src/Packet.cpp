@@ -103,7 +103,7 @@ void Packet::setBody(bytes data) {
 	this->body = data;
 }
 
-void Packet::setHostMac(byteArray<6> mac) {
+void Packet::setHostMac(macAddr mac) {
 	this->hostMac = mac;
 }
 
@@ -127,11 +127,11 @@ void Packet::setSequenceId(short sequenceId) {
 	this->sequenceId = sequenceId;
 }
 
-const byteArray<6>& Packet::getSwitchMac() const {
+macAddr Packet::getSwitchMac() const {
 	return switchMac;
 }
 
-void Packet::setSwitchMac(byteArray<6> switchMac) {
+void Packet::setSwitchMac(macAddr switchMac) {
 	this->switchMac = switchMac;
 }
 
@@ -187,12 +187,12 @@ void Packet::encode(bytes &data) {
 		t = s[i];
 		s[i] = s[j];
 		s[j] = t;
-		data[k] = ((data[k] ^ s[(s[i] + s[j]) % 256]));
+		data[k] = data[k] ^ s[(s[i] + s[j]) % 256];
 	}
 }
 
 void Packet::push(bytes &arr, int &index, byte data) {
-	if (arr.size() > index) {
+	if (arr.size() > (unsigned) index) {
 		arr[index++] = data;
 	} else {
 		arr.push_back(data);
@@ -200,15 +200,18 @@ void Packet::push(bytes &arr, int &index, byte data) {
 	}
 }
 
-
 void Packet::push(bytes &arr, int &index, bytes data) {
 	for (unsigned j = 0; j < data.size(); j++)
 		push(arr, index, data[j]);
 }
 
-template<size_t N>
-void Packet::push(bytes &arr, int &index, byteArray<N> data) {
-	for (unsigned j = 0; j < N; j++)
+void Packet::push(bytes &arr, int &index, inetAddr &data) {
+	for (unsigned j = 0; j < 4; j++)
+		push(arr, index, data[j]);
+}
+
+void Packet::push(bytes &arr, int &index, macAddr &data) {
+	for (unsigned j = 0; j < 6; j++)
 		push(arr, index, data[j]);
 }
 
@@ -246,10 +249,14 @@ void Packet::pull(bytes &arr, int &index, bytes &ret, unsigned len) {
 	index += len;
 }
 
-template<size_t N>
-void Packet::pull(bytes &arr, int &index, byteArray<N> &ret) {
-	memcpy(&ret[0], &arr[index], N);
-	index += N;
+void Packet::pull(bytes &arr, int &index, macAddr &ret) {
+	memcpy(&ret[0], &arr[index], 6);
+	index += 6;
+}
+
+void Packet::pull(bytes &arr, int &index, inetAddr &ret) {
+	memcpy(&ret[0], &arr[index], 4);
+	index += 4;
 }
 
 void Packet::pull(bytes &arr, int &index, short &ret) {

@@ -71,13 +71,13 @@ int Program::sniff() {
 		Host h = Host();
 		Socket s(io_service);
 		s.setHostIp(h.getIp(options.interface));
-		s.init(DST_PORT,SRC_PORT);
+		s.init(DST_PORT, SRC_PORT);
 		s.callback = [](Packet p) {
 			if (options.flags & FLAG_HEADER) {
 				if (options.flags & FLAG_HEX) {
-				printf("Received Header:\t");
-				utils::printHex(p.getHead());
-				}else{
+					printf("Received Header:\t");
+					utils::printHex(p.getHead());
+				} else {
 					p.printHeader();
 				}
 				printf("\n");
@@ -107,29 +107,43 @@ int Program::sniff() {
 	return 1;
 }
 
-int Program::encode(std::string s){
-	std::string delimiter = ":";
-	std::string token;
-	size_t pos = 0;
-	bytes arr = { };
-	int hex;
-	byte b;
-	while ((pos = s.find(delimiter)) != std::string::npos) {
-		token = s.substr(0, pos);
-		sscanf(token.c_str(), "%x", &hex);
-		s.erase(0, pos + delimiter.length());
-		b = hex & 0xFF;
-		arr.push_back(b);
-	}
-	sscanf(s.c_str(), "%x", &hex);
-	b = hex & 0xFF;
-	arr.push_back(b);
-
+int Program::encode(std::string s) {
+	bytes d = utils::readHex(s);
 	Packet p = Packet(Packet::DISCOVERY);
-	p.encode(arr);
-	printf("%x", arr[0]);
-	for (unsigned i = 1; i < arr.size(); i++) {
-		printf(":%x", arr[i]);
+	p.encode(d);
+	printf("%x", d[0]);
+	for (unsigned i = 1; i < d.size(); i++) {
+		printf(":%x", d[i]);
 	}
 	printf("\n");
+	return 0;
+}
+
+
+int Program::setProperty(){
+	return 0;
+}
+int Program::getProperty(){
+
+	return 0;
+}
+int Program::save(){
+
+	return 0;
+}
+int Program::restore(){
+
+	return 0;
+}
+int Program::flash(){
+
+	return 0;
+}
+int Program::reboot(){
+
+	return 0;
+}
+int Program::reset(){
+
+	return 0;
 }

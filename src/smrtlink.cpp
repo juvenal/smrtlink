@@ -3,7 +3,7 @@
 // Author      : jdi
 // Version     :
 // Copyright   : GPL v2
-// Description : Hello World in C++, Ansi-style
+// Description : SmrtLink in C++, Ansi-style
 //============================================================================
 
 #include <cstring>
@@ -25,6 +25,10 @@
 
 Options options;
 
+constexpr unsigned int caseArg(const char* str, int h = 0) {
+	return !str[h] ? 5381 : (caseArg(str, h + 1) * 33) ^ str[h];
+}
+
 int main(int argc, char *argv[]) {
 	int opt, index;
 
@@ -35,7 +39,8 @@ int main(int argc, char *argv[]) {
 	required_argument, 0, 'u' }, { "interface", required_argument, 0, 'i' }, {
 			"header", required_argument, 0, 'b' }, { "hex", required_argument,
 			0, 'x' }, { "file", required_argument, 0, 'f' }, { "timeout",
-			required_argument, 0, 't' }, { 0, 0, 0, 0 }, };
+	required_argument, 0, 't' }, { "wait",
+	required_argument, 0, 'w' }, { 0, 0, 0, 0 }, };
 
 	Program p = Program();
 
@@ -69,6 +74,10 @@ int main(int argc, char *argv[]) {
 
 		case 's':
 			options.flags |= FLAG_PERMANENT;
+			break;
+
+		case 'w':
+			options.flags |= FLAG_WAIT;
 			break;
 
 		case 't':
@@ -105,29 +114,31 @@ int main(int argc, char *argv[]) {
 	}
 
 	if (optind < argc) {
-		if (strcmp(argv[optind], "help") == 0) {
-			fprintf(stderr, VERSION);
-			fprintf(stderr, USAGE, argv[0]);
-			fprintf(stderr, HELP);
-			exit(EXIT_SUCCESS);
-		} else if (strcmp(argv[optind], "get") == 0
-				|| strcmp(argv[optind], "set") == 0
-				|| strcmp(argv[optind], "reboot") == 0
-				|| strcmp(argv[optind], "reset") == 0
-				|| strcmp(argv[optind], "flash") == 0) {
-			optind++;
+		std::string cmd = std::string(argv[optind++]);
+
+		switch (caseArg(cmd.c_str())) {
+		case caseArg("get"):
+		case caseArg("set"):
+		case caseArg("reboot"):
+		case caseArg("reset"):
+		case caseArg("save"):
+		case caseArg("restore"):
+		case caseArg("flash"):
 			fprintf(stderr, "Not yet implemented.\n");
 			exit(EXIT_FAILURE);
-		} else if (strcmp(argv[optind], "list") == 0) {
-			optind++;
+			break;
+
+		case caseArg("list"):
 			if (p.list())
 				exit(EXIT_SUCCESS);
-		} else if (strcmp(argv[optind], "sniff") == 0) {
-			optind++;
+			break;
+
+		case caseArg("sniff"):
 			if (p.sniff())
 				exit(EXIT_SUCCESS);
-		} else if (strcmp(argv[optind], "encode") == 0) {
-			optind++;
+			break;
+
+		case caseArg("encode"):
 			if (optind < argc) {
 				std::string s(argv[optind]);
 				optind++;
@@ -137,7 +148,16 @@ int main(int argc, char *argv[]) {
 				fprintf(stderr, "Argument expected after encode\n");
 				exit(EXIT_FAILURE);
 			}
-		} else {
+			break;
+
+		case caseArg("help"):
+			fprintf(stderr, VERSION);
+			fprintf(stderr, USAGE, argv[0]);
+			fprintf(stderr, HELP);
+			exit(EXIT_SUCCESS);
+			break;
+
+		default:
 			printf("Unknown command: %s\n", argv[optind]);
 			optind++;
 			while (optind < argc) {
@@ -148,6 +168,5 @@ int main(int argc, char *argv[]) {
 		}
 	}
 	exit(EXIT_FAILURE);
-
 }
 

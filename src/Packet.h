@@ -29,13 +29,13 @@ public:
 	short getLength() const;
 	int getCheckSum() const;
 	short getSequenceId() const;
-	const byteArray<6>& getSwitchMac() const;
+	macAddr getSwitchMac() const;
 	const bytes& getBody() const;
 	const bytes& getHead() const;
 	const datasets& getPayload() const;
 	void setBody(bytes);
-	void setHostMac(byteArray<6>);
-	void setSwitchMac(byteArray<6>);
+	void setHostMac(macAddr);
+	void setSwitchMac(macAddr);
 	void setCheckSum(int);
 	void setSequenceId(short);
 	void setPayload(const datasets& payload);
@@ -47,9 +47,9 @@ private:
 
 	byte version = 1;
 	byte opCode;
-	byteArray<6> switchMac = { 0, 0, 0, 0, 0, 0 };
-	byteArray<6> hostMac = { 0, 0, 0, 0, 0, 0 };
-	byteArray<6> broadcastMac = { 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF };
+	macAddr switchMac {{ 0, 0, 0, 0, 0, 0 }};
+	macAddr hostMac {{ 0, 0, 0, 0, 0, 0 }};
+	macAddr broadcastMac  {{ 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF }};
 	short sequenceId;
 	short tokenId = 0;
 	short fragmentOffset = 0;
@@ -64,12 +64,16 @@ private:
 	void push(bytes&, int&, int);
 	void push(bytes&, int&, byte);
 	void push(bytes&, int&, bytes);
+	void push(bytes&, int&, inetAddr&);
+	void push(bytes&, int&, macAddr&);
 	void push(bytes&, int&, dataset);
 
 	void pull(bytes&, int&, short&);
 	void pull(bytes&, int&, int&);
 	void pull(bytes&, int&, byte&);
 	void pull(bytes&, int&, bytes&, unsigned);
+	void pull(bytes&, int&, inetAddr&);
+	void pull(bytes&, int&, macAddr&);
 	void pull(bytes&, int&, dataset&);
 };
 

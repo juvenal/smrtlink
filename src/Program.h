@@ -21,6 +21,13 @@ public:
 	int list();
 	int sniff();
 	int encode(std::string);
+	int setProperty();
+	int getProperty();
+	int save();
+	int restore();
+	int flash();
+	int reboot();
+	int reset();
 };
 
 #endif /* PROGRAM_H_ */

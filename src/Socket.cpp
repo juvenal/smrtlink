@@ -31,7 +31,7 @@ void Socket::init(short dst_port, short src_port) {
 	}
 
 	printf("IP:\t");
-	utils::printDec(local_ip);
+	utils::print(local_ip);
 	printf("\n");
 
 	wildcard_endpoint_ = asio::ip::udp::endpoint(
@@ -53,7 +53,7 @@ void Socket::init(short dst_port, short src_port) {
 
 }
 
-void Socket::setHostIp(bytes ip) {
+void Socket::setHostIp(inetAddr ip) {
 	local_ip=ip;
 }
 

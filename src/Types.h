@@ -29,8 +29,9 @@ std::vector<T> &operator+=(std::vector<T> &A, const std::vector<T> &B) {
 	return A;
 }
 
-template<size_t N>
-using byteArray = std::array<unsigned char, N>;
+typedef std::array<unsigned char, 6> macAddr;
+typedef std::array<unsigned char, 4> inetAddr;
+
 typedef std::vector<unsigned char> bytes;
 typedef unsigned char byte;
 

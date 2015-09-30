@@ -13,8 +13,8 @@
 class Host {
 public:
 	Host();
-	byteArray<6> getMac();
-	byteArray<4> getIp(std::string);
+	macAddr getMac();
+	inetAddr getIp(std::string);
 };
 
 #endif /* HOST_H_ */

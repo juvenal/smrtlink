@@ -37,16 +37,16 @@ private:
 		std::string type;
 		std::string hardware_version;
 		std::string firmware_version;
-		byteArray<6> mac;
+		macAddr mac;
 	} device;
 	struct {
 		std::string password = DEFAULT_PASS;
 		std::string username = DEFAULT_USER;
 		struct {
 			std::string hostname;
-			byteArray<4> ip_addr;
-			byteArray<4> ip_mask;
-			byteArray<4> gateway;
+			inetAddr ip_addr;
+			inetAddr ip_mask;
+			inetAddr gateway;
 			byte dhcp;
 		} network;
 	} settings;

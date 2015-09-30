@@ -25,16 +25,16 @@ Host::Host() {
 
 }
 
-byteArray<6> Host::getMac() {
-	byteArray<6> ret = { 0x08, 0x3e, 0x8e, 0x16, 0x17, 0x2c };
+macAddr Host::getMac() {
+	macAddr ret { { 0x08, 0x3e, 0x8e, 0x16, 0x17, 0x2c } };
 	//TODO find actual MAC Address
 	return ret;
 }
 
-byteArray<4> Host::getIp(std::string iface) {
+inetAddr Host::getIp(std::string iface) {
 	struct ifaddrs *ifaddr, *ifa;
 	int n;
-	byteArray<4> data = { 0, 0, 0, 0 };
+	inetAddr data { { 0, 0, 0, 0 } };
 
 	if (getifaddrs(&ifaddr) == -1) {
 		perror("getifaddrs");
