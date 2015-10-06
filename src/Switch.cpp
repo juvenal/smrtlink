@@ -7,8 +7,7 @@
 
 #include "Switch.h"
 
-Switch::Switch() {
-	// TODO Auto-generated constructor stub
+void Switch::parse(datasets arr){
 
 }
 

@@ -11,6 +11,7 @@
 #include <asio.hpp>
 #include "Packet.h"
 #include "Types.h"
+//#include "Types.h"
 
 #define MAX_LENGTH 1024
 
@@ -22,7 +23,7 @@ public:
 	void init(short, short);
 	void send(bytes);
 	void listen();
-	void setHostIp(inetAddr);
+	void setHostIp(ipAddr);
 	int (*callback)(Packet)=[](Packet a) {
 		return 0;
 	};
@@ -36,7 +37,7 @@ private:
 	asio::ip::udp::endpoint wildcard_endpoint_;
 	asio::ip::udp::endpoint local_endpoint_;
 	bytes data = bytes(MAX_LENGTH);
-	inetAddr local_ip;
+	ipAddr local_ip;
 
 };
 

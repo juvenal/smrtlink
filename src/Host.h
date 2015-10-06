@@ -12,9 +12,9 @@
 
 class Host {
 public:
-	Host();
+	Host(){};
 	macAddr getMac();
-	inetAddr getIp(std::string);
+	ipAddr getIp();
 };
 
 #endif /* HOST_H_ */

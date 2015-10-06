@@ -7,13 +7,13 @@
 //============================================================================
 
 #include <cstring>
-#include <getopt.h>
-#include <unistd.h>
-
 #include <iostream>
 #include <string>
-#include <stdlib.h>
-#include <stdio.h>
+#include <cstdlib>
+#include <cstdio>
+
+#include <getopt.h>
+#include <unistd.h>
 
 #include "Options.h"
 #include "Host.h"
@@ -158,8 +158,7 @@ int main(int argc, char *argv[]) {
 			break;
 
 		default:
-			printf("Unknown command: %s\n", argv[optind]);
-			optind++;
+			printf("Unknown command: %s\n", cmd.c_str());
 			while (optind < argc) {
 				printf("->%s\n", argv[optind]);
 				optind++;

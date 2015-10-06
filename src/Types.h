@@ -8,10 +8,62 @@
 #ifndef TYPES_H_
 #define TYPES_H_
 
-#include <functional>
+#include <initializer_list>
+#include <algorithm>
+#include <iostream>
+#include <iomanip>
 #include <vector>
 #include <array>
-#include <map>
+#include "Types/bytes.h"
+
+class macAddr: public std::array<byte, 6> {
+public:
+	friend std::ostream& operator<<(std::ostream& out, const macAddr& arr) {
+		out << std::hex << std::setw(2) << std::setfill('0')
+				<< (unsigned) arr[0];
+		for (unsigned i = 1; i < 6; i++) {
+			out << ":" << std::setw(2) << std::setfill('0')
+					<< (unsigned) arr[i];
+		}
+		return out;
+	}
+
+	macAddr() {
+		*this= {0,0,0,0,0,0};
+	}
+
+	macAddr(std::initializer_list<byte> s) {
+		int i = 0;
+        for (byte b : s) {
+        	if(i<6) (*this)[i++]=b;
+        	else break;
+        }
+	}
+};
+
+class ipAddr: public std::array<byte, 4> {
+public:
+
+	ipAddr() {
+		*this= {0,0,0,0,0,0};
+	}
+
+	ipAddr(std::initializer_list<byte> s) {
+		int i = 0;
+        for (byte  b : s) {
+        	if(i<4) (*this)[i++]=b;
+        	else break;
+        }
+	}
+
+	friend std::ostream& operator<<(std::ostream& out, ipAddr& arr) {
+		out << std::dec << (unsigned) arr[0];
+		for (unsigned i = 1; i < 4; i++) {
+			out << "." << (unsigned) arr[i];
+		}
+		return out;
+	}
+};
 
 template<typename T>
 std::vector<T> operator+(const std::vector<T> &A, const std::vector<T> &B) {
@@ -29,23 +81,6 @@ std::vector<T> &operator+=(std::vector<T> &A, const std::vector<T> &B) {
 	return A;
 }
 
-typedef std::array<unsigned char, 6> macAddr;
-typedef std::array<unsigned char, 4> inetAddr;
-
-typedef std::vector<unsigned char> bytes;
-typedef unsigned char byte;
-
-struct dataset {
-	short type;
-	short len;
-	bytes value;
-};
-
-//typedef std::vector<dataset> datasets;
-typedef std::map<short, dataset> datasets;
-
-//std::function<int()>;
-//typedef int receiveCallback;
 struct Options {
 	unsigned flags = 0x00;
 	std::string user;

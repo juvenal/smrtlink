@@ -5,8 +5,10 @@
  *      Author: jdi
  */
 
+
+//TODO clean up
 #include <cstdio>
-#include <cerrno>
+//#include <cerrno>
 #include <cstring>
 #include <cstdlib>
 #include <iostream>
@@ -16,25 +18,21 @@
 #include <netdb.h>
 #include <ifaddrs.h>
 #include <unistd.h>
-#include <linux/if_link.h>
-#include "Utils.h"
+//#include <linux/if_link.h>
+#include "Options.h"
 #include "Host.h"
-
-Host::Host() {
-	// TODO Auto-generated constructor stub
-
-}
+#include "Types.h"
+#include "Types/bytes.h"
 
 macAddr Host::getMac() {
-	macAddr ret { { 0x08, 0x3e, 0x8e, 0x16, 0x17, 0x2c } };
-	//TODO find actual MAC Address
+	macAddr ret { 0x08, 0x3e, 0x8e, 0x16, 0x17, 0x2c }; //TODO find actual MAC Address
 	return ret;
 }
 
-inetAddr Host::getIp(std::string iface) {
+ipAddr Host::getIp() {
 	struct ifaddrs *ifaddr, *ifa;
 	int n;
-	inetAddr data { { 0, 0, 0, 0 } };
+	ipAddr data { 0, 0, 0, 0 };
 
 	if (getifaddrs(&ifaddr) == -1) {
 		perror("getifaddrs");
@@ -46,7 +44,7 @@ inetAddr Host::getIp(std::string iface) {
 			continue;
 
 		if (ifa->ifa_addr->sa_family == AF_INET) {
-			if (iface.compare(ifa->ifa_name) == 0) {
+			if (options.interface.compare(ifa->ifa_name) == 0) {
 				memcpy(&data[0], &ifa->ifa_addr->sa_data[2], 4);
 				return data;
 			}
@@ -54,7 +52,6 @@ inetAddr Host::getIp(std::string iface) {
 	}
 
 	freeifaddrs(ifaddr);
-
 	return data;
 }
 

@@ -15,9 +15,7 @@
 
 class Program {
 public:
-	Program();
-	virtual ~Program() {
-	}
+	Program(){}
 	int list();
 	int sniff();
 	int encode(std::string);

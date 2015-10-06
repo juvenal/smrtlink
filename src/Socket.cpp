@@ -14,7 +14,6 @@
 #include "Socket.h"
 #include "Packet.h"
 #include "Types.h"
-#include "Utils.h"
 #include "Options.h"
 #include "Host.h"
 
@@ -30,9 +29,7 @@ void Socket::init(short dst_port, short src_port) {
 		src_port = p;
 	}
 
-	printf("IP:\t");
-	utils::print(local_ip);
-	printf("\n");
+	std::cout <<"IP:\t"<<local_ip<<"\n";
 
 	wildcard_endpoint_ = asio::ip::udp::endpoint(
 			asio::ip::address_v4::from_string("0.0.0.0"), src_port);
@@ -44,16 +41,16 @@ void Socket::init(short dst_port, short src_port) {
 	send_socket_.open(asio::ip::udp::v4());
 	send_socket_.set_option(asio::socket_base::broadcast(true));
 	send_socket_.set_option(asio::socket_base::reuse_address(true));
-	send_socket_.bind(local_endpoint_); //TODO reuse Address
+	send_socket_.bind(local_endpoint_);
 
 	receive_socket_.open(asio::ip::udp::v4());
 	receive_socket_.set_option(asio::socket_base::broadcast(true));
 	receive_socket_.set_option(asio::socket_base::reuse_address(true));
-	receive_socket_.bind(wildcard_endpoint_); //TODO reuse Address
+	receive_socket_.bind(wildcard_endpoint_);
 
 }
 
-void Socket::setHostIp(inetAddr ip) {
+void Socket::setHostIp(ipAddr ip) {
 	local_ip=ip;
 }
 

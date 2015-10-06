@@ -10,6 +10,8 @@
 
 #include <string>
 #include "Types.h"
+#include "Types/bytes.h"
+#include "Types/datasets.h"
 
 #define DEFAULT_USER "admin"
 #define DEFAULT_PASS "admin"
@@ -20,7 +22,8 @@ struct vlan {
 };
 
 struct port {
-	int id;
+	byte id;
+	byte status;
 	struct {
 		std::vector<vlan*> tagged;
 		std::vector<vlan*> untagged;
@@ -30,26 +33,25 @@ struct port {
 
 class Switch {
 public:
-	Switch();
+	Switch() {
+	}
 	void parse(datasets);
-private:
 	struct {
 		std::string type;
 		std::string hardware_version;
 		std::string firmware_version;
-		macAddr mac;
+		macAddr mac {0x0,0x0,0x0,0x0,0x0,0x0};
 	} device;
 	struct {
 		std::string password = DEFAULT_PASS;
 		std::string username = DEFAULT_USER;
-		struct {
-			std::string hostname;
-			inetAddr ip_addr;
-			inetAddr ip_mask;
-			inetAddr gateway;
-			byte dhcp;
-		} network;
+		std::string hostname;
+		ipAddr ip_addr {0,0,0,0,};
+		ipAddr ip_mask;
+		ipAddr gateway;
+		byte dhcp;
 	} settings;
+private:
 	std::vector<vlan> vlans;
 	std::vector<port> ports;
 };

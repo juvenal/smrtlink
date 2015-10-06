@@ -12,6 +12,8 @@
 #define PACKET_END 0xFFFF0000
 
 #include "Types.h"
+#include "Types/bytes.h"
+#include "Types/datasets.h"
 
 class Packet {
 public:
@@ -19,8 +21,6 @@ public:
 		DISCOVERY, GET, SET, READ
 	};
 	Packet(OpCode);
-	virtual ~Packet() {
-	}
 	void encode(bytes&);
 	bytes getBytes();
 	void parse(bytes);
@@ -64,15 +64,15 @@ private:
 	void push(bytes&, int&, int);
 	void push(bytes&, int&, byte);
 	void push(bytes&, int&, bytes);
-	void push(bytes&, int&, inetAddr&);
-	void push(bytes&, int&, macAddr&);
+	void push(bytes&, int&, ipAddr);
+	void push(bytes&, int&, macAddr);
 	void push(bytes&, int&, dataset);
 
 	void pull(bytes&, int&, short&);
 	void pull(bytes&, int&, int&);
 	void pull(bytes&, int&, byte&);
 	void pull(bytes&, int&, bytes&, unsigned);
-	void pull(bytes&, int&, inetAddr&);
+	void pull(bytes&, int&, ipAddr&);
 	void pull(bytes&, int&, macAddr&);
 	void pull(bytes&, int&, dataset&);
 };
