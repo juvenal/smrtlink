@@ -39,6 +39,14 @@ public:
         	else break;
         }
 	}
+
+	macAddr(bytes bts) {
+		int i = 0;
+        for (byte b : bts) {
+        	if(i<6) (*this)[i++]=b;
+        	else break;
+        }
+	}
 };
 
 class ipAddr: public std::array<byte, 4> {
@@ -51,6 +59,14 @@ public:
 	ipAddr(std::initializer_list<byte> s) {
 		int i = 0;
         for (byte  b : s) {
+        	if(i<4) (*this)[i++]=b;
+        	else break;
+        }
+	}
+
+	ipAddr(bytes bts) {
+		int i = 0;
+        for (byte b : bts) {
         	if(i<4) (*this)[i++]=b;
         	else break;
         }

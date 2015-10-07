@@ -7,7 +7,6 @@
 
 #include <cstring>
 #include <cstdlib>
-#include <cstdio>
 #include <ctime>
 #include "Packet.h"
 #include "Types.h"
@@ -21,15 +20,16 @@ Packet::Packet(OpCode c) {
 }
 
 void Packet::printHeader() {
-	printf(
-			"Header:\n\tOpCode:\t\t%s\n\tID:\t\t%d\n\tVersion:\t%hhd\n\tError:\t\t%.8X\n\tSwitch MAC:\t",
-			opCodeToString().c_str(), sequenceId, version, errorCode);
-	std::cout << switchMac << "\n";
-	std::cout << "\tHost MAC:\t"<< hostMac << "\n";
-	printf("\n\tLength:\t%hd", this->getLength());
-	printf("\n\tOffset:\t%hd", fragmentOffset);
-	printf("\n\tFlags:\t%.4hX", flag);
-	printf("\n\tChecksum:\t%d", checkSum);
+	std::cout << "Header:\n\tOpCode:\t\t" << opCodeToString() << "\n";
+	std::cout << "\tID:\t\t" << sequenceId << "\n";
+	std::cout << "\tVersion:\t" << version << "\n";
+	std::cout << "\tError:\t\t" << errorCode << "\n";
+	std::cout << "\tSwitch MAC:\t" << switchMac << "\n";
+	std::cout << "\tHost MAC: \t" << hostMac << "\n";
+	std::cout << "\tLength:   \t" << std::dec << this->getLength() << "\n";
+	std::cout << "\tOffset:   \t" << fragmentOffset << "\n";
+	std::cout << "\tFlags:    \t" << std::hex << flag << "\n";
+	std::cout << "\tChecksum: \t" << std::dec << checkSum << "\n";
 }
 
 bytes Packet::getBytes() {
@@ -50,9 +50,6 @@ bytes Packet::getBytes() {
 	push(head, i, tokenId);
 	push(head, i, checkSum);
 	bytes data = head + body;
-	//printf("Send Header:\t");
-	//utils::printHex(head);
-	//printf("\n");
 	return data;
 }
 
@@ -60,9 +57,6 @@ void Packet::parse(bytes data) {
 	memcpy(&head[0], &data[0], HEADER_LEN);
 	body.resize(data.size() - HEADER_LEN);
 	memcpy(&body[0], &data[HEADER_LEN], data.size() - HEADER_LEN);
-	//printf("Receive Header:\t");
-	//utils::printHex(head);
-	//printf("\n");
 	int i = 0;
 	short checkLen = 0x0;
 	pull(head, i, version);
@@ -161,7 +155,7 @@ std::string Packet::opCodeToString() {
 
 void Packet::encode(bytes &data) {
 	int len = data.size();
-	std::vector<unsigned char> t = { 191, 155, 227, 202, 99, 162, 79, 104, 49,
+	bytes key = { 191, 155, 227, 202, 99, 162, 79, 104, 49,
 			18, 190, 164, 30, 76, 189, 131, 23, 52, 86, 106, 207, 125, 126, 169,
 			196, 28, 172, 58, 188, 132, 160, 3, 36, 120, 144, 168, 12, 231, 116,
 			44, 41, 97, 108, 213, 42, 198, 32, 148, 218, 107, 247, 112, 204, 14,
@@ -179,7 +173,6 @@ void Packet::encode(bytes &data) {
 			138, 216, 57, 93, 65, 154, 141, 122, 34, 140, 128, 238, 88, 89, 9,
 			146, 171, 149, 53, 102, 61, 114, 69, 217, 175, 103, 228, 35, 180,
 			252, 200, 192, 165, 159, 221, 244, 110, 119, 48 };
-	bytes key = t;
 	bytes s = key;
 	int i, j = 0;
 	for (int k = 0; k < len; k++) {

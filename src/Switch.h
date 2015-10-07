@@ -16,6 +16,20 @@
 #define DEFAULT_USER "admin"
 #define DEFAULT_PASS "admin"
 
+/*
+ *
+ static bitable lookup = {
+ {1, "type"},
+ {2, "hostname"},
+ {3, "mac"},
+ {4, "ip_addr"},
+ {5, "ip_mask"},
+ {6, "gateway"},
+ {7, "firmware_version"},
+ {8, "hardware_version"},
+ {9, "dhcp"}};
+ */
+
 struct vlan {
 	int vlan_id;
 	std::string name;
@@ -40,16 +54,16 @@ public:
 		std::string type;
 		std::string hardware_version;
 		std::string firmware_version;
-		macAddr mac {0x0,0x0,0x0,0x0,0x0,0x0};
+		macAddr mac { 0x0, 0x0, 0x0, 0x0, 0x0, 0x0 };
 	} device;
 	struct {
 		std::string password = DEFAULT_PASS;
 		std::string username = DEFAULT_USER;
 		std::string hostname;
-		ipAddr ip_addr {0,0,0,0,};
+		ipAddr ip_addr { 0, 0, 0, 0, };
 		ipAddr ip_mask;
 		ipAddr gateway;
-		byte dhcp;
+		bool dhcp;
 	} settings;
 private:
 	std::vector<vlan> vlans;
