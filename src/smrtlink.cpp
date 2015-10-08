@@ -117,7 +117,6 @@ int main(int argc, char *argv[]) {
 		std::string cmd = std::string(argv[optind++]);
 
 		switch (caseArg(cmd.c_str())) {
-		case caseArg("get"):
 		case caseArg("set"):
 		case caseArg("reboot"):
 		case caseArg("reset"):
@@ -126,6 +125,11 @@ int main(int argc, char *argv[]) {
 		case caseArg("flash"):
 			fprintf(stderr, "Not yet implemented.\n");
 			exit(EXIT_FAILURE);
+			break;
+
+		case caseArg("get"):
+			if (p.getProperty())
+				exit(EXIT_SUCCESS);
 			break;
 
 		case caseArg("list"):

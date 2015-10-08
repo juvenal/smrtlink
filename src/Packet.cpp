@@ -20,7 +20,7 @@ Packet::Packet(OpCode c) {
 }
 
 void Packet::printHeader() {
-	std::cout << "Header:\n\tOpCode:\t\t" << opCodeToString() << "\n";
+	std::cout << "Header:\n";
 	std::cout << "\tID:\t\t" << sequenceId << "\n";
 	std::cout << "\tVersion:\t" << version << "\n";
 	std::cout << "\tError:\t\t" << errorCode << "\n";
@@ -145,8 +145,10 @@ std::string Packet::opCodeToString() {
 		return "GET";
 	case SET:
 		return "SET";
-	case READ:
-		return "READ";
+	case RECEIVE:
+		return "RECEIVE";
+	case READ5:
+		return "READ5";
 	default:
 		return "NONE";
 	}

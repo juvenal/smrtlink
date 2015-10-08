@@ -74,7 +74,7 @@ void Socket::listen() {
 					listen();
 				} else {
 					data.resize(bytes_recvd);
-					Packet p = Packet(Packet::READ);
+					Packet p = Packet(Packet::RECEIVE);
 					p.encode(data);
 					p.parse(data);
 					datasets l = p.getPayload();
