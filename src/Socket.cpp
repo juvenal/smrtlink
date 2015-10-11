@@ -4,18 +4,18 @@
  *  Created on: 02.09.2015
  *      Author: jdi
  */
-#include <cstdio>
-#include <cerrno>
-#include <cstring>
+//#include <cstdio>
+//#include <cerrno>
+//#include <cstring>
 #include <cstdlib>
 #include <array>
 #include <unistd.h>
 #include <asio.hpp>
 #include "Socket.h"
 #include "Packet.h"
-#include "Types.h"
 #include "Options.h"
 #include "Host.h"
+#include "Types/Types.h"
 
 Socket::Socket(asio::io_service& io_service) :
 		send_socket_(io_service), receive_socket_(io_service) {

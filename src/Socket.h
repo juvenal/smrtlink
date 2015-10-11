@@ -10,8 +10,7 @@
 
 #include <asio.hpp>
 #include "Packet.h"
-#include "Types.h"
-//#include "Types.h"
+#include "Types/Types.h"
 
 #define MAX_LENGTH 1024
 

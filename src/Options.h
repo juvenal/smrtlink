@@ -8,7 +8,7 @@
 #ifndef OPTIONS_H_
 #define OPTIONS_H_
 
-#include "Types.h"
+#include "Types/Types.h"
 
 #define VERSION "smrtlink (v1 Linux)\n"
 #define USAGE "usage: %s [-bhrvx] [-i interface] [-u [password:]username]\n\

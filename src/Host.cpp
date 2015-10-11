@@ -21,11 +21,11 @@
 //#include <linux/if_link.h>
 #include "Options.h"
 #include "Host.h"
-#include "Types.h"
-#include "Types/bytes.h"
+#include "Types/Types.h"
+//#include "bytes.h"
 
 macAddr Host::getMac() {
-	macAddr ret { 0x08, 0x3e, 0x8e, 0x16, 0x17, 0x2c }; //TODO find actual MAC Address
+	macAddr ret { 0x6a,0x49,0x16,0x17,0x2e,0x8d }; //TODO find actual MAC Address
 	return ret;
 }
 

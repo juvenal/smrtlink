@@ -13,6 +13,7 @@
 #include "Socket.h"
 #include "Switch.h"
 #include "Packet.h"
+#include "Lookup.h"
 
 int Program::list() {
 
@@ -123,11 +124,11 @@ int Program::setProperty() {
 int Program::getProperty() {
 	Host h = Host();
 	printf("Get:\n");
-	Packet p = Packet(Packet::DISCOVERY);
+	Packet p = Packet(Packet::GET);
 	macAddr d  = {0x14,0xcc,0x20,0x49,0x5e,0x07};
 	p.setSwitchMac(d);
 	p.setHostMac(h.getMac());
-	datasets t = { { 2200, 0, { } } };
+	datasets t = { { 2305, 0, { } } };
 	p.setPayload(t);
 	bytes a = p.getBytes();
 	p.encode(a);

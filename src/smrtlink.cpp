@@ -118,11 +118,38 @@ int main(int argc, char *argv[]) {
 
 		switch (caseArg(cmd.c_str())) {
 		case caseArg("set"):
+			if (p.setProperty())
+				exit(EXIT_SUCCESS);
+			fprintf(stderr, "Not yet implemented.\n");
+			exit(EXIT_FAILURE);
+			break;
 		case caseArg("reboot"):
+			if (p.reboot())
+				exit(EXIT_SUCCESS);
+			fprintf(stderr, "Not yet implemented.\n");
+			exit(EXIT_FAILURE);
+			break;
 		case caseArg("reset"):
+			if (p.reset())
+				exit(EXIT_SUCCESS);
+			fprintf(stderr, "Not yet implemented.\n");
+			exit(EXIT_FAILURE);
+			break;
 		case caseArg("save"):
+			if (p.save())
+				exit(EXIT_SUCCESS);
+			fprintf(stderr, "Not yet implemented.\n");
+			exit(EXIT_FAILURE);
+			break;
 		case caseArg("restore"):
+			if (p.restore())
+				exit(EXIT_SUCCESS);
+			fprintf(stderr, "Not yet implemented.\n");
+			exit(EXIT_FAILURE);
+			break;
 		case caseArg("flash"):
+			if (p.flash())
+				exit(EXIT_SUCCESS);
 			fprintf(stderr, "Not yet implemented.\n");
 			exit(EXIT_FAILURE);
 			break;

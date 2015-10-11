@@ -11,9 +11,7 @@
 #define HEADER_LEN 32
 #define PACKET_END 0xFFFF0000
 
-#include "Types.h"
-#include "Types/bytes.h"
-#include "Types/datasets.h"
+#include "Types/Types.h"
 
 class Packet {
 public:
@@ -38,7 +36,7 @@ public:
 	void setSwitchMac(macAddr);
 	void setCheckSum(int);
 	void setSequenceId(short);
-	void setPayload(const datasets& payload);
+	void setPayload(datasets payload);
 
 private:
 	bytes head = bytes(32);
