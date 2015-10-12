@@ -5,26 +5,7 @@
  *      Author: jdi
  */
 
-#include <boost/bimap.hpp>
-
-class lookupTable: public boost::bimap<short, std::string> {
-	struct set{
-		short n;
-		std::string s;
-	};
-public:
-	lookupTable(std::initializer_list<set> l) {
-        for (set  s : l) {
-        	this->left[s.n]=s.s;
-        }
-	}
-	const short& operator[](std::string s){
-		return this->right[s];
-	}
-	const std::string& operator[](short n){
-		return this->left[n];
-	}
-};
+#include "Types/lookupTable.h"
 
 static lookupTable rcv_lookup = { { 1, "type" }, //string
 		{ 2, "hostname" }, //string

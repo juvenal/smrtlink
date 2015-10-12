@@ -84,14 +84,14 @@ int Program::sniff() {
 						for(auto a : p.getPayload()) {
 							dataset d = a.second;
 							auto lookup=(options.flags & FLAG_REVERSE)?snd_lookup:rcv_lookup;
-							if(lookup.find(d.type) ==lookup.end()) {
+							if(lookup.exists(d.type)) {
 								if(d.len>0) {
+									std::cout<<std::dec<<"\t++"<<std::hex<<d.type<<std::dec<<"++\n";
+								} else {
 									std::cout<<std::dec<<"#"<<d.type<<"\tLength: "<<d.len<<"\n";
 									std::cout<<std::hex<< "\tHex: " <<d.value<<"\n";
 									d.value.push_back(0U);
 									std::cout<<"\tString: " <<&d.value[0]<<"\n";
-								} else {
-									std::cout<<std::dec<<"\t++"<<std::hex<<d.type<<std::dec<<"++\n";
 								}
 							} else {
 								std::cout<<"###"<<lookup[d.type]<<"\n";
@@ -125,7 +125,7 @@ int Program::getProperty() {
 	Host h = Host();
 	printf("Get:\n");
 	Packet p = Packet(Packet::GET);
-	macAddr d  = {0x14,0xcc,0x20,0x49,0x5e,0x07};
+	macAddr d = { 0x14, 0xcc, 0x20, 0x49, 0x5e, 0x07 };
 	p.setSwitchMac(d);
 	p.setHostMac(h.getMac());
 	datasets t = { { 2305, 0, { } } };
