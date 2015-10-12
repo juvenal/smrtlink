@@ -4,7 +4,7 @@ TARGET = smrtlink
 
 all: $(TARGET)
 
-$(TARGET): lookupTable.o Types.o Program.o 
+$(TARGET): Types.o Program.o 
 	$(CC) $(CFLAGS) -o $(TARGET) *.o
 
 Types.o: src/Types/*.cpp src/Types/*.h
