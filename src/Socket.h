@@ -12,6 +12,9 @@
 #include "Packet.h"
 #include "Types/Types.h"
 
+#define SRC_PORT 29809
+#define DST_PORT 29808
+
 #define MAX_LENGTH 1024
 
 class Socket {

@@ -113,6 +113,8 @@ int main(int argc, char *argv[]) {
 		exit(EXIT_FAILURE);
 	}
 
+	p.init();
+
 	if (optind < argc) {
 		std::string cmd = std::string(argv[optind++]);
 

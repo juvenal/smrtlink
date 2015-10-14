@@ -9,13 +9,12 @@
 #define PROGRAM_H_
 
 #include "Types/Types.h"
-
-#define SRC_PORT 29809
-#define DST_PORT 29808
+#include "Host.h"
 
 class Program {
 public:
 	Program(){}
+	void init();
 	int list();
 	int sniff();
 	int encode(std::string);
@@ -26,6 +25,8 @@ public:
 	int flash();
 	int reboot();
 	int reset();
+private:
+	Host host = Host();
 };
 
 #endif /* PROGRAM_H_ */

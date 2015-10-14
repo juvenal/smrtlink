@@ -17,10 +17,9 @@
 
 int Program::list() {
 
-	Host h = Host();
 	printf("List:\n");
 	Packet p = Packet(Packet::DISCOVERY);
-	p.setHostMac(h.getMac());
+	p.setHostMac(host.getMac());
 	p.setPayload( { });
 	bytes a = p.getBytes();
 	p.encode(a);
@@ -28,7 +27,7 @@ int Program::list() {
 	try {
 		asio::io_service io_service;
 		Socket s(io_service);
-		s.setHostIp(h.getIp());
+		s.setHostIp(host.getIp());
 		s.init(DST_PORT, SRC_PORT);
 		s.callback =
 				[](Packet a) {
@@ -55,7 +54,6 @@ int Program::list() {
 	} catch (std::exception& e) {
 		std::cerr << "Exception: " << e.what() << "\n";
 	}
-
 	return 1;
 }
 
@@ -63,9 +61,8 @@ int Program::sniff() {
 	printf("Listening:\n");
 	try {
 		asio::io_service io_service;
-		Host h = Host();
 		Socket s(io_service);
-		s.setHostIp(h.getIp());
+		s.setHostIp(host.getIp());
 		s.init(DST_PORT, SRC_PORT);
 		s.callback =
 				[](Packet p) {
@@ -98,7 +95,6 @@ int Program::sniff() {
 							}
 						}
 					}
-
 					return 0;
 				};
 		s.listen();
@@ -122,12 +118,11 @@ int Program::setProperty() {
 	return 0;
 }
 int Program::getProperty() {
-	Host h = Host();
 	printf("Get:\n");
 	Packet p = Packet(Packet::GET);
 	macAddr d = { 0x14, 0xcc, 0x20, 0x49, 0x5e, 0x07 };
 	p.setSwitchMac(d);
-	p.setHostMac(h.getMac());
+	p.setHostMac(host.getMac());
 	datasets t = { { 2305, 0, { } } };
 	p.setPayload(t);
 	bytes a = p.getBytes();
@@ -136,7 +131,7 @@ int Program::getProperty() {
 	try {
 		asio::io_service io_service;
 		Socket s(io_service);
-		s.setHostIp(h.getIp());
+		s.setHostIp(host.getIp());
 		s.init(DST_PORT, SRC_PORT);
 		s.callback =
 				[](Packet a) {
@@ -185,4 +180,8 @@ int Program::reboot() {
 int Program::reset() {
 
 	return 0;
+}
+void Program::init() {
+	if(options.interface.compare("")==0)
+		options.interface = host.getIface();
 }
