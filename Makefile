@@ -1,19 +1,22 @@
 CC = g++
-CFLAGS  = -Wall -std=c++14
+CFLAGS = -g -c -std=c++14
 TARGET = smrtlink
+SOURCEDIR = src
+BUILDDIR = bin
+
+SOURCES = $(wildcard $(SOURCEDIR)/*.cpp)
+OBJECTS = $(patsubst $(SOURCEDIR)/%.cpp,$(BUILDDIR)/%.o,$(SOURCES))
 
 all: $(TARGET)
 
-$(TARGET): Types.o Program.o 
-	$(CC) $(CFLAGS) -o $(TARGET) *.o
 
-Types.o: src/Types/*.cpp src/Types/*.h
-	$(CC) $(CFLAGS) -c src/Types/*.cpp
-	
-Program.o: src/*.cpp src/*.h
-	$(CC) $(CFLAGS) -c src/*.cpp
+$(TARGET): $(OBJECTS)
+	$(CC) $^ -o $@
+
+
+$(OBJECTS): $(BUILDDIR)/%.o : $(SOURCEDIR)/%.cpp
+	$(CC) $(CFLAGS) $< -o $@
 
 
 clean:
-	rm *.o
-
+	rm -f $(BUILDDIR)/*o $(TARGET)
