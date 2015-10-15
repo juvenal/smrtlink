@@ -8,7 +8,7 @@
 #ifndef HOST_H_
 #define HOST_H_
 
-#include "Types/Types.h"
+#include "Types.h"
 
 class Host {
 public:

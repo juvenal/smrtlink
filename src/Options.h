@@ -8,26 +8,27 @@
 #ifndef OPTIONS_H_
 #define OPTIONS_H_
 
-#include "Types/Types.h"
+#include "Types.h"
 
 #define VERSION "smrtlink (v1 Linux)\n"
-#define USAGE "usage: %s [-bhrvx] [-i interface] [-u [password:]username]\n\
+#define USAGE "usage: %s [-bdhrvswx] [-i interface] [-u [password:]username]\n\
 	[-p password] <command>\n\n"
 #define HELP "\
-	### for questions please contact <smrtlink@jdi.li> ###\n\
 	Option Summary:\n\
-		-h --help	This help text\n\
-		-v --version	Display version of this tool\n\
-		-r		switch ports to emulate switch while sniffing\n\
-		-b --header 	Show header\n\
-		-x --hex 	Display Packets as Hex String\n\
-		-i --interface	only use one Interface\n\
-		-u --user 	Login with user\n\
-		-p		Password\n\
-		-f --file	Not yet implemented:.choose a settings file\n\
-		-t --timeout	Not yet implemented\n\
-		-w --wait	Not yet implemented: blocking until operation is completed\n\
-		-s --permanent	Not yet implemented: make changes immediately permanent\n\n\
+		-h --help		This help text\n\
+		-v --version		Display version of this tool\n\
+		-d --debug [n]		Show debugging messages\n\
+		-r			switch ports to emulate switch while sniffing\n\
+		-b --header 		Show header\n\
+		-x --hex 		Display Packets as Hex String\n\
+		-i --interface <iface>	only use one Interface\n\
+		-u --user <[password:]username>\n\
+		-p --password <password>\n\
+					Login with Username and Password\n\
+		-f --file <path>	Not yet implemented:.choose a settings file\n\
+		-t --timeout <n>	Not yet implemented\n\
+		-w --wait		Not yet implemented: blocking until operation is completed\n\
+		-s --permanent		Not yet implemented: make changes immediately permanent\n\n\
 	Command Summary:\n\
 		help		This help text\n\
 		list		list all connected switches\n\
@@ -40,13 +41,15 @@
 		restore		Not yet implemented: restore onfig from file\n\
 		flash		Not yet implemented: replace firmware\n\
 		reboot		Not yet implemented\n\
-		reset		Not yet implemented\n\n"
+		reset		Not yet implemented\n\n\
+	### for questions please contact <smrtlink@jdi.li> ###\n\n"
 
 #define FLAG_HEX 1
 #define FLAG_REVERSE 2
 #define FLAG_HEADER 4
 #define FLAG_PERMANENT 8
 #define FLAG_WAIT 16
+#define FLAG_DEBUG 32
 
 extern Options options;
 

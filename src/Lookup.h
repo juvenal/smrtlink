@@ -5,7 +5,7 @@
  *      Author: jdi
  */
 
-#include "Types/lookupTable.h"
+#include "lookupTable.h"
 
 static lookupTable rcv_lookup = { { 1, "type" }, //string
 		{ 2, "hostname" }, //string

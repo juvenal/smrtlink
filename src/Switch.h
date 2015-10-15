@@ -10,10 +10,37 @@
 
 #include <string>
 #include <map>
-#include "Types/Types.h"
+#include "../include/rapidjson/document.h"
+#include "../include/rapidjson/prettywriter.h"
+#include "Types.h"
 
 #define DEFAULT_USER "admin"
 #define DEFAULT_PASS "admin"
+
+typedef rapidjson::Value jsonNode;
+
+/*
+template<typename T>
+jsonNode to_json(const T &x) {
+	// TODO Throw undefined
+	return NULL;
+}
+
+template<> jsonNode to_json<vlan>(const vlan &x) {
+	jsonNode ret;
+	return ret;
+}
+
+template<typename T>
+T from_json(const jsonNode &s) {
+// TODO Throw not implemented
+	return NULL;
+}
+
+template<> vlan from_json<vlan>(const jsonNode &s) {
+	vlan ret;
+	return ret;
+}*/
 
 struct vlan {
 	int vlan_id;
@@ -34,8 +61,10 @@ class Switch {
 public:
 	Switch() {
 	}
-	void parse(datasets);
-	void parse(dataset);
+	int parse(datasets);
+	int parse(dataset);
+	int parse(std::string);
+	std::string toString();
 	struct {
 		std::string type;
 		std::string hardware_version;
@@ -52,6 +81,7 @@ public:
 		bool dhcp;
 	} settings;
 private:
+	rapidjson::Document json;
 	std::vector<vlan> vlans;
 	std::vector<port> ports;
 };

@@ -15,7 +15,7 @@
 #include "Packet.h"
 #include "Options.h"
 #include "Host.h"
-#include "Types/Types.h"
+#include "Types.h"
 
 Socket::Socket(asio::io_service& io_service) :
 		send_socket_(io_service), receive_socket_(io_service) {
@@ -29,7 +29,8 @@ void Socket::init(short dst_port, short src_port) {
 		src_port = p;
 	}
 
-	std::cout <<"IP:\t"<<local_ip<<"\n";
+	if (options.flags & FLAG_DEBUG)
+		std::cout << "Local IP:\t" << local_ip << "\n";
 
 	wildcard_endpoint_ = asio::ip::udp::endpoint(
 			asio::ip::address_v4::from_string("0.0.0.0"), src_port);
@@ -51,7 +52,7 @@ void Socket::init(short dst_port, short src_port) {
 }
 
 void Socket::setHostIp(ipAddr ip) {
-	local_ip=ip;
+	local_ip = ip;
 }
 
 void Socket::send(bytes data) {

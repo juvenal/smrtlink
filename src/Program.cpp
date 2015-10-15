@@ -17,7 +17,7 @@
 
 int Program::list() {
 
-	printf("List:\n");
+	std::cout << "List:\n";
 	Packet p = Packet(Packet::DISCOVERY);
 	p.setHostMac(host.getMac());
 	p.setPayload( { });
@@ -162,12 +162,21 @@ int Program::getProperty() {
 	return 1;
 }
 int Program::save() {
+	Switch sw = Switch();
+	std::string str = sw.toString();
 //File = fopen(otions.file)
+
 	return 0;
 }
 int Program::restore() {
+
+	const char str[] =
+			" { \"hello\" : \"world\", \"t\" : true , \"f\" : false, \"n\": null, \"i\":123, \"pi\": 3.1416, \"a\":[1, 2, 3, 4] } ";
+	printf("Original JSON:\n %s\n", str);
+	Switch sw = Switch();
+	sw.parse(str);
 //File = fopen(otions.file)
-	return 0;
+	return 1;
 }
 int Program::flash() {
 
@@ -182,6 +191,6 @@ int Program::reset() {
 	return 0;
 }
 void Program::init() {
-	if(options.interface.compare("")==0)
+	if (options.interface.compare("") == 0)
 		options.interface = host.getIface();
 }

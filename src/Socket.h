@@ -10,7 +10,7 @@
 
 #include <asio.hpp>
 #include "Packet.h"
-#include "Types/Types.h"
+#include "Types.h"
 
 #define SRC_PORT 29809
 #define DST_PORT 29808

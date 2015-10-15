@@ -23,18 +23,20 @@
 
 #include "Options.h"
 #include "Host.h"
-#include "Types/Types.h"
+#include "Types.h"
 
 macAddr Host::getMac() {
-    int s;
-    struct ifreq buffer;
+	int s;
+	struct ifreq buffer;
 	macAddr data { 0, 0, 0, 0, 0, 0 };
-    s = socket(PF_INET, SOCK_DGRAM, 0);
-    memset(&buffer, 0x00, sizeof(buffer));
-    strcpy(buffer.ifr_name, options.interface.c_str());
-    ioctl(s, SIOCGIFHWADDR, &buffer);
-    close(s);
-	memcpy(&data[0], &buffer.ifr_hwaddr.sa_data[0], 6);
+	if (options.interface != "") {
+		s = socket(PF_INET, SOCK_DGRAM, 0);
+		memset(&buffer, 0x00, sizeof(buffer));
+		strcpy(buffer.ifr_name, options.interface.c_str());
+		ioctl(s, SIOCGIFHWADDR, &buffer);
+		close(s);
+		memcpy(&data[0], &buffer.ifr_hwaddr.sa_data[0], 6);
+	}
 	return data;
 }
 
@@ -51,6 +53,15 @@ ipAddr Host::getIp() {
 			continue;
 		if (ifa->ifa_addr->sa_family == AF_INET)
 			if (options.interface.compare(ifa->ifa_name) == 0) {
+				memcpy(&data[0], &ifa->ifa_addr->sa_data[2], 4);
+				return data;
+			}
+	}
+	for (ifa = ifaddr, n = 0; ifa != NULL; ifa = ifa->ifa_next, n++) {
+		if (ifa->ifa_addr == NULL)
+			continue;
+		if (ifa->ifa_addr->sa_family == AF_INET)
+			if (getIface().compare(ifa->ifa_name) == 0) {
 				memcpy(&data[0], &ifa->ifa_addr->sa_data[2], 4);
 				return data;
 			}

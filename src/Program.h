@@ -8,7 +8,7 @@
 #ifndef PROGRAM_H_
 #define PROGRAM_H_
 
-#include "Types/Types.h"
+#include "Types.h"
 #include "Host.h"
 
 class Program {

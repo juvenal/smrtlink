@@ -11,7 +11,7 @@
 #define HEADER_LEN 32
 #define PACKET_END 0xFFFF0000
 
-#include "Types/Types.h"
+#include "Types.h"
 
 class Packet {
 public:

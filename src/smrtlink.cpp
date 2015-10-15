@@ -34,8 +34,8 @@ int main(int argc, char *argv[]) {
 
 	const struct option longopts[] = { { "version", no_argument, 0, 'v' }, {
 			"help", no_argument, 0, 'h' }, { "reverse", no_argument, 0, 'r' }, {
-			"permanent", no_argument, 0, 's' }, { "password", required_argument,
-			0, 'p' }, { "user",
+			"permanent", no_argument, 0, 's' }, { "debug", optional_argument, 0,
+			'd' }, { "password", required_argument, 0, 'p' }, { "user",
 	required_argument, 0, 'u' }, { "interface", required_argument, 0, 'i' }, {
 			"header", required_argument, 0, 'b' }, { "hex", required_argument,
 			0, 'x' }, { "file", required_argument, 0, 'f' }, { "timeout",
@@ -44,8 +44,8 @@ int main(int argc, char *argv[]) {
 
 	Program p = Program();
 
-	while ((opt = getopt_long(argc, argv, "bhrsvxp:u:i:f:t:", longopts, &index))
-			!= -1) {
+	while ((opt = getopt_long(argc, argv, "bhrvswxp:u:i:f:t:d::", longopts,
+			&index)) != -1) {
 		switch (opt) {
 
 		case 'h':
@@ -80,8 +80,14 @@ int main(int argc, char *argv[]) {
 			options.flags |= FLAG_WAIT;
 			break;
 
+		case 'd':
+			options.flags |= FLAG_DEBUG;
+			if (optarg != NULL)
+				options.debug_level = atoi(optarg);
+			break;
+
 		case 't':
-			options.timeout = atoi(optarg);
+			options.timeout = atol(optarg);
 			break;
 
 		case 'f':

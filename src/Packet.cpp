@@ -9,7 +9,7 @@
 #include <cstdlib>
 #include <ctime>
 #include "Packet.h"
-#include "Types/Types.h"
+#include "Types.h"
 
 Packet::Packet(OpCode c) {
 	srand(time(NULL));
