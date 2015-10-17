@@ -4,9 +4,6 @@
  *  Created on: 02.09.2015
  *      Author: jdi
  */
-//#include <cstdio>
-//#include <cerrno>
-//#include <cstring>
 #include <cstdlib>
 #include <array>
 #include <unistd.h>
@@ -75,7 +72,7 @@ void Socket::listen() {
 					listen();
 				} else {
 					data.resize(bytes_recvd);
-					Packet p = Packet(Packet::RECEIVE);
+					Packet p = Packet(Packet::RETURN);
 					p.encode(data);
 					p.parse(data);
 					datasets l = p.getPayload();

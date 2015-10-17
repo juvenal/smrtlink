@@ -25,23 +25,24 @@
 		-u --user <[password:]username>\n\
 		-p --password <password>\n\
 					Login with Username and Password\n\
-		-f --file <path>	Not yet implemented:.choose a settings file\n\
+		-f --file <path>	choose a settings file\n\
 		-t --timeout <n>	Not yet implemented\n\
 		-w --wait		Not yet implemented: blocking until operation is completed\n\
 		-s --permanent		Not yet implemented: make changes immediately permanent\n\n\
 	Command Summary:\n\
-		help		This help text\n\
-		list		list all connected switches\n\
-		sniff		capture and display all incoming or outgoing packets\n\
-				depending on the --reverse option\n\
-		encode		use encoding algorithm on hex data separated by colon\n\
-		get		Not yet implemented\n\
-		set		Not yet implemented\n\
-		save		Not yet implemented: save config to file\n\
-		restore		Not yet implemented: restore onfig from file\n\
-		flash		Not yet implemented: replace firmware\n\
-		reboot		Not yet implemented\n\
-		reset		Not yet implemented\n\n\
+		help			This help text\n\
+		list			list all connected switches\n\
+		sniff [type:<type>] [<filter>]\n\
+					capture and display all incoming or outgoing packets\n\
+					depending on the --reverse option\n\
+		encode			use encoding algorithm on hex data separated by colon\n\
+		get			Not yet implemented\n\
+		set			Not yet implemented\n\
+		save			Not yet implemented: save config to file\n\
+		restore			Not yet implemented: restore onfig from file\n\
+		flash			Not yet implemented: replace firmware\n\
+		reboot			Not yet implemented\n\
+		reset			Not yet implemented\n\n\
 	### for questions please contact <smrtlink@jdi.li> ###\n\n"
 
 #define FLAG_HEX 1

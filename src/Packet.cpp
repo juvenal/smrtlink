@@ -143,8 +143,10 @@ std::string Packet::opCodeToString() {
 		return "GET";
 	case SET:
 		return "SET";
-	case RECEIVE:
-		return "RECEIVE";
+	case LOGIN:
+		return "LOGIN";
+	case RETURN:
+		return "RETURN";
 	case READ5:
 		return "READ5";
 	default:

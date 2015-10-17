@@ -9,6 +9,7 @@
 
 #include "Options.h"
 #include "Program.h"
+#include "File.h"
 #include "Host.h"
 #include "Socket.h"
 #include "Switch.h"
@@ -45,6 +46,8 @@ int Program::list() {
 						datasets d =a.getPayload();
 						Switch s = Switch();
 						s.parse(d);
+						File f;
+						f.write("config.json", s.toString());
 						std::cout <<"Devices:\n\t"<<s.settings.hostname<<" ("<< s.device.type<<")\tMAC: "<<s.device.mac<<"\tIP: "<<s.settings.ip_addr<<"\n";
 					}
 					return 1;
@@ -83,7 +86,7 @@ int Program::sniff() {
 							auto lookup=(options.flags & FLAG_REVERSE)?snd_lookup:rcv_lookup;
 							if(lookup.exists(d.type)) {
 								if(d.len>0) {
-									std::cout<<std::dec<<"\t++"<<std::hex<<d.type<<std::dec<<"++\n";
+									std::cout<<std::dec<<"\t++"<<std::hex<<d.type<<"++ :"<<d.value<<std::dec<<"\n";
 								} else {
 									std::cout<<std::dec<<"#"<<d.type<<"\tLength: "<<d.len<<"\n";
 									std::cout<<std::hex<< "\tHex: " <<d.value<<"\n";
@@ -163,19 +166,16 @@ int Program::getProperty() {
 }
 int Program::save() {
 	Switch sw = Switch();
-	std::string str = sw.toString();
-//File = fopen(otions.file)
-
-	return 0;
+	sw.settings.hostname = "testname.lan";
+	File f;
+	f.write("config.json", sw.toString());
+	return 1;
 }
 int Program::restore() {
-
-	const char str[] =
-			" { \"hello\" : \"world\", \"t\" : true , \"f\" : false, \"n\": null, \"i\":123, \"pi\": 3.1416, \"a\":[1, 2, 3, 4] } ";
-	printf("Original JSON:\n %s\n", str);
-	Switch sw = Switch();
-	sw.parse(str);
-//File = fopen(otions.file)
+	File f;
+	Switch sw;
+	sw.parse(f.read("config.json"));
+	std::cout <<"Devices:\n\t"<<sw.settings.hostname<<" ("<< sw.device.type<<")\tMAC: "<<sw.device.mac<<"\tIP: "<<sw.settings.ip_addr<<"\n";
 	return 1;
 }
 int Program::flash() {

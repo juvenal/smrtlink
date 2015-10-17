@@ -17,44 +17,17 @@
 #define DEFAULT_USER "admin"
 #define DEFAULT_PASS "admin"
 
-typedef rapidjson::Value jsonNode;
-
-/*
-template<typename T>
-jsonNode to_json(const T &x) {
-	// TODO Throw undefined
-	return NULL;
-}
-
-template<> jsonNode to_json<vlan>(const vlan &x) {
-	jsonNode ret;
-	return ret;
-}
-
-template<typename T>
-T from_json(const jsonNode &s) {
-// TODO Throw not implemented
-	return NULL;
-}
-
-template<> vlan from_json<vlan>(const jsonNode &s) {
-	vlan ret;
-	return ret;
-}*/
-
 struct vlan {
 	int vlan_id;
 	std::string name;
+	std::vector<byte> tagged_member;
+	std::vector<byte> untagged_member;
 };
 
 struct port {
 	byte id;
 	byte status;
-	struct {
-		std::vector<vlan*> tagged;
-		std::vector<vlan*> untagged;
-		int pvid;
-	} vlan;
+	int pvid;
 };
 
 class Switch {
