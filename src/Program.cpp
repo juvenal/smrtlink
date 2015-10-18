@@ -22,11 +22,11 @@ int Program::list() {
 	Packet p = Packet(Packet::DISCOVERY);
 	p.setHostMac(host.getMac());
 	p.setPayload( { });
-	bytes a = p.getBytes();
-	p.encode(a);
+	bytes b = p.getBytes();
+	p.encode(b);
 
 	try {
-		asio::io_service io_service;
+		boost::asio::io_service io_service;
 		Socket s(io_service);
 		s.setHostIp(host.getIp());
 		s.init(DST_PORT, SRC_PORT);
@@ -47,12 +47,12 @@ int Program::list() {
 						Switch s = Switch();
 						s.parse(d);
 						File f;
-						f.write("config.json", s.toString());
+						f.write(s.toString());
 						std::cout <<"Devices:\n\t"<<s.settings.hostname<<" ("<< s.device.type<<")\tMAC: "<<s.device.mac<<"\tIP: "<<s.settings.ip_addr<<"\n";
 					}
 					return 1;
 				};
-		s.send(a);
+		s.send(b);
 		io_service.run();
 	} catch (std::exception& e) {
 		std::cerr << "Exception: " << e.what() << "\n";
@@ -63,7 +63,7 @@ int Program::list() {
 int Program::sniff() {
 	printf("Listening:\n");
 	try {
-		asio::io_service io_service;
+		boost::asio::io_service io_service;
 		Socket s(io_service);
 		s.setHostIp(host.getIp());
 		s.init(DST_PORT, SRC_PORT);
@@ -132,7 +132,7 @@ int Program::getProperty() {
 	p.encode(a);
 
 	try {
-		asio::io_service io_service;
+		boost::asio::io_service io_service;
 		Socket s(io_service);
 		s.setHostIp(host.getIp());
 		s.init(DST_PORT, SRC_PORT);
@@ -168,14 +168,16 @@ int Program::save() {
 	Switch sw = Switch();
 	sw.settings.hostname = "testname.lan";
 	File f;
-	f.write("config.json", sw.toString());
+	f.write(sw.toString());
 	return 1;
 }
 int Program::restore() {
 	File f;
 	Switch sw;
-	sw.parse(f.read("config.json"));
-	std::cout <<"Devices:\n\t"<<sw.settings.hostname<<" ("<< sw.device.type<<")\tMAC: "<<sw.device.mac<<"\tIP: "<<sw.settings.ip_addr<<"\n";
+	sw.parse(f.read());
+	std::cout << "Devices:\n\t" << sw.settings.hostname << " ("
+			<< sw.device.type << ")\tMAC: " << sw.device.mac << "\tIP: "
+			<< sw.settings.ip_addr << "\n";
 	return 1;
 }
 int Program::flash() {

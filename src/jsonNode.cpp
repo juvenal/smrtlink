@@ -5,6 +5,9 @@
  *      Author: jdi
  */
 
+#include "../include/rapidjson/document.h"
+#include "../include/rapidjson/prettywriter.h"
+
 #include "jsonNode.h"
 
 jsonNode::jsonNode(const std::string &x, doc &root) {
@@ -18,8 +21,7 @@ jsonNode::jsonNode(const std::string &x, doc &root) {
 jsonNode::jsonNode(const ipAddr &x, doc &root) {
 	super(rapidjson::kStringType);
 	char buffer[16];
-	int len = sprintf(buffer, "%d.%d.%d.%d", x[0], x[1],
-			x[2], x[3]);
+	int len = sprintf(buffer, "%d.%d.%d.%d", x[0], x[1], x[2], x[3]);
 	this->SetString(buffer, static_cast<size_t>(len), root.GetAllocator());
 	memset(buffer, 0, sizeof(buffer));
 }
@@ -27,8 +29,8 @@ jsonNode::jsonNode(const ipAddr &x, doc &root) {
 jsonNode::jsonNode(const macAddr &x, doc &root) {
 	super(rapidjson::kStringType);
 	char buffer[18];
-	int len = sprintf(buffer, "%02x:%02x:%02x:%02x:%02x:%02x", x[0], x[1],
-			x[2], x[3], x[4], x[5]);
+	int len = sprintf(buffer, "%02x:%02x:%02x:%02x:%02x:%02x", x[0], x[1], x[2],
+			x[3], x[4], x[5]);
 	this->SetString(buffer, static_cast<size_t>(len), root.GetAllocator());
 	memset(buffer, 0, sizeof(buffer));
 }

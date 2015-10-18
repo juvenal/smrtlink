@@ -118,7 +118,7 @@ struct Options {
 	std::string interface;
 	std::string file;
 	int debug_level=0;
-	long timeout;
+	long timeout = 180U;
 };
 
 #endif /* TYPES_H_ */

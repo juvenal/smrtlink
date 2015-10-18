@@ -14,13 +14,15 @@ namespace fs = boost::filesystem;
 
 #include <string>
 
+#define DEFAULT_FILE "config.json"
+
 class File {
 public:
 	File() {
 		home = fs::path(getenv("HOME")) / ".smrtlink";
 	}
-	std::string read(std::string);
-	int write(std::string, std::string);
+	std::string read();
+	int write(std::string);
 private:
 	fs::path home;
 };

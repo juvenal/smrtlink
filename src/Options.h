@@ -25,8 +25,8 @@
 		-u --user <[password:]username>\n\
 		-p --password <password>\n\
 					Login with Username and Password\n\
-		-f --file <path>	choose a settings file\n\
-		-t --timeout <n>	Not yet implemented\n\
+		-f --file <path>	choose a settings file\n\n\
+		-t --timeout <n>	Timeout in milliseconds. Default: 180\n\
 		-w --wait		Not yet implemented: blocking until operation is completed\n\
 		-s --permanent		Not yet implemented: make changes immediately permanent\n\n\
 	Command Summary:\n\

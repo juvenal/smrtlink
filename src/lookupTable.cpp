@@ -5,6 +5,7 @@
  *      Author: jdi
  */
 
+#include <string>
 #include "lookupTable.h"
 
 lookupTable::lookupTable(std::initializer_list<set> l) {

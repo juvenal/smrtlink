@@ -8,7 +8,7 @@
 #ifndef SOCKET_H_
 #define SOCKET_H_
 
-#include <asio.hpp>
+#include <boost/asio.hpp>
 #include "Packet.h"
 #include "Types.h"
 
@@ -19,7 +19,7 @@
 
 class Socket {
 public:
-	Socket(asio::io_service&);
+	Socket(boost::asio::io_service&);
 	virtual ~Socket() {
 	}
 	void init(short, short);
@@ -31,13 +31,13 @@ public:
 	};
 
 private:
-	asio::ip::udp::socket send_socket_;
-	asio::ip::udp::socket receive_socket_;
-	//asio::ip::udp::resolver resolver;
-	asio::ip::udp::endpoint broadcast_endpoint_;
-	asio::ip::udp::endpoint remote_endpoint_;
-	asio::ip::udp::endpoint wildcard_endpoint_;
-	asio::ip::udp::endpoint local_endpoint_;
+	boost::asio::ip::udp::socket send_socket_;
+	boost::asio::ip::udp::socket receive_socket_;
+	boost::asio::ip::udp::endpoint broadcast_endpoint_;
+	boost::asio::ip::udp::endpoint remote_endpoint_;
+	boost::asio::ip::udp::endpoint wildcard_endpoint_;
+	boost::asio::ip::udp::endpoint local_endpoint_;
+	boost::asio::deadline_timer timer;
 	bytes data = bytes(MAX_LENGTH);
 	ipAddr local_ip;
 
