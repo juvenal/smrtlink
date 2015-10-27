@@ -11,7 +11,7 @@
 #include "Types.h"
 
 #define VERSION "smrtlink (v1 Linux)\n"
-#define USAGE "usage: %s [-bdhrvswx] [-i interface] [-u [password:]username]\n\
+#define USAGE "usage: %s [-bdhjrvswx] [-i interface] [-u [password:]username]\n\
 	[-p password] <command>\n\n"
 #define HELP "\
 	Option Summary:\n\
@@ -21,6 +21,7 @@
 		-r			switch ports to emulate switch while sniffing\n\
 		-b --header 		Show header\n\
 		-x --hex 		Display Packets as Hex String\n\
+		-j --json 		Display Packets as JSON\n\
 		-i --interface <iface>	only use one Interface\n\
 		-u --user <[password:]username>\n\
 		-p --password <password>\n\
@@ -38,8 +39,8 @@
 		encode			use encoding algorithm on hex data separated by colon\n\
 		get			Not yet implemented\n\
 		set			Not yet implemented\n\
-		save			Not yet implemented: save config to file\n\
-		restore			Not yet implemented: restore onfig from file\n\
+		get|save			Not yet implemented: save config to file\n\
+		set|restore			Not yet implemented: restore onfig from file\n\
 		flash			Not yet implemented: replace firmware\n\
 		reboot			Not yet implemented\n\
 		reset			Not yet implemented\n\n\

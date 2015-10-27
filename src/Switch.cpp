@@ -67,63 +67,46 @@ int Switch::parse(std::string str) {
 			device.hardware_version = json["hardware_version"].GetString();
 		if (json.HasMember("firmware_version"))
 			device.hardware_version = json["firmware_version"].GetString();
+		if (json.HasMember("ports") && json["ports"].IsArray()) {
+			const rapidjson::Value& a = json["ports"];
+			for (rapidjson::SizeType i = 0; i < a.Size(); i++)
+				if (a[i].IsObject()) {
+					port p;
+					if (a[i].HasMember("id")&&a[i]["id"].IsInt()) {
+						p.id=a[i]["id"].GetInt();
+						std::cout << a[i]["id"].GetInt() << "\n";
+					}
+					ports.push_back(p);
+				}
+		}
+		if (json.HasMember("vlans") && json["vlans"].IsArray()) {
+			const rapidjson::Value& a = json["vlans"];
+			for (rapidjson::SizeType i = 0; i < a.Size(); i++)
+				if (a[i].IsObject()) {
+					vlan v;
+					if (a[i].HasMember("name")&&a[i]["name"].IsString()) {
+						v.name=a[i]["name"].GetString();
+						std::cout << a[i]["name"].GetString() << "\n";
+					}
+					vlans.push_back(v);
+				}
+		}
 
 	}
+
 	/*
-	 json.AddMember("ports", jsonNode(ports, json), allocator);
-	 json.AddMember("vlans", jsonNode(vlans, json), allocator);
+
+
+	 {
+	 const rapidjson::Value& a = json["a"];
+	 assert(a.IsArray());
+	 for (rapidjson::SizeType i = 0; i < a.Size(); i++)
+	 printf("a[%d] = %d\n", i, a[i].GetInt());
+
+	 int y = a[0].GetInt();
+	 (void) y;
+
 	 */
-
-
-	// Since version 0.2, you can use single lookup to check the existing of member and its value:
-	/*
-	rapidjson::Value::MemberIterator hello = json.FindMember("hello");
-	assert(hello != json.MemberEnd());
-	assert(hello->value.IsString());
-	assert(strcmp("world", hello->value.GetString()) == 0);
-	(void) hello;
-
-	assert(json["t"].IsBool()); // JSON true/false are bool. Can also uses more specific function IsTrue().
-	printf("t = %s\n", json["t"].GetBool() ? "true" : "false");
-
-	assert(json["f"].IsBool());
-	printf("f = %s\n", json["f"].GetBool() ? "true" : "false");
-
-	printf("n = %s\n", json["n"].IsNull() ? "null" : "?");
-
-	assert(json["i"].IsNumber()); // Number is a JSON type, but C++ needs more specific type.
-	assert(json["i"].IsInt()); // In this case, IsUint()/IsInt64()/IsUInt64() also return true.
-	printf("i = %d\n", json["i"].GetInt()); // Alternative (int)document["i"]
-
-	assert(json["pi"].IsNumber());
-	assert(json["pi"].IsDouble());
-	printf("pi = %g\n", json["pi"].GetDouble());
-
-	{
-		const rapidjson::Value& a = json["a"]; // Using a reference for consecutive access is handy and faster.
-		assert(a.IsArray());
-		for (rapidjson::SizeType i = 0; i < a.Size(); i++) // rapidjson uses SizeType instead of size_t.
-			printf("a[%d] = %d\n", i, a[i].GetInt());
-
-		int y = a[0].GetInt();
-		(void) y;
-
-		// Iterating array with iterators
-		printf("a = ");
-		for (rapidjson::Value::ConstValueIterator itr = a.Begin();
-				itr != a.End(); ++itr)
-			printf("%d ", itr->GetInt());
-		printf("\n");
-	}
-
-	// Iterating object members
-	static const char* kTypeNames[] = { "Null", "False", "True", "Object",
-			"Array", "String", "Number" };
-	for (rapidjson::Value::ConstMemberIterator itr = json.MemberBegin();
-			itr != json.MemberEnd(); ++itr)
-		printf("Type of member %s is %s\n", itr->name.GetString(),
-				kTypeNames[itr->value.GetType()]);
-*/
 	return 0;
 }
 

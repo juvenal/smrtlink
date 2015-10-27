@@ -86,7 +86,21 @@ int Program::sniff() {
 							auto lookup=(options.flags & FLAG_REVERSE)?snd_lookup:rcv_lookup;
 							if(lookup.exists(d.type)) {
 								if(d.len>0) {
-									std::cout<<std::dec<<"\t++"<<std::hex<<d.type<<"++ :"<<d.value<<std::dec<<"\n";
+									const table::set *s = lookup.get(d.type);
+									switch(s->format) {
+										case table::STRING:
+										std::cout<<std::dec<<"\t"<<s->name<<": "<<&d.value[0]<<std::dec<<"\n";
+										break;
+										case table::HEX:
+										std::cout<<std::dec<<"\t"<<s->name<<": "<<std::hex<<d.value<<std::dec<<"\n";
+										break;
+										case table::DEC:
+										std::cout<<std::dec<<"\t"<<s->name<<": "<<std::dec<<d.value<<std::dec<<"\n";
+										break;
+										default:
+										std::cout<<std::dec<<"\t"<<s->name<<": "<<std::hex<<d.value<<std::dec<<"\n";
+
+									}
 								} else {
 									std::cout<<std::dec<<"#"<<d.type<<"\tLength: "<<d.len<<"\n";
 									std::cout<<std::hex<< "\tHex: " <<d.value<<"\n";
@@ -120,6 +134,7 @@ int Program::encode(std::string s) {
 int Program::setProperty() {
 	return 0;
 }
+
 int Program::getProperty() {
 	printf("Get:\n");
 	Packet p = Packet(Packet::GET);
@@ -164,6 +179,7 @@ int Program::getProperty() {
 
 	return 1;
 }
+
 int Program::save() {
 	Switch sw = Switch();
 	sw.settings.hostname = "testname.lan";
@@ -171,6 +187,7 @@ int Program::save() {
 	f.write(sw.toString());
 	return 1;
 }
+
 int Program::restore() {
 	File f;
 	Switch sw;
@@ -180,18 +197,22 @@ int Program::restore() {
 			<< sw.settings.ip_addr << "\n";
 	return 1;
 }
+
 int Program::flash() {
 
 	return 0;
 }
+
 int Program::reboot() {
 
 	return 0;
 }
+
 int Program::reset() {
 
 	return 0;
 }
+
 void Program::init() {
 	if (options.interface.compare("") == 0)
 		options.interface = host.getIface();
