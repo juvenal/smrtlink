@@ -26,7 +26,7 @@ public:
 	void send(bytes);
 	void listen();
 	void setHostIp(ipAddr);
-	int (*callback)(Packet)=[](Packet a) {
+	std::function<int(Packet)> callback = [](Packet a) {
 		return 0;
 	};
 
@@ -40,6 +40,7 @@ private:
 	boost::asio::deadline_timer timer;
 	bytes data = bytes(MAX_LENGTH);
 	ipAddr local_ip;
+	int initialized = 0;
 
 };
 

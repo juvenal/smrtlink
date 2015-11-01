@@ -18,6 +18,8 @@ Socket::Socket(boost::asio::io_service& io_service) :
 }
 //, resolver(				io_service)
 void Socket::init(short dst_port, short src_port) {
+	if (initialized)
+		return;
 
 	if (options.flags & FLAG_REVERSE) {
 		short p = dst_port;
@@ -27,6 +29,7 @@ void Socket::init(short dst_port, short src_port) {
 
 	if (options.flags & FLAG_DEBUG)
 		std::cout << "Local IP:\t" << local_ip << "\n";
+
 
 	wildcard_endpoint_ = boost::asio::ip::udp::endpoint(
 			boost::asio::ip::address_v4::from_string("0.0.0.0"), src_port);
@@ -57,6 +60,8 @@ void Socket::init(short dst_port, short src_port) {
 			}
 		});
 	}
+
+	initialized = 1;
 }
 
 void Socket::setHostIp(ipAddr ip) {
@@ -87,7 +92,6 @@ void Socket::listen() {
 					Packet p = Packet(Packet::RETURN);
 					p.encode(data);
 					p.parse(data);
-					datasets l = p.getPayload();
 					if(!callback(p)) {
 						//TODO do something
 					}

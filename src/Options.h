@@ -28,6 +28,8 @@
 					Login with Username and Password\n\
 		-f --file <path>	choose a settings file\n\n\
 		-t --timeout <n>	Timeout in milliseconds. Default: 180\n\
+		-I --interactive		Not yet implemented\n\
+		-O --stdout		Not yet implemented\n\
 		-w --wait		Not yet implemented: blocking until operation is completed\n\
 		-s --permanent		Not yet implemented: make changes immediately permanent\n\n\
 	Command Summary:\n\
@@ -45,6 +47,12 @@
 		reboot			Not yet implemented\n\
 		reset			Not yet implemented\n\n\
 	### for questions please contact <smrtlink@jdi.li> ###\n\n"
+//TODO
+/*
+ * Stdin
+ * socketmode
+ *
+ */
 
 #define FLAG_HEX 1
 #define FLAG_REVERSE 2

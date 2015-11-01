@@ -16,6 +16,62 @@
 #include "Packet.h"
 #include "Lookup.h"
 
+int printHeader(Packet p) {
+	if (options.flags & FLAG_HEADER) {
+		if (options.flags & FLAG_HEX) {
+			std::cout << "Received Header:\n\t" << p.getHead() << "\n";
+		} else {
+			p.printHeader();
+			printf("\n");
+		}
+	}
+	return 0;
+}
+
+int printPacket(Packet p) {
+	if (options.flags & FLAG_HEX) {
+		std::cout << "Received Payload:\n\t" << p.getBody() << "\n";
+	} else {
+		for (auto a : p.getPayload()) {
+			dataset d = a.second;
+			auto lookup =
+					(options.flags & FLAG_REVERSE) ? snd_lookup : rcv_lookup;
+			if (lookup.exists(d.type)) {
+					const table::set *s = lookup.get(d.type);
+				if (d.len > 0) {
+					switch (s->format) {
+					case table::STRING:
+						std::cout << std::dec << "+\t" << s->name << " = "
+								<< &d.value[0] << std::dec << "\n";
+						break;
+					case table::HEX:
+						std::cout << std::dec << "+\t" << s->name << " = "
+								<< std::hex << d.value << std::dec << "\n";
+						break;
+					case table::DEC:
+						std::cout << std::dec << "+\t" << s->name << " = "
+								<< std::dec << d.value << std::dec << "\n";
+						break;
+					default:
+						std::cout << std::dec << "+\t" << s->name << " = "
+								<< std::hex << d.value << std::dec << "\n";
+					}
+				} else { //empty
+					std::cout << std::dec << ">\t" << s->name << "\n";
+				}
+			} else {//unknown id
+				if (d.len > 0) {
+					std::cout << "##\t" << d.type << ":\n\t";
+					std::cout << std::hex << d.value << std::dec << "\n";
+				} else { //empty
+					std::cout << "#>\t" << d.type << "\n";
+				}
+			}
+		}
+	}
+	return 0;
+}
+
 int Program::list() {
 
 	std::cout << "List:\n";
@@ -26,34 +82,25 @@ int Program::list() {
 	p.encode(b);
 
 	try {
-		boost::asio::io_service io_service;
-		Socket s(io_service);
-		s.setHostIp(host.getIp());
-		s.init(DST_PORT, SRC_PORT);
-		s.callback =
-				[](Packet a) {
-					if (options.flags & FLAG_HEADER) {
-						if (options.flags & FLAG_HEX) {
-							std::cout <<"Received Header:\n"<< a.getHead() <<"\n";
-						} else {
-							a.printHeader();
-							std::cout<<"\n";
-						}
-					}
+		sock->setHostIp(host.getIp());
+		sock->init(DST_PORT, SRC_PORT);
+		sock->callback =
+				[this](Packet a) {
+					printHeader(a);
 					if (options.flags & FLAG_HEX) {
 						std::cout <<"Received Payload:\n"<<a.getBody()<<"\n";
 					} else {
 						datasets d =a.getPayload();
-						Switch s = Switch();
-						s.parse(d);
+						Switch sw = Switch();
+						sw.parse(d);
 						File f;
-						f.write(s.toString());
-						std::cout <<"Devices:\n\t"<<s.settings.hostname<<" ("<< s.device.type<<")\tMAC: "<<s.device.mac<<"\tIP: "<<s.settings.ip_addr<<"\n";
+						f.write(sw.toString());
+						std::cout <<"Devices:\n\t"<<sw.settings.hostname<<" ("<< sw.device.type<<")\tMAC: "<<sw.device.mac<<"\tIP: "<<sw.settings.ip_addr<<"\n";
 					}
 					return 1;
 				};
-		s.send(b);
-		io_service.run();
+		sock->send(b);
+		io_service->run();
 	} catch (std::exception& e) {
 		std::cerr << "Exception: " << e.what() << "\n";
 	}
@@ -67,53 +114,12 @@ int Program::sniff() {
 		Socket s(io_service);
 		s.setHostIp(host.getIp());
 		s.init(DST_PORT, SRC_PORT);
-		s.callback =
-				[](Packet p) {
-					std::cout <<"Packet:\n\t"<<p.opCodeToString()<<"\n";
-					if (options.flags & FLAG_HEADER) {
-						if (options.flags & FLAG_HEX) {
-							std::cout <<"Received Header:\n\t"<< p.getHead() <<"\n";
-						} else {
-							p.printHeader();
-							printf("\n");
-						}
-					}
-					if (options.flags & FLAG_HEX) {
-						std::cout <<"Received Payload:\n\t"<<p.getBody()<<"\n";
-					} else {
-						for(auto a : p.getPayload()) {
-							dataset d = a.second;
-							auto lookup=(options.flags & FLAG_REVERSE)?snd_lookup:rcv_lookup;
-							if(lookup.exists(d.type)) {
-								if(d.len>0) {
-									const table::set *s = lookup.get(d.type);
-									switch(s->format) {
-										case table::STRING:
-										std::cout<<std::dec<<"\t"<<s->name<<": "<<&d.value[0]<<std::dec<<"\n";
-										break;
-										case table::HEX:
-										std::cout<<std::dec<<"\t"<<s->name<<": "<<std::hex<<d.value<<std::dec<<"\n";
-										break;
-										case table::DEC:
-										std::cout<<std::dec<<"\t"<<s->name<<": "<<std::dec<<d.value<<std::dec<<"\n";
-										break;
-										default:
-										std::cout<<std::dec<<"\t"<<s->name<<": "<<std::hex<<d.value<<std::dec<<"\n";
-
-									}
-								} else {
-									std::cout<<std::dec<<"#"<<d.type<<"\tLength: "<<d.len<<"\n";
-									std::cout<<std::hex<< "\tHex: " <<d.value<<"\n";
-									d.value.push_back(0U);
-									std::cout<<"\tString: " <<&d.value[0]<<"\n";
-								}
-							} else {
-								std::cout<<"###"<<lookup[d.type]<<"\n";
-							}
-						}
-					}
-					return 0;
-				};
+		s.callback = [](Packet p) {
+			std::cout << p.opCodeToString() << "\n";
+			printHeader(p);
+			printPacket(p);
+			return 0;
+		};
 		s.listen();
 		io_service.run();
 	} catch (std::exception& e) {
@@ -136,47 +142,72 @@ int Program::setProperty() {
 }
 
 int Program::getProperty() {
-	printf("Get:\n");
-	Packet p = Packet(Packet::GET);
-	macAddr d = { 0x14, 0xcc, 0x20, 0x49, 0x5e, 0x07 };
-	p.setSwitchMac(d);
+	std::cout << "List:\n";
+	Packet p = Packet(Packet::DISCOVERY);
 	p.setHostMac(host.getMac());
-	datasets t = { { 2305, 0, { } } };
-	p.setPayload(t);
-	bytes a = p.getBytes();
-	p.encode(a);
-
+	p.setPayload( { });
+	bytes b = p.getBytes();
+	p.encode(b);
+	std::cout << "count-x:" << sock.use_count() << "\n";
+	auto s = sock;
 	try {
-		boost::asio::io_service io_service;
-		Socket s(io_service);
-		s.setHostIp(host.getIp());
-		s.init(DST_PORT, SRC_PORT);
-		s.callback =
-				[](Packet a) {
-					if (options.flags & FLAG_HEADER) {
-						if (options.flags & FLAG_HEX) {
-							std::cout <<"Received Header:\n"<< a.getHead() <<"\n";
-						} else {
-							a.printHeader();
-							std::cout<<"\n";
-						}
-					}
-					if (options.flags & FLAG_HEX) {
-						std::cout <<"Received Payload:\n"<<a.getBody()<<"\n";
-					} else {
+		sock->setHostIp(host.getIp());
+		sock->init(DST_PORT, SRC_PORT);
+
+		std::cout << "count-y:" << sock.use_count() << "\n";
+		sock->callback =
+				[this](Packet a) {
+					auto s = sock;
+					std::cout<<"count-z:"<<sock.use_count()<<"\n";
+					datasets d =a.getPayload();
+					Switch sw = Switch();
+					sw.parse(d);
+					std::cout <<"Devices:\n\t"<<sw.settings.hostname<<" ("<< sw.device.type<<")\tMAC: "<<sw.device.mac<<"\tIP: "<<sw.settings.ip_addr<<"\n";
+
+					Packet p = Packet(Packet::GET);
+					p.setSwitchMac(a.getSwitchMac());
+					p.setHostMac(host.getMac());
+					datasets t = { {2305, 0, {}}};
+					p.setPayload(t);
+					bytes c = p.getBytes();
+					p.encode(c);
+					sock->callback =
+					[this](Packet a) {
+						auto s = sock;
 						datasets d =a.getPayload();
-						Switch s = Switch();
-						s.parse(d);
-						std::cout <<"Devices:\n\t"<<s.settings.hostname<<" ("<< s.device.type<<")\tMAC: "<<s.device.mac<<"\tIP: "<<s.settings.ip_addr<<"\n";
-					}
-					return 1;
+						Switch sw = Switch();
+						sw.parse(d);
+						Packet p = Packet(Packet::LOGIN);
+						p.setSwitchMac(a.getSwitchMac());
+						p.setHostMac(host.getMac());
+						datasets t = { {snd_lookup["login_user"], 0, {}}};
+						p.setPayload(t);
+						bytes c = p.getBytes();
+						p.encode(c);
+
+						sock->callback =
+						[this](Packet a) {
+							std::cout << a.opCodeToString() << "\n";
+							printHeader(a);
+							printPacket(a);
+							return 0;
+						};
+						sock->send(c);
+						return 0;
+					};
+
+					std::cout<<"count-b:"<<sock.use_count()<<"\n";
+
+					sock->send(c);
+
+					std::cout<<"count-a:"<<sock.use_count()<<"\n";
+					return 0;
 				};
-		s.send(a);
-		io_service.run();
+		sock->send(b);
+		io_service->run();
 	} catch (std::exception& e) {
 		std::cerr << "Exception: " << e.what() << "\n";
 	}
-
 	return 1;
 }
 

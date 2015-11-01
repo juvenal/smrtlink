@@ -8,6 +8,7 @@
 
 #include <cstring>
 #include <iostream>
+#include <sstream>
 #include <string>
 #include <cstdlib>
 #include <cstdio>
@@ -112,6 +113,12 @@ int main(int argc, char *argv[]) {
 			exit(EXIT_FAILURE);
 		}
 	}
+
+	/*//TODO stdin
+	std::ostringstream bucket;
+	bucket << std::cin.rdbuf();
+	p.input = bucket.str();
+	 */
 
 	if (optind >= argc) {
 		fprintf(stderr, "Command expected\n");
