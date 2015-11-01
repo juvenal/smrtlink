@@ -17,23 +17,35 @@ static table rcv_lookup = { { 1, table::STRING, "type" }, //string
 		{ 8, table::STRING, "hardware_version" },
 		{ 9, table::DEC, "dhcp" }, //bool byte
 		{ 19, table::DEC, "ports" }, //byte, maybe number of ports
+		{ 4352, table::HEX, "igmp_snooping" }, //switching
+		{ 4096, table::HEX, "port_settings" }, //switching
+		{ 4608, table::HEX, "port_trunk" }, //byte[5] last byte bitmask??
 		{ 8704, table::HEX, "802.1q vlan" }, //???
 
 		{ 12288, table::HEX, "QoS Basic 1" }, //bool = QoS Mod
 		{ 12289, table::HEX, "QoS Basic 2" }, //QoS
+		{ 16640, table::HEX, "port_mirror" }, //byte[10] second byte port id??
+		{ 16384, table::HEX, "port_statistics" }, //???
+		{ 17152, table::HEX, "loop_prevention" }, //bool byte
 		//{0000," "},
 		};
 
 static table snd_lookup = {
 
 // TODO find out if id is unique in response
-		{ 10, table::HEX, "??? - 10" }, //after login
 		{ 2, table::HEX, "system_info" }, //page sysinfo
+		{ 9, table::HEX, "ip_config" }, //page sysinfo
+		{ 10, table::HEX, "??? - 10" }, //after login
 		{ 512, table::STRING, "login_user" }, //string
 		{ 513, table::STRING, "new_user" }, //string
 		{ 514, table::STRING, "login_password" }, //string
 		{ 515, table::STRING, "new_passwoord" }, //string
-		{ 2200, table::HEX, "vlan" }, { 2305, table::HEX, "???" }, //sent before login and before change hostname
+		{ 2200, table::HEX, "vlan" }, //vlan
+
+		{ 2305, table::HEX, "??? - 2305" }, //sent before login and before change hostname
+
+		{ 4352, table::HEX, "igmp_snooping" }, //switching
+		{ 4096, table::HEX, "port_settings" }, //switching
 		{ 4608, table::HEX, "port_trunk" }, //byte[5] last byte bitmask??
 		{ 8192, table::HEX, "mtu_vlan" }, //byte[2] first byte bool,	second byte port id
 		{ 8449, table::HEX, "port_vlan1" }, //???
@@ -45,6 +57,7 @@ static table snd_lookup = {
 		{ 12288, table::HEX, "QoS Basic 1" }, //bool = QoS Mod
 		{ 12289, table::HEX, "QoS Basic 2" }, //QoS
 		{ 16640, table::HEX, "port_mirror" }, //byte[10] second byte port id??
+		{ 16384, table::HEX, "port_statistics" }, //???
 		{ 17152, table::HEX, "loop_prevention" }, //bool byte
 		//{0000," "},
 		};

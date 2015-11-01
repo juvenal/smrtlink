@@ -79,7 +79,7 @@ void Packet::parse(bytes data) {
 		pull(body, i, d.type);
 		pull(body, i, d.len);
 		pull(body, i, d.value, d.len);
-		payload[d.type] = d;
+		payload = d;
 	}
 }
 

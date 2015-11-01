@@ -41,19 +41,19 @@ int printPacket(Packet p) {
 				if (d.len > 0) {
 					switch (s->format) {
 					case table::STRING:
-						std::cout << std::dec << "+\t" << s->name << " = "
+						std::cout << "+\t" << s->name << " = "
 								<< &d.value[0] << std::dec << "\n";
 						break;
 					case table::HEX:
-						std::cout << std::dec << "+\t" << s->name << " = "
+						std::cout << "+\t" << s->name << " = "
 								<< std::hex << d.value << std::dec << "\n";
 						break;
 					case table::DEC:
-						std::cout << std::dec << "+\t" << s->name << " = "
+						std::cout << "+\t" << s->name << " = "
 								<< std::dec << d.value << std::dec << "\n";
 						break;
 					default:
-						std::cout << std::dec << "+\t" << s->name << " = "
+						std::cout << "+\t" << s->name << " = "
 								<< std::hex << d.value << std::dec << "\n";
 					}
 				} else { //empty
