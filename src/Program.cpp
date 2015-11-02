@@ -32,8 +32,7 @@ int printPacket(Packet p) {
 	if (options.flags & FLAG_HEX) {
 		std::cout << "Received Payload:\n\t" << p.getBody() << "\n";
 	} else {
-		for (auto a : p.getPayload()) {
-			dataset d = a.second;
+		for (dataset d : p.getPayload()) {
 			auto lookup =
 					(options.flags & FLAG_REVERSE) ? snd_lookup : rcv_lookup;
 			if (lookup.exists(d.type)) {

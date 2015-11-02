@@ -13,8 +13,8 @@
 #include "Options.h"
 
 int Switch::parse(datasets arr) {
-	for (auto a : arr) {
-		parse(a.second);
+	for (dataset a : arr) {
+		parse(a);
 	}
 	return 0;
 }

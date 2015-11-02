@@ -17,13 +17,14 @@ struct dataset {
 	bytes value;
 };
 
-class datasets : public std::map<short, dataset> {
+class datasets : public std::vector<dataset> {
 public:
 	datasets(){};
 	datasets(std::initializer_list<dataset> s)
 	{
 		for (dataset b : s) {
-			(*this)[b.type]=b;
+			//(*this)[b.type]=b;
+			push_back(b);
 		}
     }
 };

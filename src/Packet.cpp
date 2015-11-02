@@ -33,7 +33,7 @@ void Packet::printHeader() {
 bytes Packet::getBytes() {
 	int i = 0;
 	for (auto d : payload)
-		push(body, i, d.second);
+		push(body, i, d);
 	push(body, i, (int) PACKET_END);
 	i = 0;
 	push(head, i, version);
@@ -79,7 +79,7 @@ void Packet::parse(bytes data) {
 		pull(body, i, d.type);
 		pull(body, i, d.len);
 		pull(body, i, d.value, d.len);
-		payload = d;
+		payload.push_back(d);
 	}
 }
 
