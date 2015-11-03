@@ -36,29 +36,30 @@ int printPacket(Packet p) {
 			auto lookup =
 					(options.flags & FLAG_REVERSE) ? snd_lookup : rcv_lookup;
 			if (lookup.exists(d.type)) {
-					const table::set *s = lookup.get(d.type);
+				const table::set *s = lookup.get(d.type);
 				if (d.len > 0) {
 					switch (s->format) {
 					case table::STRING:
-						std::cout << "+\t" << s->name << " = "
-								<< &d.value[0] << std::dec << "\n";
+						std::cout << "+\t" << s->name << " = " << &d.value[0]
+								<< "\n";
 						break;
 					case table::HEX:
-						std::cout << "+\t" << s->name << " = "
-								<< std::hex << d.value << std::dec << "\n";
+						std::cout << "+\t" << s->name << " = " << d.value
+								<< "\n";
 						break;
-					case table::DEC:
-						std::cout << "+\t" << s->name << " = "
-								<< std::dec << d.value << std::dec << "\n";
+					case table::ACTION:
+						std::cout << "Error:" << s->name
+								<< " is marked as 'action' but carries payload."
+								<< d.value << "\n";
 						break;
 					default:
-						std::cout << "+\t" << s->name << " = "
-								<< std::hex << d.value << std::dec << "\n";
+						std::cout << "+\t" << s->name << " = " << d.value
+								<< "\n";
 					}
 				} else { //empty
 					std::cout << std::dec << ">\t" << s->name << "\n";
 				}
-			} else {//unknown id
+			} else { //unknown id
 				if (d.len > 0) {
 					std::cout << "##\t" << d.type << ":\n\t";
 					std::cout << std::hex << d.value << std::dec << "\n";
@@ -176,7 +177,7 @@ int Program::getProperty() {
 						datasets d =a.getPayload();
 						Switch sw = Switch();
 						sw.parse(d);
-						Packet p = Packet(Packet::LOGIN);
+						Packet p = Packet(Packet::SET);
 						p.setSwitchMac(a.getSwitchMac());
 						p.setHostMac(host.getMac());
 						datasets t = { {snd_lookup["login_user"], 0, {}}};

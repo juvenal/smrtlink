@@ -16,7 +16,7 @@
 class Packet {
 public:
 	enum OpCode {
-		DISCOVERY, GET, SET, LOGIN, RETURN, READ5
+		DISCOVERY, GET, RETURN, SET, CONFIRM
 	};
 	Packet(OpCode);
 	void encode(bytes&);
