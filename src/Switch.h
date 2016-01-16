@@ -27,7 +27,14 @@ struct vlan {
 struct port {
 	byte id;
 	byte status;
-	int pvid;
+	int vlan_pvid;
+	//port_settings
+	//qos_basic
+	//bandwidth_control_1
+	//bandwidth_control_2
+	//storm_control
+	//port_statistics
+	//cable_test
 };
 
 class Switch {
@@ -43,6 +50,7 @@ public:
 		std::string hardware_version;
 		std::string firmware_version;
 		macAddr mac { 0x0, 0x0, 0x0, 0x0, 0x0, 0x0 };
+		int ports;
 	} device;
 	struct {
 		std::string password = DEFAULT_PASS;
@@ -52,6 +60,9 @@ public:
 		ipAddr ip_mask;
 		ipAddr gateway;
 		bool dhcp;
+		bool loop_prevention;
+		bool qos_enabled;
+		bool vlan_enabled;
 	} settings;
 private:
 	rapidjson::Document json;

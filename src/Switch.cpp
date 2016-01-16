@@ -21,32 +21,55 @@ int Switch::parse(datasets arr) {
 
 int Switch::parse(dataset d) {
 	auto lookup = (options.flags & FLAG_REVERSE) ? snd_lookup : rcv_lookup;
-	if (d.type == lookup["type"]) {
+	switch (d.type) {
+	case lookup["type"]:
 		device.type = d.value;
-	}
-	if (d.type == lookup["mac"]) {
+		return 0;
+	case lookup["mac"]:
 		device.mac = d.value;
-	}
-	if (d.type == lookup["firmware_version"]) {
+		return 0;
+	case lookup["ip_addr"]:
 		device.firmware_version = d.value;
-	}
-	if (d.type == lookup["hardware_version"]) {
+		return 0;
+	case lookup["ip_mask"]:
+		device.firmware_version = d.value;
+		return 0;
+	case lookup["gateway"]:
+		device.firmware_version = d.value;
+		return 0;
+	case lookup["firmware_version"]:
+		device.firmware_version = d.value;
+		return 0;
+	case lookup["hardware_version"]:
 		device.hardware_version = d.value;
-	}
-	if (d.type == lookup["hostname"]) {
+		return 0;
+	case lookup["ports"]:
+		device.ports = d.value[0];
+		return 0;
+	case lookup["hostname"]:
 		settings.hostname = d.value;
-	}
-	if (d.type == lookup["ip_addr"]) {
+		return 0;
+	case lookup["ip_addr"]:
 		settings.ip_addr = d.value;
-	}
-	if (d.type == lookup["ip_mask"]) {
+		return 0;
+	case lookup["ip_mask"]:
 		settings.ip_mask = d.value;
-	}
-	if (d.type == lookup["gateway"]) {
+		return 0;
+	case lookup["gateway"]:
 		settings.gateway = d.value;
-	}
-	if (d.type == lookup["dhcp"]) {
+		return 0;
+	case lookup["dhcp"]:
 		settings.dhcp = d.value[0];
+		return 0;
+	case lookup["loop_prevention"]:
+		settings.loop_prevention = d.value[0];
+		return 0;
+	case lookup["qos_basic_enabled"]:
+		settings.qos_enabled = d.value[0];
+		return 0;
+	case lookup["vlan_enabled"]:
+		settings.vlan_enabled = d.value[0];
+		return 0;
 	}
 	return 0;
 }
@@ -72,8 +95,8 @@ int Switch::parse(std::string str) {
 			for (rapidjson::SizeType i = 0; i < a.Size(); i++)
 				if (a[i].IsObject()) {
 					port p;
-					if (a[i].HasMember("id")&&a[i]["id"].IsInt()) {
-						p.id=a[i]["id"].GetInt();
+					if (a[i].HasMember("id") && a[i]["id"].IsInt()) {
+						p.id = a[i]["id"].GetInt();
 						std::cout << a[i]["id"].GetInt() << "\n";
 					}
 					ports.push_back(p);
@@ -84,8 +107,8 @@ int Switch::parse(std::string str) {
 			for (rapidjson::SizeType i = 0; i < a.Size(); i++)
 				if (a[i].IsObject()) {
 					vlan v;
-					if (a[i].HasMember("name")&&a[i]["name"].IsString()) {
-						v.name=a[i]["name"].GetString();
+					if (a[i].HasMember("name") && a[i]["name"].IsString()) {
+						v.name = a[i]["name"].GetString();
 						std::cout << a[i]["name"].GetString() << "\n";
 					}
 					vlans.push_back(v);
