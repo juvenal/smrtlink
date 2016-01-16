@@ -57,6 +57,7 @@ ipAddr Host::getIp() {
 				return data;
 			}
 	}
+	/*
 	for (ifa = ifaddr, n = 0; ifa != NULL; ifa = ifa->ifa_next, n++) {
 		if (ifa->ifa_addr == NULL)
 			continue;
@@ -66,6 +67,7 @@ ipAddr Host::getIp() {
 				return data;
 			}
 	}
+	*/
 	freeifaddrs(ifaddr);
 	return data;
 }

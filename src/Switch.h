@@ -43,6 +43,7 @@ public:
 		std::string hardware_version;
 		std::string firmware_version;
 		macAddr mac { 0x0, 0x0, 0x0, 0x0, 0x0, 0x0 };
+		int ports;
 	} device;
 	struct {
 		std::string password = DEFAULT_PASS;
@@ -52,6 +53,9 @@ public:
 		ipAddr ip_mask;
 		ipAddr gateway;
 		bool dhcp;
+		bool loop_prevention;
+		bool qos_enabled;
+		bool vlan_enabled;
 	} settings;
 private:
 	rapidjson::Document json;
