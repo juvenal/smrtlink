@@ -57,6 +57,17 @@ ipAddr Host::getIp() {
 				return data;
 			}
 	}
+	/*
+	for (ifa = ifaddr, n = 0; ifa != NULL; ifa = ifa->ifa_next, n++) {
+		if (ifa->ifa_addr == NULL)
+			continue;
+		if (ifa->ifa_addr->sa_family == AF_INET)
+			if (getIface().compare(ifa->ifa_name) == 0) {
+				memcpy(&data[0], &ifa->ifa_addr->sa_data[2], 4);
+				return data;
+			}
+	}
+	*/
 	freeifaddrs(ifaddr);
 	return data;
 }
