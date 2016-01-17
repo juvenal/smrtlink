@@ -15,6 +15,7 @@
 #include "Switch.h"
 #include "Packet.h"
 #include "Lookup.h"
+#include "table.h"
 
 int printHeader(Packet p) {
 	if (options.flags & FLAG_HEADER) {

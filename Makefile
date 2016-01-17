@@ -15,12 +15,14 @@ $(BUILDDIR):
 
 
 $(TARGET): $(OBJECTS)
-	$(CC) $^ -o $@ -lboost_filesystem -lboost_system
+	$(CC) $^ -o $(BUILDDIR)/$@ -lboost_filesystem -lboost_system
 
 
 $(OBJECTS): $(BUILDDIR)/%.o : $(SOURCEDIR)/%.cpp
 	$(CC) $(CFLAGS) $< -o $@
 
+install: bin/$(TARGET)
+	install -m 0755 bin/$(TARGET) $(prefix)/bin
 
 clean:
-	rm -f $(BUILDDIR)/*o $(TARGET)
+	rm -f $(BUILDDIR)/*

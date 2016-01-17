@@ -11,6 +11,7 @@
 #include "Lookup.h"
 #include "jsonNode.h"
 #include "Options.h"
+#include "table.h"
 
 int Switch::parse(datasets arr) {
 	for (dataset a : arr) {
@@ -21,55 +22,44 @@ int Switch::parse(datasets arr) {
 
 int Switch::parse(dataset d) {
 	auto lookup = (options.flags & FLAG_REVERSE) ? snd_lookup : rcv_lookup;
-	switch (d.type) {
-	case lookup["type"]:
+	if (d.type == lookup["type"]) {
 		device.type = d.value;
-		return 0;
-	case lookup["mac"]:
+	}
+	if (d.type == lookup["mac"]) {
 		device.mac = d.value;
-		return 0;
-	case lookup["ip_addr"]:
+	}
+	if (d.type == lookup["firmware_version"]) {
 		device.firmware_version = d.value;
-		return 0;
-	case lookup["ip_mask"]:
-		device.firmware_version = d.value;
-		return 0;
-	case lookup["gateway"]:
-		device.firmware_version = d.value;
-		return 0;
-	case lookup["firmware_version"]:
-		device.firmware_version = d.value;
-		return 0;
-	case lookup["hardware_version"]:
+	}
+	if (d.type == lookup["hardware_version"]) {
 		device.hardware_version = d.value;
-		return 0;
-	case lookup["ports"]:
+	}
+	if (d.type == lookup["ports"]) {
 		device.ports = d.value[0];
-		return 0;
-	case lookup["hostname"]:
+	}
+	if (d.type == lookup["hostname"]) {
 		settings.hostname = d.value;
-		return 0;
-	case lookup["ip_addr"]:
+	}
+	if (d.type == lookup["ip_addr"]) {
 		settings.ip_addr = d.value;
-		return 0;
-	case lookup["ip_mask"]:
+	}
+	if (d.type == lookup["ip_mask"]) {
 		settings.ip_mask = d.value;
-		return 0;
-	case lookup["gateway"]:
+	}
+	if (d.type == lookup["gateway"]) {
 		settings.gateway = d.value;
-		return 0;
-	case lookup["dhcp"]:
+	}
+	if (d.type == lookup["dhcp"]) {
 		settings.dhcp = d.value[0];
-		return 0;
-	case lookup["loop_prevention"]:
+	}
+	if (d.type == lookup["loop_prevention"]) {
 		settings.loop_prevention = d.value[0];
-		return 0;
-	case lookup["qos_basic_enabled"]:
+	}
+	if (d.type == lookup["qos_basic_enabled"]) {
 		settings.qos_enabled = d.value[0];
-		return 0;
-	case lookup["vlan_enabled"]:
+	}
+	if (d.type == lookup["vlan_enabled"]) {
 		settings.vlan_enabled = d.value[0];
-		return 0;
 	}
 	return 0;
 }

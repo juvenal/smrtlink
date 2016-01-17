@@ -17,6 +17,7 @@
 
 #include "bytes.h"
 #include "datasets.h"
+#include "table.h"
 
 class macAddr: public std::array<byte, 6> {
 public:

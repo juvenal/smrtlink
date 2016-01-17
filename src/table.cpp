@@ -18,21 +18,21 @@ table::table(std::initializer_list<set> l) {
 		i++;
 	}
 }
-constexpr const short& table::operator[](std::string s) {
+short table::operator[](std::string s){
 	return this->right[s]->type;
 }
-constexpr const std::string& table::operator[](short n) {
+std::string table::operator[](short n){
 	return this->left[n]->name;
 }
-bool table::exists(std::string s) {
+bool table::exists(std::string s){
 	return !(right.find(s) == right.end());
 }
-bool table::exists(short n) {
+bool table::exists(short n){
 	return !(left.find(n) == left.end());
 }
-const table::set* table::get(std::string s) {
+const table::set* table::get(std::string s){
 	return this->right[s];
 }
-const table::set* table::get(short n) {
+const table::set* table::get(short n){
 	return this->left[n];
 }

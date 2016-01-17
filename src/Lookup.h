@@ -7,7 +7,7 @@
 
 #include "table.h"
 
-const static table rcv_lookup = { //
+static table rcv_lookup = { //
 		{ 1, table::STRING, "type" }, //+string
 		{ 2, table::STRING, "hostname" }, //+string
 		{ 3, table::HEX, "mac" }, //+byte[6]
@@ -44,7 +44,7 @@ const static table rcv_lookup = { //
 		//{0000," "},
 		};
 
-const static table snd_lookup = {
+static table snd_lookup = {
 
 		// TODO find out if id is unique in response
 		{ 2, table::HEX, "system_info" }, //page sysinfo

@@ -20,16 +20,16 @@ public:
 		std::string name;
 	};
 	table(std::initializer_list<set> l);
-	const short& operator[](std::string);
-	const std::string& operator[](short);
-	const set* get(std::string);
-	const set* get(short);
+	short operator[](std::string);
+	std::string operator[](short);
 	bool exists(std::string);
 	bool exists(short);
+	const set* get(std::string);
+	const set* get(short);
 private:
 	std::vector<set> data;
-	const std::map<short, set*> left;
-	const std::map<std::string, set*> right;
+	std::map<short, set*> left;
+	std::map<std::string, set*> right;
 };
 
 #endif /* LOOKUPTABLE_H_ */

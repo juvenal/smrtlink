@@ -27,7 +27,7 @@ struct vlan {
 struct port {
 	byte id;
 	byte status;
-	int vlan_pvid;
+	int pvid;
 	//port_settings
 	//qos_basic
 	//bandwidth_control_1
