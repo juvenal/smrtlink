@@ -7,7 +7,7 @@
 
 #include <iostream>
 #include "File.h"
-#include "Options.h"
+#include "Constant.h"
 
 std::string File::read() {
 	if (!fs::exists(home)) {

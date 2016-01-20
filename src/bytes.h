@@ -24,11 +24,11 @@ public:
 	using vector::operator[];
 	bytes() {
 	}
-	bytes(int n) :
-			vector(n) {
+	bytes(int n) : vector(n){
 	}
 
-	bytes(std::string);
+	bytes(std::string d) : vector(d.begin(), d.end()){
+	}
 
 	bytes(std::initializer_list<uint8_t> s)
 	{
@@ -42,9 +42,7 @@ public:
 		this->insert(this->begin(), B.begin(), B.end());
 	}
 
-	bytes readHex(std::string s){
-		return bytes(s);
-	}
+	bytes readHex(std::string);
 
 	bytes operator=(const vector &B) {
 		this->reserve(B.size());
