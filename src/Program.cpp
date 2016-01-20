@@ -7,7 +7,7 @@
 #include <iostream>
 #include <algorithm>
 
-#include "Options.h"
+#include "Constant.h"
 #include "Program.h"
 #include "File.h"
 #include "Host.h"
@@ -44,9 +44,21 @@ int printPacket(Packet p) {
 						std::cout << "+\t" << s->name << " = " << &d.value[0]
 								<< "\n";
 						break;
+					case table::BOOL:
+						std::cout << "+\t" << s->name << " = " << (d.value[0]?"YES":"NO")
+								<< "\n";
+						break;
 					case table::HEX:
 						std::cout << "+\t" << s->name << " = " << d.value
 								<< "\n";
+						break;
+					case table::DEC:
+						std::cout << "+\t" << s->name << " = ";
+						if (d.value.size() > 0)
+							std::cout << std::dec << (unsigned) d.value[0];
+						for (unsigned i = 1; i < d.value.size(); i++)
+							std::cout <<  std::dec << "." << (unsigned) d.value[i];
+						std::cout << "\n";
 						break;
 					case table::ACTION:
 						std::cout << "Error:" << s->name
@@ -56,6 +68,7 @@ int printPacket(Packet p) {
 					default:
 						std::cout << "+\t" << s->name << " = " << d.value
 								<< "\n";
+						break;
 					}
 				} else { //empty
 					std::cout << std::dec << ">\t" << s->name << "\n";
@@ -149,17 +162,13 @@ int Program::getProperty() {
 	p.setPayload( { });
 	bytes b = p.getBytes();
 	p.encode(b);
-	std::cout << "count-x:" << sock.use_count() << "\n";
 	auto s = sock;
 	try {
 		sock->setHostIp(host.getIp());
 		sock->init(DST_PORT, SRC_PORT);
-
-		std::cout << "count-y:" << sock.use_count() << "\n";
 		sock->callback =
 				[this](Packet a) {
 					auto s = sock;
-					std::cout<<"count-z:"<<sock.use_count()<<"\n";
 					datasets d =a.getPayload();
 					Switch sw = Switch();
 					sw.parse(d);
@@ -168,7 +177,7 @@ int Program::getProperty() {
 					Packet p = Packet(Packet::GET);
 					p.setSwitchMac(a.getSwitchMac());
 					p.setHostMac(host.getMac());
-					datasets t = { {2305, 0, {}}};
+					datasets t = { {snd_lookup["ping"], 0, {}}};
 					p.setPayload(t);
 					bytes c = p.getBytes();
 					p.encode(c);
@@ -181,7 +190,11 @@ int Program::getProperty() {
 						Packet p = Packet(Packet::SET);
 						p.setSwitchMac(a.getSwitchMac());
 						p.setHostMac(host.getMac());
-						datasets t = { {snd_lookup["login_user"], 0, {}}};
+						datasets t = {
+								{snd_lookup["login_user"], (short)(options.user.length()), options.user},
+								{snd_lookup["login_password"], (short)(options.password.length()), options.password}
+						};
+						std::cout<<options.user<<std::endl<<options.password<<std::endl;
 						p.setPayload(t);
 						bytes c = p.getBytes();
 						p.encode(c);
@@ -197,11 +210,7 @@ int Program::getProperty() {
 						return 0;
 					};
 
-					std::cout<<"count-b:"<<sock.use_count()<<"\n";
-
 					sock->send(c);
-
-					std::cout<<"count-a:"<<sock.use_count()<<"\n";
 					return 0;
 				};
 		sock->send(b);
@@ -241,6 +250,11 @@ int Program::reboot() {
 }
 
 int Program::reset() {
+
+	return 0;
+}
+
+int Program::ping(std::function<int(Packet)>){
 
 	return 0;
 }

@@ -17,6 +17,10 @@
 #define DEFAULT_USER "admin"
 #define DEFAULT_PASS "admin"
 
+enum CntStatus {
+	OPEN, SHORT
+};
+
 struct vlan {
 	int vlan_id;
 	std::string name;
@@ -24,17 +28,34 @@ struct vlan {
 	std::vector<byte> untagged_member;
 };
 
+struct trunk {
+	int trunk_id;
+	std::vector<byte> member;
+};
+
 struct port {
 	byte id;
 	byte status;
 	int pvid;
-	//port_settings
+	struct {
+		//port_settings
+	} settings;
+	struct {
+		//port_statistics
+	} stats;
+	struct {
+		//bandwidth_control_ingress
+		//bandwidth_control_egress
+	} bw_control;
+	struct {
+		//storm_control
+	} storm_control;
+	struct {
+		CntStatus status;
+		int fault_distace;
+	} test;
 	//qos_basic
-	//bandwidth_control_1
-	//bandwidth_control_2
-	//storm_control
-	//port_statistics
-	//cable_test
+
 };
 
 class Switch {
@@ -45,6 +66,7 @@ public:
 	int parse(dataset);
 	int parse(std::string);
 	std::string toString();
+
 	struct {
 		std::string type;
 		std::string hardware_version;
@@ -63,7 +85,9 @@ public:
 		bool loop_prevention;
 		bool qos_enabled;
 		bool vlan_enabled;
+		//mtu_vlan
 	} settings;
+
 private:
 	rapidjson::Document json;
 	std::vector<vlan> vlans;

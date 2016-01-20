@@ -16,9 +16,10 @@
 #include <getopt.h>
 #include <unistd.h>
 
-#include "Options.h"
+#include "Constant.h"
 #include "Host.h"
 #include "Program.h"
+#include "Switch.h"
 
 #define no_argument 0
 #define required_argument 1
@@ -32,6 +33,9 @@ constexpr unsigned int caseArg(const char* str, int h = 0) {
 
 int main(int argc, char *argv[]) {
 	int opt, index;
+
+	options.user = DEFAULT_USER;
+	options.password = DEFAULT_PASS;
 
 	const struct option longopts[] = { { "version", no_argument, 0, 'v' }, {
 			"help", no_argument, 0, 'h' }, { "reverse", no_argument, 0, 'r' }, {

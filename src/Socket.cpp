@@ -9,7 +9,7 @@
 #include <unistd.h>
 #include "Socket.h"
 #include "Packet.h"
-#include "Options.h"
+#include "Constant.h"
 #include "Host.h"
 #include "Types.h"
 

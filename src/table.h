@@ -13,7 +13,7 @@
 
 class table {
 public:
-	enum F {STRING,HEX,DEC,ACTION,EMPTY};
+	enum F {STRING,HEX,DEC,ACTION,BOOL,EMPTY};
 	struct set {
 		short type;
 		F format;

@@ -7,22 +7,23 @@
 
 #include "bytes.h"
 
-bytes::bytes(std::string d) {
-	vector();
+bytes bytes::readHex(std::string s){
+	vector ret;
 	std::string delimiter = ":";
 	std::string token;
 	size_t pos = 0;
 	int hex;
 	byte b;
-	resize(0);
-	while ((pos = d.find(delimiter)) != std::string::npos) {
-		token = d.substr(0, pos);
+	ret.resize(0);
+	while ((pos = s.find(delimiter)) != std::string::npos) {
+		token = s.substr(0, pos);
 		sscanf(token.c_str(), "%x", &hex);
-		d.erase(0, pos + delimiter.length());
+		s.erase(0, pos + delimiter.length());
 		b = hex & 0xFF;
-		push_back(b);
+		ret.push_back(b);
 	}
-	sscanf(d.c_str(), "%x", &hex);
+	sscanf(s.c_str(), "%x", &hex);
 	b = hex & 0xFF;
-	push_back(b);
+	ret.push_back(b);
+	return ret;
 }
