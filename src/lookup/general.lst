@@ -1,25 +1,25 @@
-LOOKUP_SET(PORTS,				10,		DEC)	//+byte, maybe number of ports
+LOOKUP_SET(PORTS,               10,     DEC)    //+byte, maybe number of ports
 
-LOOKUP_SET(IGMP_SNOOPING,		4352, 	HEX)	//???
-LOOKUP_SET(PORTS_SETTINGS,		4096, 	HEX) 	//+per port
-LOOKUP_SET(PORT_TRUNK,			4608, 	HEX) 	//byte[5] last byte bitmask??
+LOOKUP_SET(IGMP_SNOOPING,       4352,   HEX)    //???
+LOOKUP_SET(PORTS_SETTINGS,      4096,   HEX)    //+per port
+LOOKUP_SET(PORT_TRUNK,          4608,   HEX)    //byte[5] last byte bitmask??
 
-LOOKUP_SET(MTU_VLAN,			8192, 	HEX) 	//byte[2] first byte bool,second byte port id
-LOOKUP_SET(PORT_VLAN_ENABLED,	8448, 	BOOL) 	//open page
-LOOKUP_SET(PORT_VLAN,			8449, 	HEX)
-LOOKUP_SET(PORT_VLAN_MAX,		8450, 	DEC)
-LOOKUP_SET(VLAN_ENABLED,		8704, 	BOOL) 	//+bool byte
-LOOKUP_SET(VLAN,				8705,	HEX) 	//+one set per vlan
-LOOKUP_SET(VLAN_PVID,			8706,	HEX) 	//+per port
-LOOKUP_SET(VLAN_FOOOO,			8707,	DEC) 	//????
+LOOKUP_SET(MTU_VLAN,            8192,   HEX)    //byte[2] first byte bool,second byte port id
+LOOKUP_SET(PORT_VLAN_ENABLED,   8448,   BOOL)   //open page
+LOOKUP_SET(PORT_VLAN,           8449,   HEX)
+LOOKUP_SET(PORT_VLAN_MAX,       8450,   DEC)
+LOOKUP_SET(VLAN_ENABLED,        8704,   BOOL)   //+bool byte
+LOOKUP_SET(VLAN,                8705,   HEX)    //+one set per vlan
+LOOKUP_SET(VLAN_PVID,           8706,   HEX)    //+per port
+LOOKUP_SET(VLAN_FOOOO,          8707,   DEC)    //????
 
-LOOKUP_SET(QOS_BASIC_ENABLED,	12288, 	BOOL) 	//+bool = QoS Mod
-LOOKUP_SET(QOS_BASIC,			12289, 	HEX) 	//+per port ???
-LOOKUP_SET(BW_CONTROL_INGRESS,	12544, 	HEX) 	//+per port ???
-LOOKUP_SET(BW_CONTROL_EGRESS,	12545, 	HEX) 	//+per port ???
-LOOKUP_SET(STORM_CONTROL,		12800, 	HEX) 	//+per port ???
-LOOKUP_SET(PORT_MIRROR,			16640, 	HEX) 	//byte[10] second byte port id???
-LOOKUP_SET(PORT_STATISTICS,		16384, 	HEX) 	//+per port ???
-LOOKUP_SET(CABLE_TEST,			16896, 	HEX) 	//+per port ???
-LOOKUP_SET(LOOP_PREVENTION,		17152, 	BOOL) 	//+bool byte
+LOOKUP_SET(QOS_BASIC_ENABLED,   12288,  BOOL)   //+bool = QoS Mod
+LOOKUP_SET(QOS_BASIC,           12289,  HEX)    //+per port ???
+LOOKUP_SET(BW_CONTROL_INGRESS,  12544,  HEX)    //+per port ???
+LOOKUP_SET(BW_CONTROL_EGRESS,   12545,  HEX)    //+per port ???
+LOOKUP_SET(STORM_CONTROL,       12800,  HEX)    //+per port ???
+LOOKUP_SET(PORT_MIRROR,         16640,  HEX)    //byte[10] second byte port id???
+LOOKUP_SET(PORT_STATISTICS,     16384,  HEX)    //+per port ???
+LOOKUP_SET(CABLE_TEST,          16896,  HEX)    //+per port ???
+LOOKUP_SET(LOOP_PREVENTION,     17152,  BOOL)   //+bool byte
 
