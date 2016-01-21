@@ -20,49 +20,47 @@ int Switch::parse(datasets arr) {
 }
 
 int Switch::parse(dataset d) {
-	auto lookup = (options.flags & FLAG_REVERSE) ? snd_lookup : rcv_lookup;
-	std::string id = lookup.exists(d.type)?lookup[d.type]:"unknown";
-	switch(d.type){
-		case TYPE:
-			device.type = d.value;
+	switch (d.type) {
+	case RCV_TYPE:
+		device.type = d.value;
 		break;
-	}
-
-	if (id == "mac") {
+	case RCV_MAC:
 		device.mac = d.value;
-	}
-	else if (d.type == "firmware_version") {
+		break;
+	case FIRMWARE_VERSION:
 		device.firmware_version = d.value;
-	}
-	else if (id == "hardware_version") {
+		break;
+	case HARDWARE_VERSION:
 		device.hardware_version = d.value;
-	}
-	else if (id == "ports") {
+		break;
+	case PORTS:
 		device.ports = d.value[0];
-	}
-	else if (id == "hostname") {
+		break;
+	case HOSTNAME:
 		settings.hostname = d.value;
-	}
-	else if (id == "ip_addr") {
+		break;
+	case IP_ADDR:
 		settings.ip_addr = d.value;
-	}
-	else if (id == "ip_mask") {
+		break;
+	case IP_MASK:
 		settings.ip_mask = d.value;
-	}
-	else if (id == "gateway") {
+		break;
+	case GATEWAY:
 		settings.gateway = d.value;
-	}
-	else if (id == "dhcp_enabled") {
+		break;
+	case DHCP_ENABLED:
 		settings.dhcp = d.value[0];
-	}
-	else if (id == "loop_prevention") {
+		break;
+	case LOOP_PREVENTION:
 		settings.loop_prevention = d.value[0];
-	}
-	else if (id == "qos_basic_enabled") {
+		break;
+	case QOS_BASIC_ENABLED:
 		settings.qos_enabled = d.value[0];
-	}
-	else if (id == "vlan_enabled") {
+		break;
+	case VLAN_ENABLED:
 		settings.vlan_enabled = d.value[0];
+		break;
 	}
 	return 0;
 }
+
