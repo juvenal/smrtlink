@@ -1,5 +1,5 @@
 CC = g++
-CFLAGS = -g -c -std=c++14
+CFLAGS = -o0 -g -c -std=c++14
 TARGET = smrtlink
 SOURCEDIR = src
 BUILDDIR = bin

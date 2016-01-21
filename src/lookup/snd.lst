@@ -1,0 +1,17 @@
+LOOKUP_SET(SYSTEM_INFO,			2,		HEX)	//page sysinfo
+LOOKUP_SET(IP_CONFIG,			9,		HEX)	//page sysinfo
+
+
+LOOKUP_SET(LOGIN_USER,			512,	STRING) //string
+LOOKUP_SET(NEW_USER,			513,	STRING) //string
+LOOKUP_SET(LOGIN_PASSWORD,		514,	STRING) //string
+LOOKUP_SET(NEW_PASSWORD,		515,	STRING) //string
+LOOKUP_SET(REBOOT,				773,	BOOL)	//bool byte = save config
+
+LOOKUP_SET(RESET,				1280,	ACTION) //
+LOOKUP_SET(FLASH,				1536,	ACTION) //update firmware
+LOOKUP_SET(VLAN_FOOOOOO,		2200,	HEX)	//vlan
+LOOKUP_SET(SAVE,				2304,	ACTION) //save
+LOOKUP_SET(PING,				2305,	ACTION) //sent before SET ???
+
+
