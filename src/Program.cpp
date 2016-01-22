@@ -157,6 +157,103 @@ int Program::setProperty() {
 }
 
 int Program::getProperty() {
+    try {
+        sock->setHostIp(host.getIp());
+        sock->init(DST_PORT, SRC_PORT);
+
+        std::cout << "List:\n";
+        Packet p = Packet(Packet::DISCOVERY);
+        p.setHostMac(host.getMac());
+        p.setPayload( { });
+        bytes b = p.getBytes();
+        p.encode(b);
+        sock->callback =
+                [this](Packet a) {
+
+                    datasets d =a.getPayload();
+                    Switch sw = Switch();
+                    sw.parse(d);
+
+                    std::cout <<"\t"<<sw.settings.hostname<<" ("<< sw.device.type<<")\tMAC: "<<sw.device.mac<<"\tIP: "<<sw.settings.ip_addr<<"\n";
+
+                    Packet p = Packet(Packet::GET);
+                    p.setSwitchMac(a.getSwitchMac());
+                    p.setHostMac(host.getMac());
+                    datasets t = { {SND_PING, 0, {}}};
+                    p.setPayload(t);
+                    bytes c = p.getBytes();
+                    p.encode(c);
+
+                    sock->callback =
+                    [this](Packet a) {
+
+                        datasets d =a.getPayload();
+                        Switch sw = Switch();
+                        sw.parse(d);
+
+                        Packet p = Packet(Packet::SET);
+                        p.setSwitchMac(a.getSwitchMac());
+                        p.setTokenId(a.getTokenId());
+                        p.setHostMac(host.getMac());
+                        bytes n = options.user;
+                        bytes w = options.password;
+                        n.push_back('\0');
+                        w.push_back('\0');
+                        datasets t = {
+                            {   LOGIN_USER, (short)(n.size()), n},
+                            {   LOGIN_PASSWORD, (short)(w.size()), w},
+                            {   REBOOT, 1, {0}}
+                        };
+                        p.setPayload(t);
+                        bytes c = p.getBytes();
+                        p.encode(c);
+
+                        sock->callback =
+                        [this](Packet a) {
+                            std::cout << a.opCodeToString() << "\n";
+                            printHeader(a);
+                            printPacket(a);
+                            return 0;
+                        };
+                        sock->send(c);
+                        return 0;
+                    };
+
+                    sock->send(c);
+                    return 0;
+                };
+        sock->send(b);
+        io_service->run();
+    } catch (std::exception& e) {
+        std::cerr << "Exception: " << e.what() << "\n";
+    }
+    return 1;
+}
+
+int Program::save() {
+    Switch sw = Switch();
+    sw.settings.hostname = "testname.lan";
+    File f;
+    f.write(sw.toString());
+    return 1;
+}
+
+int Program::restore() {
+    File f;
+    Switch sw;
+    sw.parse(f.read());
+    std::cout << "Devices:\n\t" << sw.settings.hostname << " ("
+            << sw.device.type << ")\tMAC: " << sw.device.mac << "\tIP: "
+            << sw.settings.ip_addr << "\n";
+    return 1;
+}
+
+int Program::flash() {
+
+    return 0;
+}
+
+int Program::reboot() {
     std::cout << "List:\n";
     Packet p = Packet(Packet::DISCOVERY);
     p.setHostMac(host.getMac());
@@ -226,34 +323,6 @@ int Program::getProperty() {
         std::cerr << "Exception: " << e.what() << "\n";
     }
     return 1;
-}
-
-int Program::save() {
-    Switch sw = Switch();
-    sw.settings.hostname = "testname.lan";
-    File f;
-    f.write(sw.toString());
-    return 1;
-}
-
-int Program::restore() {
-    File f;
-    Switch sw;
-    sw.parse(f.read());
-    std::cout << "Devices:\n\t" << sw.settings.hostname << " ("
-            << sw.device.type << ")\tMAC: " << sw.device.mac << "\tIP: "
-            << sw.settings.ip_addr << "\n";
-    return 1;
-}
-
-int Program::flash() {
-
-    return 0;
-}
-
-int Program::reboot() {
-
-    return 0;
 }
 
 int Program::reset() {
