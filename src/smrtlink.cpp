@@ -28,6 +28,8 @@
 #define required_argument 1
 #define optional_argument 2
 
+using namespace std;
+
 Options options;
 
 constexpr unsigned int caseArg(const char* str, int h = 0) {
@@ -35,6 +37,7 @@ constexpr unsigned int caseArg(const char* str, int h = 0) {
 }
 
 int main(int argc, char *argv[]) {
+    int index,opt;
 
     options.user = DEFAULT_USER;
     options.password = DEFAULT_PASS;
