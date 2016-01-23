@@ -14,6 +14,7 @@
 #include "Host.h"
 #include "Socket.h"
 
+
 class Program {
 private:
 	std::shared_ptr<boost::asio::io_service> io_service;
@@ -31,8 +32,8 @@ public:
 	int list();
 	int sniff();
 	int encode(std::string);
-	int setProperty();
-	int getProperty();
+	int getProperty(std::vector<std::string>);
+	int setProperty(std::map<std::string,std::string>);
 	int save();
 	int restore();
 	int flash();

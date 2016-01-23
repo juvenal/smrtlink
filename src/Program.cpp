@@ -18,8 +18,8 @@
 #include "table.h"
 
 int printHeader(Packet p) {
-    if (options.flags & FLAG_HEADER) {
-        if (options.flags & FLAG_HEX) {
+    if (options.flags.HEADER) {
+        if (options.flags.HEX) {
             std::cout << "Received Header:\n\t" << p.getHead() << "\n";
         } else {
             p.printHeader();
@@ -30,12 +30,12 @@ int printHeader(Packet p) {
 }
 
 int printPacket(Packet p) {
-    if (options.flags & FLAG_HEX) {
+    if (options.flags.HEX) {
         std::cout << "Received Payload:\n\t" << p.getBody() << "\n";
     } else {
         for (dataset d : p.getPayload()) {
             auto lookup =
-                    (options.flags & FLAG_REVERSE) ? snd_lookup : rcv_lookup;
+                    (options.flags.REVERSE) ? snd_lookup : rcv_lookup;
             if (lookup.exists(d.type)) {
                 table::set s = lookup[d.type];
                 if (d.len > 0) {
@@ -92,7 +92,7 @@ int Program::list() {
         std::cout << "List:\n";
         discover([this](Packet a) {
             printHeader(a);
-            if (options.flags & FLAG_HEX) {
+            if (options.flags.HEX) {
                 std::cout <<"Received Payload:\n"<<a.getBody()<<"\n";
             } else {
                 datasets d =a.getPayload();
@@ -102,13 +102,13 @@ int Program::list() {
                 f.write(sw.toString());
                 sw.print();
             }
-            return 1;
+            return 0;
         });
         io_service->run();
     } catch (std::exception& e) {
         std::cerr << "Exception: " << e.what() << "\n";
     }
-    return 1;
+    return 0;
 }
 
 int Program::sniff() {
@@ -130,7 +130,7 @@ int Program::sniff() {
         std::cerr << "Exception: " << e.what() << "\n";
     }
 
-    return 1;
+    return 0;
 }
 
 int Program::encode(std::string s) {
@@ -141,7 +141,7 @@ int Program::encode(std::string s) {
     return 0;
 }
 
-int Program::setProperty() {
+int Program::setProperty(std::map<std::string,std::string> prop) {
     try {
 
         std::cout << "List:\n";
@@ -158,7 +158,7 @@ int Program::setProperty() {
                                 Switch sw = Switch();
                                 sw.parse(d);
 
-                                datasets t = { {REBOOT, 1, {0}}};
+                                datasets t = { {LOOP_PREVENTION, 1, {0}}};
                                 set(a,t,
 
                                         [this](Packet a) {
@@ -176,12 +176,11 @@ int Program::setProperty() {
     } catch (std::exception& e) {
         std::cerr << "Exception: " << e.what() << "\n";
     }
-    return 1;
+    return 0;
 }
 
-int Program::getProperty() {
+int Program::getProperty(std::vector<std::string> prop) {
     try {
-
         std::cout << "List:\n";
         discover([this](Packet a) {
 
@@ -204,7 +203,7 @@ int Program::getProperty() {
     } catch (std::exception& e) {
         std::cerr << "Exception: " << e.what() << "\n";
     }
-    return 1;
+    return 0;
 }
 
 int Program::save() {
@@ -212,7 +211,7 @@ int Program::save() {
     sw.settings.hostname = "testname.lan";
     File f;
     f.write(sw.toString());
-    return 1;
+    return 0;
 }
 
 int Program::restore() {
@@ -220,12 +219,12 @@ int Program::restore() {
     Switch sw;
     sw.parse(f.read());
     sw.print();
-    return 1;
+    return 0;
 }
 
 int Program::flash() {
 
-    return 0;
+    return 1;
 }
 
 int Program::reboot() {
@@ -254,12 +253,12 @@ int Program::reboot() {
     } catch (std::exception& e) {
         std::cerr << "Exception: " << e.what() << "\n";
     }
-    return 1;
+    return 0;
 }
 
 int Program::reset() {
 
-    return 0;
+    return 1;
 }
 
 int Program::discover(std::function<int(Packet)> c) {

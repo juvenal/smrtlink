@@ -17,14 +17,21 @@ public:
 	struct set {
 		short type;
 		F format;
-		std::string name;
+        std::string name;
+        std::string id;
 	};
-	table(std::initializer_list<set> l);
-	set operator[](short);
-	bool exists(short);
-	std::string name(short);
+    table(std::initializer_list<set> l);
+    const table::set operator[](std::string);
+    const table::set operator[](short);
+    bool exists(std::string);
+    bool exists(short);
+    short type(std::string);
+    std::string id(short);
+    std::string name(short);
 private:
-	std::map<short, set> left;
+    std::vector<set> data;
+    std::map<short, set*> left;
+    std::map<std::string, set*> right;
 };
 
 #endif /* LOOKUPTABLE_H_ */

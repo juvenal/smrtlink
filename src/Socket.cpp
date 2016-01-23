@@ -21,13 +21,13 @@ void Socket::init(short dst_port, short src_port) {
     if (initialized)
         return;
 
-    if (options.flags & FLAG_REVERSE) {
+    if (options.flags.REVERSE) {
         short p = dst_port;
         dst_port = src_port;
         src_port = p;
     }
 
-    if (options.flags & FLAG_DEBUG)
+    if (options.debug_level>=1)
         std::cout << "Local IP:\t" << local_ip << "\n";
 
     wildcard_endpoint_ = boost::asio::ip::udp::endpoint(
