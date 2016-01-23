@@ -134,7 +134,8 @@ int Program::sniff() {
 }
 
 int Program::encode(std::string s) {
-    bytes d(s);
+    bytes d;
+    d=d.readHex(s);
     Packet p = Packet(Packet::NONE);
     p.encode(d);
     std::cout << d << std::endl;
