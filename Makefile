@@ -15,7 +15,7 @@ $(BUILDDIR):
 
 
 $(TARGET): $(OBJECTS)
-	$(CC) $^ -o $(BUILDDIR)/$@ -lboost_filesystem -lboost_system
+	$(CC) $^ -o $(BUILDDIR)/$@ -lboost_filesystem -lboost_system -lpthread
 
 
 $(OBJECTS): $(BUILDDIR)/%.o : $(SOURCEDIR)/%.cpp

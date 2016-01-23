@@ -20,7 +20,7 @@ class Packet
 public:
     enum OpCode {DISCOVERY, GET, RETURN, SET, CONFIRM, NONE};
     Packet(OpCode);
-    void encode(bytes&);
+    static void encode(bytes&);
     bytes getBytes();
     void parse(bytes);
     void printHeader();
@@ -41,6 +41,8 @@ public:
     void setPayload(datasets payload);
     short getTokenId() const;
     void setTokenId(short tokenId = 0);
+    byte getOpCode() const;
+    void setOpCode(byte opCode);
 
 private:
     bytes head = bytes(32);

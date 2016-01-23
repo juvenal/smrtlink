@@ -67,7 +67,9 @@ void Socket::setHostIp(ipAddr ip) {
     local_ip = ip;
 }
 
-void Socket::send(bytes data) {
+void Socket::send(Packet p) {
+    bytes data = p.getBytes();
+    p.encode(data);
     unsigned char * a = &data[0];
     send_socket_.async_send_to(boost::asio::buffer(a, data.size()),
             broadcast_endpoint_,

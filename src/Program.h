@@ -19,7 +19,9 @@ private:
 	std::shared_ptr<boost::asio::io_service> io_service;
 	std::shared_ptr<Socket> sock;
 	Host host = Host();
-	int ping(std::function<int(Packet)>);
+    int get(Packet,datasets,std::function<int(Packet)>);
+    int set(Packet,datasets,std::function<int(Packet)>);
+    int discover(std::function<int(Packet)>);
 public:
 	Program() {
 		io_service = std::make_shared<boost::asio::io_service>();

@@ -27,6 +27,14 @@ public:
 			push_back(b);
 		}
     }
+
+	datasets operator+(const datasets &B) {
+	    datasets AB;
+        AB.reserve(this->size() + B.size());
+        AB.insert(AB.end(), this->begin(), this->end());
+        AB.insert(AB.end(), B.begin(), B.end());
+        return AB;
+    }
 };
 
 #endif /* DATASETS_H_ */

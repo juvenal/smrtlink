@@ -23,7 +23,7 @@ public:
 	virtual ~Socket() {
 	}
 	void init(short, short);
-	void send(bytes);
+	void send(Packet);
 	void listen();
 	void setHostIp(ipAddr);
 	std::function<int(Packet)> callback = [](Packet a) {
