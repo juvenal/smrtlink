@@ -1,7 +1,7 @@
 //============================================================================
 // Name        : smrtlink.cpp
 // Author      : jdi
-// Version     : 1.1
+// Version     :
 // Copyright   : GPL v2
 // Description : SmrtLink in C++, Ansi-style
 //============================================================================
@@ -28,16 +28,13 @@
 #define required_argument 1
 #define optional_argument 2
 
-using namespace std;
-
-//Options options;
+Options options;
 
 constexpr unsigned int caseArg(const char* str, int h = 0) {
     return !str[h] ? 5381 : (caseArg(str, h + 1) * 33) ^ str[h];
 }
 
 int main(int argc, char *argv[]) {
-    int opt, index;
 
     options.user = DEFAULT_USER;
     options.password = DEFAULT_PASS;

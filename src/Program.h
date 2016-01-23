@@ -14,7 +14,6 @@
 #include "Host.h"
 #include "Socket.h"
 
-
 class Program {
 private:
 	std::shared_ptr<boost::asio::io_service> io_service;
