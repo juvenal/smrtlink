@@ -16,7 +16,7 @@ int Switch::parse(std::string str) {
 
 	if (json.Parse(str.c_str()).HasParseError())
 		return 1;
-	if (options.flags & FLAG_DEBUG)
+	if (options.debug_level>=1)
 		std::cout << "\nParsing to document succeeded.\n";
 
 	if (json.IsObject()) {

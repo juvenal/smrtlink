@@ -277,6 +277,14 @@ void Packet::pull(bytes &arr, int &index, int &ret) {
     ret |= arr[index++] & 0xFF;
 }
 
+byte Packet::getOpCode() const {
+    return opCode;
+}
+
+void Packet::setOpCode(byte opCode) {
+    this->opCode = opCode;
+}
+
 void Packet::pull(bytes &arr, int &index, dataset &ret) {
     pull(arr, index, ret.type);
     pull(arr, index, ret.len);

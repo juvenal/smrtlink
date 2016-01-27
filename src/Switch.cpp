@@ -19,6 +19,12 @@ int Switch::parse(datasets arr) {
     return 0;
 }
 
+int Switch::print() {
+    std::cout << "\t" << settings.hostname << " (" << device.type << ")\tMAC: "
+            << device.mac << "\tIP: " << settings.ip_addr << "\n";
+    return 0;
+}
+
 int Switch::parse(dataset d) {
     switch (d.type) {
     case RCV_TYPE:
@@ -63,4 +69,3 @@ int Switch::parse(dataset d) {
     }
     return 0;
 }
-

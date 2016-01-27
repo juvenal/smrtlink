@@ -65,6 +65,7 @@ public:
 	int parse(datasets);
 	int parse(dataset);
 	int parse(std::string);
+	int print();
 	std::string toString();
 
 	struct {
