@@ -17,10 +17,12 @@
 #include "lookup.h"
 #include "table.h"
 
+using namespace std;
+
 int printHeader(Packet p) {
     if (options.flags.HEADER) {
         if (options.flags.HEX) {
-            std::cout << "Received Header:\n\t" << p.getHead() << "\n";
+            cout << "Received Header:\n\t" << p.getHead() << "\n";
         } else {
             p.printHeader();
             printf("\n");
@@ -31,55 +33,50 @@ int printHeader(Packet p) {
 
 int printPacket(Packet p) {
     if (options.flags.HEX) {
-        std::cout << "Received Payload:\n\t" << p.getBody() << "\n";
+        cout << "Received Payload:\n\t" << p.getBody() << "\n";
     } else {
         for (dataset d : p.getPayload()) {
-            auto lookup =
-                    (options.flags.REVERSE) ? snd_lookup : rcv_lookup;
+            auto lookup = (options.flags.REVERSE) ? snd_lookup : rcv_lookup;
             if (lookup.exists(d.type)) {
                 table::set s = lookup[d.type];
                 if (d.len > 0) {
                     switch (s.format) {
                     case table::STRING:
-                        std::cout << "+\t" << s.name << " = " << &d.value[0]
-                                << "\n";
+                        cout << "+\t" << s.name << " = " << &d.value[0] << "\n";
                         break;
                     case table::BOOL:
-                        std::cout << "+\t" << s.name << " = "
+                        cout << "+\t" << s.name << " = "
                                 << (d.value[0] ? "YES" : "NO") << "\n";
                         break;
                     case table::HEX:
-                        std::cout << "+\t" << s.name << " = " << d.value
-                                << "\n";
+                        cout << "+\t" << s.name << " = " << d.value << "\n";
                         break;
                     case table::DEC:
-                        std::cout << "+\t" << s.name << " = ";
+                        cout << "+\t" << s.name << " = ";
                         if (d.value.size() > 0)
-                            std::cout << std::dec << (unsigned) d.value[0];
+                            cout << dec << (unsigned) d.value[0];
                         for (unsigned i = 1; i < d.value.size(); i++)
-                            std::cout << std::dec << "."
-                                    << (unsigned) d.value[i];
-                        std::cout << "\n";
+                            cout << dec << "." << (unsigned) d.value[i];
+                        cout << "\n";
                         break;
                     case table::ACTION:
-                        std::cout << "Error:" << s.name
+                        cout << "Error:" << s.name
                                 << " is marked as 'action' but carries payload."
                                 << d.value << "\n";
                         break;
                     default:
-                        std::cout << "+\t" << s.name << " = " << d.value
-                                << "\n";
+                        cout << "+\t" << s.name << " = " << d.value << "\n";
                         break;
                     }
                 } else { //empty
-                    std::cout << std::dec << ">\t" << s.name << "\n";
+                    cout << dec << ">\t" << s.name << "\n";
                 }
             } else { //unknown id
                 if (d.len > 0) {
-                    std::cout << "##\t" << d.type << ":\n\t";
-                    std::cout << std::hex << d.value << std::dec << "\n";
+                    cout << "##\t" << d.type << ":\n\t";
+                    cout << hex << d.value << dec << "\n";
                 } else { //empty
-                    std::cout << "#>\t" << d.type << "\n";
+                    cout << "#>\t" << d.type << "\n";
                 }
             }
         }
@@ -89,11 +86,11 @@ int printPacket(Packet p) {
 
 int Program::list() {
     try {
-        std::cout << "List:\n";
+        cout << "List:\n";
         discover([this](Packet a) {
             printHeader(a);
             if (options.flags.HEX) {
-                std::cout <<"Received Payload:\n"<<a.getBody()<<"\n";
+                cout <<"Received Payload:\n"<<a.getBody()<<"\n";
             } else {
                 datasets d =a.getPayload();
                 Switch sw = Switch();
@@ -105,8 +102,8 @@ int Program::list() {
             return 0;
         });
         io_service->run();
-    } catch (std::exception& e) {
-        std::cerr << "Exception: " << e.what() << "\n";
+    } catch (exception& e) {
+        cerr << "Exception: " << e.what() << "\n";
     }
     return 0;
 }
@@ -119,80 +116,93 @@ int Program::sniff() {
         s.setHostIp(host.getIp());
         s.init(DST_PORT, SRC_PORT);
         s.callback = [](Packet p) {
-            std::cout << p.opCodeToString() << "\n";
+            cout << p.opCodeToString() << "\n";
             printHeader(p);
             printPacket(p);
             return 0;
         };
         s.listen();
         io_service.run();
-    } catch (std::exception& e) {
-        std::cerr << "Exception: " << e.what() << "\n";
+    } catch (exception& e) {
+        cerr << "Exception: " << e.what() << "\n";
     }
 
     return 0;
 }
 
-int Program::encode(std::string s) {
+int Program::encode(string s) {
     bytes d;
-    d=d.readHex(s);
+    d = d.readHex(s);
     Packet p = Packet(Packet::NONE);
     p.encode(d);
-    std::cout << d << std::endl;
+    cout << d << endl;
     return 0;
 }
 
-int Program::setProperty(std::map<std::string,std::string> prop) {
+int Program::setProperty(map<string, string> prop) {
     try {
+        datasets data = { };
+        for (auto p : prop) {
+            string s = p.second;
+            dataset d;
+            if (rcv_lookup.exists(p.first)) {
+                d.type = rcv_lookup.type(p.first);
+                if (rcv_lookup[p.first].format == table::STRING) {
+                    d.len = s.size() + 1;
+                    d.value = s;
+                    data.push_back(d);
+                }
+            }
+        }
 
-        std::cout << "List:\n";
-        discover(
-                [this](Packet a) {
-                    datasets d =a.getPayload();
-                    Switch sw = Switch();
-                    sw.parse(d);
-                    sw.print();
-
-                    datasets t = { {SND_PING, 0, {}}};
-                    get(a, t, [this](Packet a) {
-                                datasets d =a.getPayload();
-                                Switch sw = Switch();
-                                sw.parse(d);
-
-                                datasets t = { {LOOP_PREVENTION, 1, {0}}};
-                                set(a,t,
-
-                                        [this](Packet a) {
-                                            std::cout << a.opCodeToString() << "\n";
-                                            printHeader(a);
-                                            printPacket(a);
-                                            return 0;
-                                        });
-                                return 0;
-                            });
-                    return 0;
-                });
-
-        io_service->run();
-    } catch (std::exception& e) {
-        std::cerr << "Exception: " << e.what() << "\n";
-    }
-    return 0;
-}
-
-int Program::getProperty(std::vector<std::string> prop) {
-    try {
-        std::cout << "List:\n";
-        discover([this](Packet a) {
-
+        cout << "List:\n";
+        discover([this,data](Packet a) {
             datasets d =a.getPayload();
             Switch sw = Switch();
             sw.parse(d);
             sw.print();
 
-            datasets t = { {SYSTEM_INFO, 0, {}}};
-            get(a, t, [this](Packet a) {
-                        std::cout << a.opCodeToString() << "\n";
+            datasets t = { {SND_PING, 0, {}}};
+            get(a, t, [this,data](Packet a) {
+                        datasets d =a.getPayload();
+                        Switch sw = Switch();
+                        sw.parse(d);
+                        set(a,data,
+
+                                [this](Packet a) {
+                                    cout << a.opCodeToString() << "\n";
+                                    printHeader(a);
+                                    printPacket(a);
+                                    return 0;
+                                });
+                        return 0;
+                    });
+            return 0;
+        });
+
+        io_service->run();
+    } catch (exception& e) {
+        cerr << "Exception: " << e.what() << "\n";
+    }
+    return 0;
+}
+
+int Program::getProperty(vector<string> prop) {
+    try {
+        datasets data = { };
+        for (string s : prop) {
+            dataset d;
+            d.type = snd_lookup.type(s);
+            data.push_back(d);
+        }
+        cout << "List:\n";
+        discover([this,data](Packet a) {
+            datasets d =a.getPayload();
+            Switch sw = Switch();
+            sw.parse(d);
+            sw.print();
+            get(a, data, [this](Packet a) {
+                        cout << a.opCodeToString() << "\n";
                         printHeader(a);
                         printPacket(a);
                         return 0;
@@ -201,8 +211,8 @@ int Program::getProperty(std::vector<std::string> prop) {
         });
 
         io_service->run();
-    } catch (std::exception& e) {
-        std::cerr << "Exception: " << e.what() << "\n";
+    } catch (exception& e) {
+        cerr << "Exception: " << e.what() << "\n";
     }
     return 0;
 }
@@ -234,16 +244,16 @@ int Program::reboot() {
             datasets d =a.getPayload();
             Switch sw = Switch();
             sw.parse(d);
-            std::cout <<sw.settings.hostname<<"\t";
+            cout <<sw.settings.hostname<<"\t";
             datasets t = { {SND_PING, 0, {}}};
             get(a, t, [this](Packet a) {
                         datasets d =a.getPayload();
                         Switch sw = Switch();
                         sw.parse(d);
-                        datasets t = { {REBOOT, 1, {0}}};
+                        datasets t = { {REBOOT, 1, {options.flags.PERMANENT?(byte)1:(byte)0}}};
                         set(a,t,[this](Packet a) {
                                     if( a.getOpCode()==Packet::CONFIRM)
-                                    std::cout<< "rebooting now.\n";
+                                    cout<< "rebooting now.\n";
                                     return 0;
                                 });
                         return 0;
@@ -251,18 +261,42 @@ int Program::reboot() {
             return 0;
         });
         io_service->run();
-    } catch (std::exception& e) {
-        std::cerr << "Exception: " << e.what() << "\n";
+    } catch (exception& e) {
+        cerr << "Exception: " << e.what() << "\n";
     }
     return 0;
 }
 
 int Program::reset() {
-
-    return 1;
+    try {
+        discover([this](Packet a) {
+            datasets d =a.getPayload();
+            Switch sw = Switch();
+            sw.parse(d);
+            cout <<sw.settings.hostname<<"\t";
+            datasets t = { {SND_PING, 0, {}}};
+            get(a, t, [this](Packet a) {
+                        datasets d =a.getPayload();
+                        Switch sw = Switch();
+                        sw.parse(d);
+                        datasets t = { {RESET, 0, {}}};
+                        set(a,t,[this](Packet a) {
+                                    if( a.getOpCode()==Packet::CONFIRM)
+                                    cout<< "reseting config.\n";
+                                    return 0;
+                                });
+                        return 0;
+                    });
+            return 0;
+        });
+        io_service->run();
+    } catch (exception& e) {
+        cerr << "Exception: " << e.what() << "\n";
+    }
+    return 0;
 }
 
-int Program::discover(std::function<int(Packet)> c) {
+int Program::discover(function<int(Packet)> c) {
     Packet p = Packet(Packet::DISCOVERY);
     p.setHostMac(host.getMac());
     p.setPayload( { });
@@ -271,7 +305,7 @@ int Program::discover(std::function<int(Packet)> c) {
     return 0;
 }
 
-int Program::get(Packet l, datasets t, std::function<int(Packet)> c) {
+int Program::get(Packet l, datasets t, function<int(Packet)> c) {
     Packet p = Packet(Packet::GET);
     p.setSwitchMac(l.getSwitchMac());
     p.setHostMac(host.getMac());
@@ -281,15 +315,13 @@ int Program::get(Packet l, datasets t, std::function<int(Packet)> c) {
     return 0;
 }
 
-int Program::set(Packet l, datasets t, std::function<int(Packet)> c) {
+int Program::set(Packet l, datasets t, function<int(Packet)> c) {
     Packet p = Packet(Packet::SET);
     p.setSwitchMac(l.getSwitchMac());
     p.setTokenId(l.getTokenId());
     p.setHostMac(host.getMac());
     bytes n = options.user;
     bytes w = options.password;
-    n.push_back('\0');
-    w.push_back('\0');
     datasets ld = { { LOGIN_USER, (short) (n.size()), n }, { LOGIN_PASSWORD,
             (short) (w.size()), w } };
     p.setPayload(ld + t);

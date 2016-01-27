@@ -13,12 +13,12 @@
 #include <cstring>
 #include <sstream>
 #include <cstdlib>
-#include <cstdio>
 
 #include <getopt.h>
 #include <unistd.h>
 
 #include "Constant.h"
+#include "Interactive.h"
 #include "Host.h"
 #include "Program.h"
 #include "Switch.h"
@@ -54,9 +54,9 @@ int main(int argc, char *argv[]) {
                     0, 't' }, { "wait", required_argument, 0, 'w' }, { 0, 0, 0,
                     0 }, };
 
-    Program p = Program();
 
-    while ((opt = getopt_long(argc, argv, "bhrvVswxp:u:i:f:t:d::", longopts,
+
+    while ((opt = getopt_long(argc, argv, "bhrvXIswxP:U:i:f:t:d::", longopts,
             &index)) != -1) {
         switch (opt) {
 
@@ -92,6 +92,10 @@ int main(int argc, char *argv[]) {
             options.flags.WAIT = true;
             break;
 
+        case 'X':
+            options.flags.INTERACTIVE = true;
+            break;
+
         case 'v':
             if (optarg != NULL)
                 options.verbosity = atoi(optarg);
@@ -114,11 +118,11 @@ int main(int argc, char *argv[]) {
             options.file = std::string(optarg);
             break;
 
-        case 'p':
+        case 'P':
             options.password = std::string(optarg);
             break;
 
-        case 'u':
+        case 'U':
             options.user = std::string(optarg);
             break;
 
@@ -139,18 +143,28 @@ int main(int argc, char *argv[]) {
      p.input = bucket.str();
      */
 
-    if (optind >= argc) {
-        fprintf(stderr, "Command expected\n");
-        fprintf(stderr, USAGE, argv[0]);
+    if (optind >= argc && !options.flags.INTERACTIVE) {
+        cerr << "Command expected\n";
+        cerr << USAGE;
         exit(EXIT_FAILURE);
     }
 
+    if (options.flags.INTERACTIVE) {
+        if (optind < argc) {
+        cerr << "Command is ignored in interactive mode\n";
+    }
+        Interactive p = Interactive();
+        if (!p.run())
+            exit(EXIT_SUCCESS);
+        fprintf(stderr, "Not yet implemented.\n");
+        exit(EXIT_FAILURE);
+    }
+    else if (optind < argc) {
+        Program p = Program();
     p.init();
     std::vector<std::string> vect;
     std::map<std::string, std::string> list;
     std::cmatch sm;
-
-    if (optind < argc) {
         std::string cmd = std::string(argv[optind++]);
         switch (caseArg(cmd.c_str())) {
         case caseArg("reboot"):
@@ -209,7 +223,7 @@ int main(int argc, char *argv[]) {
             while (optind < argc) {
                 if (regex_match(argv[optind], sm,
                         std::regex("^([a-z]+)=(.*)$"))) {
-                    if (!snd_lookup.exists(sm[1])) {
+                    if (!snd_lookup.exists(sm[1])&&!rcv_lookup.exists(sm[1])) {
                         cerr << "Unknown argument " << argv[optind] << endl;
                         exit(EXIT_FAILURE);
                     }
@@ -229,7 +243,7 @@ int main(int argc, char *argv[]) {
         case caseArg("get"):
             while (optind < argc) {
                 if (regex_match(argv[optind], sm, std::regex("^([a-z]+)$"))) {
-                    if (!snd_lookup.exists(sm[1])) {
+                    if (!snd_lookup.exists(sm[1])&&!rcv_lookup.exists(sm[1])) {
                         cerr << "Unknown argument " << argv[optind] << endl;
                         exit(EXIT_FAILURE);
                     }

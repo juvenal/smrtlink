@@ -28,6 +28,7 @@ public:
 	}
 
 	bytes(std::string d) : vector(d.begin(), d.end()){
+        this->push_back('\0');
 	}
 
 	bytes(std::initializer_list<uint8_t> s)

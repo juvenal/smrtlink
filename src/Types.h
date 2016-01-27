@@ -120,6 +120,7 @@ struct Options {
         bool HEADER;
         bool PERMANENT;
         bool WAIT;
+        bool INTERACTIVE;
     } flags;
     std::string user;
     std::string password;
