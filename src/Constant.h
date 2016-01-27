@@ -11,8 +11,8 @@
 #include "Types.h"
 
 #define VERSION "smrtlink (v1.1 Linux)\n"
-#define USAGE "usage: %s [-bdhjrvswx] [-i interface] [-u [password:]username]\n\
-	[-p password] <command>\n\n"
+#define USAGE "usage: %s [-bdhjrvVstwx] [-i interface] [-U [password:]username]\n\
+	[-P password] <command>\n\n"
 #define HELP "\
     Option Summary:\n\
         -h --help               This help text\n\
@@ -24,7 +24,7 @@
         -i --interface <iface>  only use one Interface\n\
         -t --timeout <n>        Timeout in milliseconds. Default: 180\n\
         -w --wait               Not yet implemented: blocking until operation is completed\n\
-        -s --permanent          Not yet implemented: make changes immediately permanent\n\
+        -s --permanent          make changes immediately permanent\n\
 \
         -b --header             Show header\n\
         -t --text               Display Packets as readable Text (default)\n\
@@ -48,8 +48,8 @@
                         Not yet implemented\n\
         set <property1>=<value> [<property2>=<value> [...]]\n\
                         Not yet implemented\n\
-        get|save        Not yet implemented: save config to file\n\
-        set|restore     Not yet implemented: restore onfig from file\n\
+        save            Not yet implemented: save config to file\n\
+        restore         Not yet implemented: restore onfig from file\n\
         flash           Not yet implemented: replace firmware\n\
         reboot          Not yet implemented\n\
         reset           Not yet implemented\n\n\

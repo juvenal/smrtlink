@@ -46,8 +46,8 @@ int main(int argc, char *argv[]) {
             "verbose", no_argument, 0, 'v' }, { "help", no_argument, 0, 'h' }, {
             "reverse", no_argument, 0, 'r' },
             { "permanent", no_argument, 0, 's' }, { "debug", optional_argument,
-                    0, 'd' }, { "password", required_argument, 0, 'p' }, {
-                    "user", required_argument, 0, 'u' }, { "interface",
+                    0, 'd' }, { "password", required_argument, 0, 'P' }, {
+                    "user", required_argument, 0, 'U' }, { "interface",
                     required_argument, 0, 'i' }, { "header", required_argument,
                     0, 'b' }, { "hex", required_argument, 0, 'x' }, { "file",
                     required_argument, 0, 'f' }, { "timeout", required_argument,
@@ -56,7 +56,7 @@ int main(int argc, char *argv[]) {
 
 
 
-    while ((opt = getopt_long(argc, argv, "bhrvXIswxP:U:i:f:t:d::", longopts,
+    while ((opt = getopt_long(argc, argv, "bhrvVXIswxP:U:i:f:t:d::", longopts,
             &index)) != -1) {
         switch (opt) {
 
