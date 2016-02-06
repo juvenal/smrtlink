@@ -1,14 +1,13 @@
 //============================================================================
 // Name        : smrtlink.cpp
 // Author      : jdi
-// Version     :
+// Version     : 1.2
 // Copyright   : GPL v2
 // Description : SmrtLink in C++, Ansi-style
 //============================================================================
 
 #include <iostream>
 #include <string>
-#include <regex>
 
 #include <cstring>
 #include <sstream>
@@ -21,6 +20,7 @@
 #include "Interactive.h"
 #include "Host.h"
 #include "Program.h"
+#include "Types.h"
 #include "Switch.h"
 #include "lookup.h"
 
@@ -32,12 +32,8 @@ using namespace std;
 
 Options options;
 
-constexpr unsigned int caseArg(const char* str, int h = 0) {
-    return !str[h] ? 5381 : (caseArg(str, h + 1) * 33) ^ str[h];
-}
-
 int main(int argc, char *argv[]) {
-    int index,opt;
+    int index, opt;
 
     options.user = DEFAULT_USER;
     options.password = DEFAULT_PASS;
@@ -53,8 +49,6 @@ int main(int argc, char *argv[]) {
                     required_argument, 0, 'f' }, { "timeout", required_argument,
                     0, 't' }, { "wait", required_argument, 0, 'w' }, { 0, 0, 0,
                     0 }, };
-
-
 
     while ((opt = getopt_long(argc, argv, "bhrvVXIswxP:U:i:f:t:d::", longopts,
             &index)) != -1) {
@@ -151,116 +145,20 @@ int main(int argc, char *argv[]) {
 
     if (options.flags.INTERACTIVE) {
         if (optind < argc) {
-        cerr << "Command is ignored in interactive mode\n";
-    }
+            cerr << "Command is ignored in interactive mode\n";
+        }
         Interactive p = Interactive();
-        if (!p.run())
+        if (!p.loop())
             exit(EXIT_SUCCESS);
         fprintf(stderr, "Not yet implemented.\n");
         exit(EXIT_FAILURE);
-    }
-    else if (optind < argc) {
+    } else if (optind < argc) {
         Program p = Program();
-    p.init();
-    std::vector<std::string> vect;
-    std::map<std::string, std::string> list;
-    std::cmatch sm;
-        std::string cmd = std::string(argv[optind++]);
-        switch (caseArg(cmd.c_str())) {
-        case caseArg("reboot"):
-            if (!p.reboot())
-                exit(EXIT_SUCCESS);
-            fprintf(stderr, "Not yet implemented.\n");
-            exit(EXIT_FAILURE);
-            break;
-        case caseArg("reset"):
-            if (!p.reset())
-                exit(EXIT_SUCCESS);
-            fprintf(stderr, "Not yet implemented.\n");
-            exit(EXIT_FAILURE);
-            break;
-        case caseArg("save"):
-            if (!p.save())
-                exit(EXIT_SUCCESS);
-            fprintf(stderr, "Not yet implemented.\n");
-            exit(EXIT_FAILURE);
-            break;
-        case caseArg("restore"):
-            if (!p.restore())
-                exit(EXIT_SUCCESS);
-            fprintf(stderr, "Not yet implemented.\n");
-            exit(EXIT_FAILURE);
-            break;
-        case caseArg("flash"):
-            if (!p.flash())
-                exit(EXIT_SUCCESS);
-            fprintf(stderr, "Not yet implemented.\n");
-            exit(EXIT_FAILURE);
-            break;
-
-        case caseArg("list"):
-            if (!p.list())
-                exit(EXIT_SUCCESS);
-            break;
-
-        case caseArg("sniff"):
-            if (!p.sniff())
-                exit(EXIT_SUCCESS);
-            break;
-
-        case caseArg("encode"):
-            if (optind < argc) {
-                std::string s(argv[optind]);
-                optind++;
-                if (p.encode(s))
-                    exit(EXIT_SUCCESS);
-            } else {
-                fprintf(stderr, "Argument expected after encode\n");
-                exit(EXIT_FAILURE);
-            }
-            break;
-        case caseArg("set"):
-            while (optind < argc) {
-                if (regex_match(argv[optind], sm,
-                        std::regex("^([a-z]+)=(.*)$"))) {
-                    if (!snd_lookup.exists(sm[1])&&!rcv_lookup.exists(sm[1])) {
-                        cerr << "Unknown argument " << argv[optind] << endl;
-                        exit(EXIT_FAILURE);
-                    }
-                    list.insert(
-                            std::pair<std::string, std::string>(sm[1], sm[2]));
-                } else {
-                    cerr << "Invalid Syntax " << argv[optind] << endl;
-                    exit(EXIT_FAILURE);
-                }
-                optind++;
-            }
-            if (!p.setProperty(list))
-                exit(EXIT_SUCCESS);
-            fprintf(stderr, "Not yet implemented.\n");
-            exit(EXIT_FAILURE);
-            break;
-        case caseArg("get"):
-            while (optind < argc) {
-                if (regex_match(argv[optind], sm, std::regex("^([a-z]+)$"))) {
-                    if (!snd_lookup.exists(sm[1])&&!rcv_lookup.exists(sm[1])) {
-                        cerr << "Unknown argument " << argv[optind] << endl;
-                        exit(EXIT_FAILURE);
-                    }
-                    vect.push_back(sm[1]);
-                } else {
-                    cerr << "Invalid argument " << argv[optind] << endl;
-                    exit(EXIT_FAILURE);
-                }
-                optind++;
-            }
-            if (!p.getProperty(vect))
-                exit(EXIT_SUCCESS);
-            break;
-        default:
-            printf("Unknown command: %s\n", cmd.c_str());
-            exit(EXIT_FAILURE);
-        }
+        p.init();
+        vector<string> v;
+        while (optind < argc)
+            v.push_back(argv[optind++]);
+        p.run(v);
     }
     exit(EXIT_FAILURE);
 }

@@ -65,8 +65,12 @@ public:
 	int parse(datasets);
 	int parse(dataset);
 	int parse(std::string);
-	int print();
+	int set(std::pair<std::string,std::string>);
+
+	std::string get(std::string);
 	std::string toString();
+
+	int print();
 
 	struct {
 		std::string type;

@@ -158,8 +158,8 @@ std::string Packet::opCodeToString() {
         return "SET";
     case CONFIRM:
         return "CONFIRM";
-    case RETURN:
-        return "RETURN";
+    case REPLY:
+        return "REPLY";
     default:
         return "NONE";
     }

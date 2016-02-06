@@ -95,6 +95,14 @@ public:
     }
 };
 
+namespace smrtlink {
+
+constexpr unsigned int caseArg(const char* str, int h = 0) {
+    return !str[h] ? 5381 : (caseArg(str, h + 1) * 33) ^ str[h];
+}
+
+}
+
 template<typename T>
 std::vector<T> operator+(const std::vector<T> &A, const std::vector<T> &B) {
     std::vector<T> AB;
@@ -117,6 +125,7 @@ struct Options {
         bool JSON;
         bool PLAIN;
         bool REVERSE;
+
         bool HEADER;
         bool PERMANENT;
         bool WAIT;
@@ -128,7 +137,7 @@ struct Options {
     std::string file;
     int debug_level = 0;
     int verbosity = 0;
-    long timeout = 180U;
+    long timeout = 250U;
 };
 
 #endif /* TYPES_H_ */

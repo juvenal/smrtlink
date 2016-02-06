@@ -18,7 +18,7 @@ static short sequenceId=0;
 class Packet
 {
 public:
-    enum OpCode {DISCOVERY, GET, RETURN, SET, CONFIRM, NONE};
+    enum OpCode {DISCOVERY, GET, REPLY, SET, CONFIRM, NONE};
     Packet(OpCode);
     static void encode(bytes&);
     bytes getBytes();

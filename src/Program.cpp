@@ -6,6 +6,9 @@
  */
 #include <iostream>
 #include <algorithm>
+#include <regex>
+#include <string>
+#include <cstring>
 
 #include "Constant.h"
 #include "Program.h"
@@ -14,10 +17,116 @@
 #include "Socket.h"
 #include "Switch.h"
 #include "Packet.h"
+#include "Types.h"
 #include "lookup.h"
 #include "table.h"
 
+using namespace smrtlink;
 using namespace std;
+
+int Program::run(vector<string> arg) {
+    int optind = 0;
+    std::vector<std::string> vect;
+    std::map<std::string, std::string> ll;
+    std::cmatch sm;
+    std::string cmd = arg[optind++];
+    switch (caseArg(cmd.c_str())) {
+    case caseArg("reboot"):
+        if (!reboot())
+            return 0;
+        fprintf(stderr, "Not yet implemented.\n");
+        return 1;
+        break;
+    case caseArg("reset"):
+        if (!reset())
+            return 0;
+        fprintf(stderr, "Not yet implemented.\n");
+        return 1;
+        break;
+    case caseArg("save"):
+        if (!save())
+            return 0;
+        fprintf(stderr, "Not yet implemented.\n");
+        return 1;
+        break;
+    case caseArg("restore"):
+        if (!restore())
+            return 0;
+        fprintf(stderr, "Not yet implemented.\n");
+        return 1;
+        break;
+    case caseArg("flash"):
+        if (!flash())
+            return 0;
+        fprintf(stderr, "Not yet implemented.\n");
+        return 1;
+        break;
+
+    case caseArg("list"):
+        if (!list())
+            return 0;
+        break;
+
+    case caseArg("sniff"):
+        if (!sniff())
+            return 0;
+        break;
+
+    case caseArg("encode"):
+        if (optind < arg.size()) {
+            std::string s(arg[optind]);
+            optind++;
+            if (encode(s))
+                return 0;
+        } else {
+            fprintf(stderr, "Argument expected after encode\n");
+            return 1;
+        }
+        break;
+    case caseArg("set"):
+        while (optind < arg.size()) {
+            if (regex_match(arg[optind].c_str(), sm,
+                    std::regex("^([a-z]+)=(.*)$"))) {
+                if (!snd_lookup.exists(sm[1]) && !rcv_lookup.exists(sm[1])) {
+                    cerr << "Unknown argument " << arg[optind] << endl;
+                    return 1;
+                }
+                ll.insert(std::pair<std::string, std::string>(sm[1], sm[2]));
+            } else {
+                cerr << "Invalid Syntax " << arg[optind] << endl;
+                return 1;
+            }
+            optind++;
+        }
+        if (!setProperty(ll))
+            return 0;
+        fprintf(stderr, "Not yet implemented.\n");
+        return 1;
+        break;
+    case caseArg("get"):
+        while (optind < arg.size()) {
+            if (regex_match(arg[optind].c_str(), sm,
+                    std::regex("^([a-z]+)$"))) {
+                if (!snd_lookup.exists(sm[1]) && !rcv_lookup.exists(sm[1])) {
+                    cerr << "Unknown argument " << arg[optind] << endl;
+                    return 1;
+                }
+                vect.push_back(sm[1]);
+            } else {
+                cerr << "Invalid argument " << arg[optind] << endl;
+                return 1;
+            }
+            optind++;
+        }
+        if (!getProperty(vect))
+            return 0;
+        break;
+    default:
+        printf("Unknown command: %s\n", cmd.c_str());
+        return 1;
+    }
+
+}
 
 int printHeader(Packet p) {
     if (options.flags.HEADER) {
@@ -240,26 +349,27 @@ int Program::flash() {
 
 int Program::reboot() {
     try {
-        discover([this](Packet a) {
-            datasets d =a.getPayload();
-            Switch sw = Switch();
-            sw.parse(d);
-            cout <<sw.settings.hostname<<"\t";
-            datasets t = { {SND_PING, 0, {}}};
-            get(a, t, [this](Packet a) {
-                        datasets d =a.getPayload();
-                        Switch sw = Switch();
-                        sw.parse(d);
-                        datasets t = { {REBOOT, 1, {options.flags.PERMANENT?(byte)1:(byte)0}}};
-                        set(a,t,[this](Packet a) {
-                                    if( a.getOpCode()==Packet::CONFIRM)
-                                    cout<< "rebooting now.\n";
-                                    return 0;
-                                });
-                        return 0;
-                    });
-            return 0;
-        });
+        discover(
+                [this](Packet a) {
+                    datasets d =a.getPayload();
+                    Switch sw = Switch();
+                    sw.parse(d);
+                    cout <<sw.settings.hostname<<"\t";
+                    datasets t = { {SND_PING, 0, {}}};
+                    get(a, t, [this](Packet a) {
+                                datasets d =a.getPayload();
+                                Switch sw = Switch();
+                                sw.parse(d);
+                                datasets t = { {REBOOT, 1, {options.flags.PERMANENT?(byte)1:(byte)0}}};
+                                set(a,t,[this](Packet a) {
+                                            if( a.getOpCode()==Packet::CONFIRM)
+                                            cout<< "rebooting now.\n";
+                                            return 0;
+                                        });
+                                return 0;
+                            });
+                    return 0;
+                });
         io_service->run();
     } catch (exception& e) {
         cerr << "Exception: " << e.what() << "\n";

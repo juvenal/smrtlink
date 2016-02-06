@@ -13,12 +13,15 @@
 #include "Host.h"
 #include "Types.h"
 
+#define SEND_F 1
+#define RECEIVE_F 2
+
 Socket::Socket(boost::asio::io_service& io_service) :
         send_socket_(io_service), receive_socket_(io_service), timer(io_service) {
 }
 //, resolver(				io_service)
 void Socket::init(short dst_port, short src_port) {
-    if (initialized)
+    if (initialized == 3)
         return;
 
     if (options.flags.REVERSE) {
@@ -27,7 +30,7 @@ void Socket::init(short dst_port, short src_port) {
         src_port = p;
     }
 
-    if (options.debug_level>=1)
+    if (options.debug_level >= 1)
         std::cout << "Local IP:\t" << local_ip << "\n";
 
     wildcard_endpoint_ = boost::asio::ip::udp::endpoint(
@@ -38,29 +41,7 @@ void Socket::init(short dst_port, short src_port) {
             boost::asio::ip::address_v4::from_string("255.255.255.255"),
             dst_port);
 
-    send_socket_.open(boost::asio::ip::udp::v4());
-    send_socket_.set_option(boost::asio::socket_base::broadcast(true));
-    send_socket_.set_option(boost::asio::socket_base::reuse_address(true));
-    send_socket_.bind(local_endpoint_);
-
-    receive_socket_.open(boost::asio::ip::udp::v4());
-    receive_socket_.set_option(boost::asio::socket_base::broadcast(true));
-    receive_socket_.set_option(boost::asio::socket_base::reuse_address(true));
-    receive_socket_.bind(wildcard_endpoint_);
-
-    if (options.timeout != 0) {
-        timer.expires_from_now(
-                boost::posix_time::milliseconds(options.timeout));
-        timer.async_wait([this](const boost::system::error_code& error)
-        {
-            if (!error)
-            {
-                receive_socket_.close();
-            }
-        });
-    }
-
-    initialized = 1;
+    initialized = 3;
 }
 
 void Socket::setHostIp(ipAddr ip) {
@@ -68,6 +49,12 @@ void Socket::setHostIp(ipAddr ip) {
 }
 
 void Socket::send(Packet p) {
+    if (!send_socket_.is_open() || !(initialized&SEND_F)) {
+        send_socket_.open(boost::asio::ip::udp::v4());
+        send_socket_.set_option(boost::asio::socket_base::broadcast(true));
+        send_socket_.set_option(boost::asio::socket_base::reuse_address(true));
+        send_socket_.bind(local_endpoint_);
+    }
     bytes data = p.getBytes();
     p.encode(data);
     unsigned char * a = &data[0];
@@ -80,6 +67,25 @@ void Socket::send(Packet p) {
 }
 
 void Socket::listen() {
+    if (!receive_socket_.is_open() || !(initialized & RECEIVE_F)) {
+        receive_socket_.open(boost::asio::ip::udp::v4());
+        receive_socket_.set_option(boost::asio::socket_base::broadcast(true));
+        receive_socket_.set_option(
+                boost::asio::socket_base::reuse_address(true));
+        receive_socket_.bind(wildcard_endpoint_);
+    }
+    if (options.timeout != 0) {
+        timer.expires_from_now(
+                boost::posix_time::milliseconds(options.timeout));
+        timer.async_wait([this](const boost::system::error_code& error)
+        {
+            if (!error)
+            {
+                receive_socket_.close();
+                initialized&=~RECEIVE_F;
+            }
+        });
+    }
     data.resize(MAX_LENGTH);
     receive_socket_.async_receive_from(boost::asio::buffer(data, MAX_LENGTH),
             remote_endpoint_,
@@ -92,7 +98,7 @@ void Socket::listen() {
                     data.resize(bytes_recvd);
                     Packet p = Packet(Packet::NONE);
                     p.encode(data);
-                   // std::cout << "err" << p.getErrorCode() <<std::endl;
+                    // std::cout << "err" << p.getErrorCode() <<std::endl;
                     p.parse(data);
                     //std::cout << "err" << p.getErrorCode() <<std::endl;
                     if(!callback(p)) {

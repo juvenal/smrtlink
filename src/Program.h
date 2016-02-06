@@ -28,6 +28,8 @@ public:
 		sock = std::make_shared<Socket>(*io_service);
 	}
 	void init();
+    int run(std::vector<std::string>);
+
 	int list();
 	int sniff();
 	int encode(std::string);

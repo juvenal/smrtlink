@@ -12,7 +12,7 @@ class Interactive {
 public:
     Interactive();
     virtual ~Interactive();
-    int run();
+    int loop();
 };
 
 #endif /* INTERACTIVE_H_ */
