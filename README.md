@@ -3,8 +3,10 @@ Command-Line Tool which might in the future be able to configure TP-Link Easy Sm
 The usage is loosely based on the swconfig utility.
 
 ### dependencys
-	libboost-filesystem-dev
-	libboost-system-dev
+	libboost-filesystem
+	libboost-system
+	libboost-program-options
+	libreadline
 
 ### compatible devices
 + TL-SG105E
