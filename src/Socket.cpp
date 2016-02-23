@@ -5,9 +5,7 @@
  *      Author: jdi
  */
 #include <cstdlib>
-
 #include <map>
-
 #include <unistd.h>
 #include "Socket.h"
 #include "Packet.h"

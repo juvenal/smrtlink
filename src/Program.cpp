@@ -277,7 +277,6 @@ int Program::setProperty(map<string, string> prop) {
                     });
             return 0;
         });
-
     } catch (exception& e) {
         cerr << "Exception: " << e.what() << "\n";
     }
@@ -405,7 +404,6 @@ int Program::get(Packet l, datasets t, Listener c) {
     p.setSwitchMac(l.getSwitchMac());
     p.setHostMac(host.getMac());
     p.setPayload(t);
-    //cout << "listen REPLY from "<<l.getSwitchMac()<<endl;
     sock->listen(c, Filter(Packet::REPLY).mac(l.getSwitchMac()));
     sock->send(p);
     return 0;
@@ -421,7 +419,6 @@ int Program::set(Packet l, datasets t, Listener c) {
     datasets ld = { { LOGIN_USER, (short) (n.size()), n }, { LOGIN_PASSWORD,
             (short) (w.size()), w } };
     p.setPayload(ld + t);
-    //cout << "listen CONFIRM from "<<l.getSwitchMac()<<endl;
     sock->listen(c, Filter(Packet::CONFIRM).mac(l.getSwitchMac()));
     sock->send(p);
     return 0;
