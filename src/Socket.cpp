@@ -5,11 +5,14 @@
  *      Author: jdi
  */
 #include <cstdlib>
-#include <array>
+
+#include <map>
+
 #include <unistd.h>
 #include "Socket.h"
 #include "Packet.h"
 #include "Constant.h"
+#include "Filter.h"
 #include "Host.h"
 #include "Types.h"
 
@@ -17,6 +20,10 @@ Socket::Socket(boost::asio::io_service& io_service) :
         send_socket_(io_service), receive_socket_(io_service), timer(io_service) {
 }
 //, resolver(				io_service)
+
+Socket::~Socket() {
+}
+
 void Socket::init(short dst_port, short src_port) {
     if (options.flags.REVERSE) {
         short p = dst_port;
@@ -50,6 +57,15 @@ void Socket::setHostIp(ipAddr ip) {
     local_ip = ip;
 }
 
+void Socket::listen(Listener l, Filter f) {
+    if (callback.find(f) == callback.end()) {
+        callback.insert(ListenerPair(f, l));
+    } else {
+        callback[f] = l;
+    }
+    receive();
+}
+
 void Socket::send(Packet p) {
     bytes data = p.getBytes();
     p.encode(data);
@@ -76,11 +92,15 @@ void Socket::receive() {
                     data.resize(bytes_recvd);
                     Packet p = Packet(Packet::NONE);
                     p.encode(data);
-                    // std::cout << "err" << p.getErrorCode() <<std::endl;
                     p.parse(data);
-                    //std::cout << "err" << p.getErrorCode() <<std::endl;
-                    if(!callback(p)) {
-                        //TODO do something
+                    for(auto r : callback) {
+                        if(r.first.pass(p)) {
+                            r.second(p);
+                            // std::cout<<"pass"<<std::endl;
+                            break;
+                        } else {
+                            // std::cout<<"no pass"<<std::endl;
+                        }
                     }
                     receive();
                     settimeout();

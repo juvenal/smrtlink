@@ -17,6 +17,7 @@
 #include "Socket.h"
 #include "Switch.h"
 #include "Packet.h"
+#include "Filter.h"
 #include "Types.h"
 #include "lookup.h"
 #include "table.h"
@@ -220,18 +221,16 @@ int Program::sniff() {
         Socket s(io_service);
         s.setHostIp(host.getIp());
         s.init(DST_PORT, SRC_PORT);
-        s.callback = [](Packet p) {
+        s.listen([](Packet p) {
             cout << p.opCodeToString() << "\n";
             printHeader(p);
             printPacket(p);
             return 0;
-        };
-        s.receive();
+        });
         io_service.run();
     } catch (exception& e) {
         cerr << "Exception: " << e.what() << "\n";
     }
-
     return 0;
 }
 
@@ -406,7 +405,7 @@ int Program::discover(function<int(Packet)> c) {
     Packet p = Packet(Packet::DISCOVERY);
     p.setHostMac(host.getMac());
     p.setPayload( { });
-    sock->callback = c;
+    sock->listen(c,Filter(Packet::REPLY));
     sock->send(p);
     return 0;
 }
@@ -416,7 +415,7 @@ int Program::get(Packet l, datasets t, function<int(Packet)> c) {
     p.setSwitchMac(l.getSwitchMac());
     p.setHostMac(host.getMac());
     p.setPayload(t);
-    sock->callback = c;
+    sock->listen(c,Filter(Packet::REPLY));
     sock->send(p);
     return 0;
 }
@@ -431,7 +430,7 @@ int Program::set(Packet l, datasets t, function<int(Packet)> c) {
     datasets ld = { { LOGIN_USER, (short) (n.size()), n }, { LOGIN_PASSWORD,
             (short) (w.size()), w } };
     p.setPayload(ld + t);
-    sock->callback = c;
+    sock->listen(c,Filter(Packet::CONFIRM));
     sock->send(p);
     return 0;
 }

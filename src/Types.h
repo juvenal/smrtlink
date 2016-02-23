@@ -50,6 +50,20 @@ public:
             else break;
         }
     }
+
+    bool operator==(const macAddr &A) {
+        for (unsigned i = 0; i < 6; i++) {
+            if(A[i]!=(*this)[i])return false;
+        }
+        return true;
+    }
+
+    bool operator!=(const macAddr &A) {
+        for (unsigned i = 0; i < 6; i++) {
+            if(A[i]!=(*this)[i])return true;
+        }
+        return false;
+    }
 };
 
 /*

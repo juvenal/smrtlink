@@ -13,12 +13,13 @@
 
 #include "Types.h"
 
-static short sequenceId=0;
+static short sequenceId = 0;
 
-class Packet
-{
+class Packet {
 public:
-    enum OpCode {DISCOVERY, GET, REPLY, SET, CONFIRM, NONE};
+    enum OpCode {
+        DISCOVERY, GET, REPLY, SET, CONFIRM, NONE
+    };
     Packet(OpCode);
     static void encode(bytes&);
     bytes getBytes();
@@ -37,7 +38,7 @@ public:
     void setHostMac(macAddr);
     void setSwitchMac(macAddr);
     void setCheckSum(int);
-    void setSequenceId(short );
+    void setSequenceId(short);
     void setPayload(datasets payload);
     short getTokenId() const;
     void setTokenId(short tokenId = 0);
@@ -50,9 +51,9 @@ private:
     datasets payload;
     byte version = 1;
     byte opCode;
-    macAddr switchMac { {0, 0, 0, 0, 0, 0}};
-    macAddr hostMac { {0, 0, 0, 0, 0, 0}};
-    macAddr broadcastMac { {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF}};
+    macAddr switchMac { { 0, 0, 0, 0, 0, 0 } };
+    macAddr hostMac { { 0, 0, 0, 0, 0, 0 } };
+    macAddr broadcastMac { { 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF } };
     short tokenId = 0;
     short fragmentOffset = 0;
     int errorCode = 0;
@@ -60,7 +61,7 @@ private:
     short flag = 0;
     void buildHead();
     void buildBody();
-    void push(bytes&, int&, short );
+    void push(bytes&, int&, short);
     void push(bytes&, int&, int);
     void push(bytes&, int&, byte);
     void push(bytes&, int&, bytes);
@@ -70,7 +71,7 @@ private:
     void pull(bytes&, int&, short &);
     void pull(bytes&, int&, int&);
     void pull(bytes&, int&, byte&);
-    void pull(bytes&, int&, bytes&, unsigned );
+    void pull(bytes&, int&, bytes&, unsigned);
     void pull(bytes&, int&, ipAddr&);
     void pull(bytes&, int&, macAddr&);
     void pull(bytes&, int&, dataset&);
