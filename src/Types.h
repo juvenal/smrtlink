@@ -50,6 +50,28 @@ public:
             else break;
         }
     }
+
+    int hash() {
+        int ret=0;
+        for (unsigned i = 0; i < 6; i++) {
+            ret = (ret*33) ^ (*this)[i];
+        }
+        return ret;
+    }
+
+    bool operator==(const macAddr &A) {
+        for (unsigned i = 0; i < 6; i++) {
+            if(A[i]!=(*this)[i])return false;
+        }
+        return true;
+    }
+
+    bool operator!=(const macAddr &A) {
+        for (unsigned i = 0; i < 6; i++) {
+            if(A[i]!=(*this)[i])return true;
+        }
+        return false;
+    }
 };
 
 /*
@@ -95,6 +117,14 @@ public:
     }
 };
 
+namespace smrtlink {
+
+constexpr unsigned int caseArg(const char* str, int h = 0) {
+    return !str[h] ? 5381 : (caseArg(str, h + 1) * 33) ^ str[h];
+}
+
+}
+
 template<typename T>
 std::vector<T> operator+(const std::vector<T> &A, const std::vector<T> &B) {
     std::vector<T> AB;
@@ -117,6 +147,7 @@ struct Options {
         bool JSON;
         bool PLAIN;
         bool REVERSE;
+
         bool HEADER;
         bool PERMANENT;
         bool WAIT;
@@ -128,7 +159,7 @@ struct Options {
     std::string file;
     int debug_level = 0;
     int verbosity = 0;
-    long timeout = 180U;
+    long timeout = 250U;
 };
 
 #endif /* TYPES_H_ */
