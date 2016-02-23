@@ -143,22 +143,20 @@ int main(int argc, char *argv[]) {
         exit(EXIT_FAILURE);
     }
 
+    Interactive p = Interactive();
     if (options.flags.INTERACTIVE) {
         if (optind < argc) {
             cerr << "Command is ignored in interactive mode\n";
         }
-        Interactive p = Interactive();
         if (!p.loop())
             exit(EXIT_SUCCESS);
         fprintf(stderr, "Not yet implemented.\n");
         exit(EXIT_FAILURE);
     } else if (optind < argc) {
-        Program p = Program();
-        p.init();
         vector<string> v;
         while (optind < argc)
             v.push_back(argv[optind++]);
-        p.run(v);
+        p.single(v);
     }
     exit(EXIT_FAILURE);
 }

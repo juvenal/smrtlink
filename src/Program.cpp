@@ -34,14 +34,10 @@ int Program::run(vector<string> arg) {
     case caseArg("reboot"):
         if (!reboot())
             return 0;
-        fprintf(stderr, "Not yet implemented.\n");
-        return 1;
         break;
     case caseArg("reset"):
         if (!reset())
             return 0;
-        fprintf(stderr, "Not yet implemented.\n");
-        return 1;
         break;
     case caseArg("save"):
         if (!save())
@@ -230,7 +226,7 @@ int Program::sniff() {
             printPacket(p);
             return 0;
         };
-        s.listen();
+        s.receive();
         io_service.run();
     } catch (exception& e) {
         cerr << "Exception: " << e.what() << "\n";
@@ -441,6 +437,8 @@ int Program::set(Packet l, datasets t, function<int(Packet)> c) {
 }
 
 void Program::init() {
+    io_service = std::make_shared<boost::asio::io_service>();
+    sock = std::make_shared < Socket > (*io_service);
     if (options.interface.compare("") == 0)
         options.interface = host.getIface();
 

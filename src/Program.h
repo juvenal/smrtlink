@@ -23,12 +23,12 @@ private:
     int set(Packet,datasets,std::function<int(Packet)>);
     int discover(std::function<int(Packet)>);
 public:
-	Program() {
-		io_service = std::make_shared<boost::asio::io_service>();
-		sock = std::make_shared<Socket>(*io_service);
-	}
+	Program() {}
 	void init();
     int run(std::vector<std::string>);
+    std::function<int()> callback = []() {
+        return 0;
+    };
 
 	int list();
 	int sniff();
