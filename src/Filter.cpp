@@ -44,10 +44,10 @@ bool Filter::pass(const Packet p) const {
 
 bool Filter::operator<(const Filter f) const {
     if (this->oc != f.oc)
-    return this->oc < f.oc;
+    return this->oc > f.oc;
     if (this->switchMac != f.switchMac)
-        return this->switchMac < f.switchMac;
-    if (this->tokenId < f.tokenId)
-        return this->tokenId < f.tokenId;
+        return this->switchMac > f.switchMac;
+    if (this->tokenId != f.tokenId)
+        return this->tokenId > f.tokenId;
     return false;
 }

@@ -27,6 +27,7 @@ public:
     Socket(boost::asio::io_service&);
     virtual ~Socket();
     void init(short, short);
+    void clear();
     void send(Packet);
     void setHostIp(ipAddr);
     void listen(Listener l, Filter f = Filter());

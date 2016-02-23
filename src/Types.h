@@ -51,6 +51,14 @@ public:
         }
     }
 
+    int hash() {
+        int ret=0;
+        for (unsigned i = 0; i < 6; i++) {
+            ret = (ret*33) ^ (*this)[i];
+        }
+        return ret;
+    }
+
     bool operator==(const macAddr &A) {
         for (unsigned i = 0; i < 6; i++) {
             if(A[i]!=(*this)[i])return false;

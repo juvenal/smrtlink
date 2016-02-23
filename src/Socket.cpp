@@ -16,6 +16,8 @@
 #include "Host.h"
 #include "Types.h"
 
+using namespace std;
+
 Socket::Socket(boost::asio::io_service& io_service) :
         send_socket_(io_service), receive_socket_(io_service), timer(io_service) {
 }
@@ -55,6 +57,10 @@ void Socket::init(short dst_port, short src_port) {
 
 void Socket::setHostIp(ipAddr ip) {
     local_ip = ip;
+}
+
+void Socket::clear(){
+    callback.clear();
 }
 
 void Socket::listen(Listener l, Filter f) {

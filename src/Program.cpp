@@ -31,50 +31,47 @@ int Program::run(vector<string> arg) {
     std::map<std::string, std::string> ll;
     std::cmatch sm;
     std::string cmd = arg[optind++];
+
+    io_service->reset();
+    sock->clear();
     switch (caseArg(cmd.c_str())) {
     case caseArg("reboot"):
-        if (!reboot())
-            return 0;
+        if (reboot())
+            return 1;
         break;
     case caseArg("reset"):
         if (!reset())
             return 0;
         break;
     case caseArg("save"):
-        if (!save())
-            return 0;
-        fprintf(stderr, "Not yet implemented.\n");
-        return 1;
+        if (save())
+            return 1;
         break;
     case caseArg("restore"):
-        if (!restore())
-            return 0;
-        fprintf(stderr, "Not yet implemented.\n");
-        return 1;
+        if (restore())
+            return 1;
         break;
     case caseArg("flash"):
-        if (!flash())
-            return 0;
-        fprintf(stderr, "Not yet implemented.\n");
-        return 1;
+        if (flash())
+            return 1;
         break;
 
     case caseArg("list"):
-        if (!list())
-            return 0;
+        if (list())
+            return 1;
         break;
 
     case caseArg("sniff"):
-        if (!sniff())
-            return 0;
+        if (sniff())
+            return 1;
         break;
 
     case caseArg("encode"):
         if (optind < arg.size()) {
             std::string s(arg[optind]);
             optind++;
-            if (encode(s))
-                return 0;
+            if (!encode(s))
+                return 1;
         } else {
             fprintf(stderr, "Argument expected after encode\n");
             return 1;
@@ -95,10 +92,8 @@ int Program::run(vector<string> arg) {
             }
             optind++;
         }
-        if (!setProperty(ll))
-            return 0;
-        fprintf(stderr, "Not yet implemented.\n");
-        return 1;
+        if (setProperty(ll))
+            return 1;
         break;
     case caseArg("get"):
         while (optind < arg.size()) {
@@ -115,14 +110,15 @@ int Program::run(vector<string> arg) {
             }
             optind++;
         }
-        if (!getProperty(vect))
-            return 0;
+        if (getProperty(vect))
+            return 1;
         break;
     default:
         printf("Unknown command: %s\n", cmd.c_str());
         return 1;
     }
-
+    io_service->run();
+    return 0;
 }
 
 int printHeader(Packet p) {
@@ -199,15 +195,18 @@ int Program::list() {
                 cout <<"Received Payload:\n"<<a.getBody()<<"\n";
             } else {
                 datasets d =a.getPayload();
-                Switch sw = Switch();
-                sw.parse(d);
+
+                int b = a.getSwitchMac().hash();
+                if (devices.empty()||devices.find(b) == devices.end())
+                devices.insert(pair<int,Switch>(b,Switch()));
+                devices[a.getSwitchMac().hash()].parse(d);
+                devices[a.getSwitchMac().hash()].print();
+
                 File f;
-                f.write(sw.toString());
-                sw.print();
+                f.write(devices[a.getSwitchMac().hash()].toString());
             }
             return 0;
         });
-        io_service->run();
     } catch (exception& e) {
         cerr << "Exception: " << e.what() << "\n";
     }
@@ -217,17 +216,12 @@ int Program::list() {
 int Program::sniff() {
     printf("Listening:\n");
     try {
-        boost::asio::io_service io_service;
-        Socket s(io_service);
-        s.setHostIp(host.getIp());
-        s.init(DST_PORT, SRC_PORT);
-        s.listen([](Packet p) {
+        sock->listen([](Packet p) {
             cout << p.opCodeToString() << "\n";
             printHeader(p);
             printPacket(p);
             return 0;
         });
-        io_service.run();
     } catch (exception& e) {
         cerr << "Exception: " << e.what() << "\n";
     }
@@ -284,7 +278,6 @@ int Program::setProperty(map<string, string> prop) {
             return 0;
         });
 
-        io_service->run();
     } catch (exception& e) {
         cerr << "Exception: " << e.what() << "\n";
     }
@@ -314,7 +307,6 @@ int Program::getProperty(vector<string> prop) {
             return 0;
         });
 
-        io_service->run();
     } catch (exception& e) {
         cerr << "Exception: " << e.what() << "\n";
     }
@@ -347,17 +339,17 @@ int Program::reboot() {
         discover(
                 [this](Packet a) {
                     datasets d =a.getPayload();
-                    Switch sw = Switch();
-                    sw.parse(d);
-                    cout <<sw.settings.hostname<<"\t";
+                    int b = a.getSwitchMac().hash();
+                    if (devices.empty()||devices.find(b) == devices.end())
+                    devices.insert(pair<int,Switch>(b,Switch()));
+                    devices[a.getSwitchMac().hash()].parse(d);
                     datasets t = { {SND_PING, 0, {}}};
                     get(a, t, [this](Packet a) {
                                 datasets d =a.getPayload();
-                                Switch sw = Switch();
-                                sw.parse(d);
+                                cout <<devices[a.getSwitchMac().hash()].settings.hostname<<"\t";
+                                devices[a.getSwitchMac().hash()].parse(d);
                                 datasets t = { {REBOOT, 1, {options.flags.PERMANENT?(byte)1:(byte)0}}};
                                 set(a,t,[this](Packet a) {
-                                            if( a.getOpCode()==Packet::CONFIRM)
                                             cout<< "rebooting now.\n";
                                             return 0;
                                         });
@@ -365,7 +357,6 @@ int Program::reboot() {
                             });
                     return 0;
                 });
-        io_service->run();
     } catch (exception& e) {
         cerr << "Exception: " << e.what() << "\n";
     }
@@ -394,33 +385,33 @@ int Program::reset() {
                     });
             return 0;
         });
-        io_service->run();
     } catch (exception& e) {
         cerr << "Exception: " << e.what() << "\n";
     }
     return 0;
 }
 
-int Program::discover(function<int(Packet)> c) {
+int Program::discover(Listener c) {
     Packet p = Packet(Packet::DISCOVERY);
     p.setHostMac(host.getMac());
     p.setPayload( { });
-    sock->listen(c,Filter(Packet::REPLY));
+    sock->listen(c, Filter(Packet::REPLY));
     sock->send(p);
     return 0;
 }
 
-int Program::get(Packet l, datasets t, function<int(Packet)> c) {
+int Program::get(Packet l, datasets t, Listener c) {
     Packet p = Packet(Packet::GET);
     p.setSwitchMac(l.getSwitchMac());
     p.setHostMac(host.getMac());
     p.setPayload(t);
-    sock->listen(c,Filter(Packet::REPLY));
+    //cout << "listen REPLY from "<<l.getSwitchMac()<<endl;
+    sock->listen(c, Filter(Packet::REPLY).mac(l.getSwitchMac()));
     sock->send(p);
     return 0;
 }
 
-int Program::set(Packet l, datasets t, function<int(Packet)> c) {
+int Program::set(Packet l, datasets t, Listener c) {
     Packet p = Packet(Packet::SET);
     p.setSwitchMac(l.getSwitchMac());
     p.setTokenId(l.getTokenId());
@@ -430,7 +421,8 @@ int Program::set(Packet l, datasets t, function<int(Packet)> c) {
     datasets ld = { { LOGIN_USER, (short) (n.size()), n }, { LOGIN_PASSWORD,
             (short) (w.size()), w } };
     p.setPayload(ld + t);
-    sock->listen(c,Filter(Packet::CONFIRM));
+    //cout << "listen CONFIRM from "<<l.getSwitchMac()<<endl;
+    sock->listen(c, Filter(Packet::CONFIRM).mac(l.getSwitchMac()));
     sock->send(p);
     return 0;
 }
