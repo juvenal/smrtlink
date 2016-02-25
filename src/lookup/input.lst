@@ -1,0 +1,38 @@
+LOOKUP_SET(type, TYPE,           STRING) //+string
+LOOKUP_SET(mac, MAC,        HEX)    //+byte[6]
+LOOKUP_SET(firmware,FIRMWARE_VERSION,     STRING)
+LOOKUP_SET(hardware,HARDWARE_VERSION,      STRING)
+
+
+LOOKUP_SET(HOSTNAME,host,           2,      STRING) //+string
+LOOKUP_SET(IP_ADDR,ip,              4,      DEC)    //+byte[4]
+LOOKUP_SET(IP_MASK,mask,                5,      DEC)    //+byte[4]
+LOOKUP_SET(GATEWAY,gateway,             6,      DEC)    //+byte[4]
+LOOKUP_SET(DHCP_ENABLED,dhcp,       9,      BOOL)   //+bool byte
+
+LOOKUP_SET(PORT_VLAN_FOOOOO,    2101,2101,  HEX)
+
+LOOKUP_SET(PORTS,               ports,      10,     DEC)    //+byte, maybe number of ports
+
+LOOKUP_SET(IGMP_SNOOPING,       igmp,       4352,   HEX)    //???
+LOOKUP_SET(PORTS_SETTINGS,      psetings,   4096,   HEX)    //+per port
+LOOKUP_SET(PORT_TRUNK,          trunk,      4608,   HEX)    //byte[5] last byte bitmask??
+
+LOOKUP_SET(MTU_VLAN,            8192,8192,   HEX)    //byte[2] first byte bool,second byte port id
+LOOKUP_SET(PORT_VLAN_ENABLED,   8448,8448,   BOOL)   //open page
+LOOKUP_SET(PORT_VLAN,           8449,8449,   HEX)
+LOOKUP_SET(PORT_VLAN_MAX,       8450,8450,   DEC)
+LOOKUP_SET(VLAN_ENABLED,        8704, 8704,   BOOL)   //+bool byte
+LOOKUP_SET(VLAN,                8705,8705,   HEX)    //+one set per vlan
+LOOKUP_SET(VLAN_PVID,           8706,8706,   HEX)    //+per port
+LOOKUP_SET(VLAN_FOOOO,          8707,8707,   DEC)    //????
+
+LOOKUP_SET(QOS_BASIC_ENABLED,   12288,12288,  BOOL)   //+bool = QoS Mod
+LOOKUP_SET(QOS_BASIC,           12289,12289,  HEX)    //+per port ???
+LOOKUP_SET(BW_CONTROL_INGRESS,  12544,12544,  HEX)    //+per port ???
+LOOKUP_SET(BW_CONTROL_EGRESS,   12545,12545,  HEX)    //+per port ???
+LOOKUP_SET(STORM_CONTROL,       12800,12800,  HEX)    //+per port ???
+LOOKUP_SET(PORT_MIRROR,         16640,16640,  HEX)    //byte[10] second byte port id???
+LOOKUP_SET(PORT_STATISTICS,     16384,16384,  HEX)    //+per port ???
+LOOKUP_SET(CABLE_TEST,          16896,16896,  HEX)    //+per port ???
+LOOKUP_SET(LOOP_PREVENTION,     17152,17152,  BOOL)   //+bool byte
