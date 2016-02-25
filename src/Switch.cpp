@@ -27,44 +27,44 @@ int Switch::print() {
 
 int Switch::parse(dataset d) {
     switch (d.type) {
-    case TYPE:
-        device.type = d.value;
+        case TYPE:
+            device.type = d.value;
         break;
-    case MAC:
-        device.mac = d.value;
+        case MAC:
+            device.mac = d.value;
         break;
-    case FIRMWARE_VERSION:
-        device.firmware_version = d.value;
+        case FIRMWARE_VERSION:
+            device.firmware_version = d.value;
         break;
-    case HARDWARE_VERSION:
-        device.hardware_version = d.value;
+        case HARDWARE_VERSION:
+            device.hardware_version = d.value;
         break;
-    case PORTS:
-        device.ports = d.value[0];
+        case PORTS:
+            device.ports = d.value[0];
         break;
-    case HOSTNAME:
-        settings.hostname = d.value;
+        case HOSTNAME:
+            settings.hostname = d.value;
         break;
-    case IP_ADDR:
-        settings.ip_addr = d.value;
+        case IP_ADDR:
+            settings.ip_addr = d.value;
         break;
-    case IP_MASK:
-        settings.ip_mask = d.value;
+        case IP_MASK:
+            settings.ip_mask = d.value;
         break;
-    case GATEWAY:
-        settings.gateway = d.value;
+        case GATEWAY:
+            settings.gateway = d.value;
         break;
-    case DHCP_ENABLED:
-        settings.dhcp = d.value[0];
+        case DHCP_ENABLED:
+            settings.dhcp = d.value[0];
         break;
-    case LOOP_PREVENTION:
-        settings.loop_prevention = d.value[0];
+        case LOOP_PREVENTION:
+            settings.loop_prevention = d.value[0];
         break;
-    case QOS_BASIC_ENABLED:
-        settings.qos_enabled = d.value[0];
+        case QOS_BASIC_ENABLED:
+            settings.qos_enabled = d.value[0];
         break;
-    case VLAN_ENABLED:
-        settings.vlan_enabled = d.value[0];
+        case VLAN_ENABLED:
+            settings.vlan_enabled = d.value[0];
         break;
     }
     return 0;

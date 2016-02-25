@@ -57,14 +57,15 @@ void Socket::setHostIp(ipAddr ip) {
     local_ip = ip;
 }
 
-void Socket::clear(){
+void Socket::clear() {
     callback.clear();
 }
 
 void Socket::listen(Listener l, Filter f) {
     if (callback.find(f) == callback.end()) {
         callback.insert(ListenerPair(f, l));
-    } else {
+    }
+    else {
         callback[f] = l;
     }
     receive();
@@ -92,7 +93,8 @@ void Socket::receive() {
                 if (ec || bytes_recvd == 0) {
                     //listen();
                     // TODO distinguish error codes
-                } else {
+                }
+                else {
                     data.resize(bytes_recvd);
                     Packet p = Packet(Packet::NONE);
                     p.encode(data);
@@ -102,7 +104,8 @@ void Socket::receive() {
                             r.second(p);
                             // std::cout<<"pass"<<std::endl;
                             break;
-                        } else {
+                        }
+                        else {
                             // std::cout<<"no pass"<<std::endl;
                         }
                     }

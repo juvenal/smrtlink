@@ -23,28 +23,28 @@ typedef std::function<int(Packet)> Listener;
 typedef std::pair<Filter, Listener> ListenerPair;
 
 class Socket {
-public:
-    Socket(boost::asio::io_service&);
-    virtual ~Socket();
-    void init(short, short);
-    void clear();
-    void send(Packet);
-    void setHostIp(ipAddr);
-    void listen(Listener l, Filter f = Filter());
+    public:
+        Socket(boost::asio::io_service&);
+        virtual ~Socket();
+        void init(short, short);
+        void clear();
+        void send(Packet);
+        void setHostIp(ipAddr);
+        void listen(Listener l, Filter f = Filter());
 
-private:
-    void receive();
-    void settimeout();
-    boost::asio::ip::udp::socket send_socket_;
-    boost::asio::ip::udp::socket receive_socket_;
-    boost::asio::ip::udp::endpoint broadcast_endpoint_;
-    boost::asio::ip::udp::endpoint remote_endpoint_;
-    boost::asio::ip::udp::endpoint wildcard_endpoint_;
-    boost::asio::ip::udp::endpoint local_endpoint_;
-    boost::asio::deadline_timer timer;
-    bytes data = bytes(MAX_LENGTH);
-    ipAddr local_ip;
-    std::map<Filter, Listener> callback = { };
+    private:
+        void receive();
+        void settimeout();
+        boost::asio::ip::udp::socket send_socket_;
+        boost::asio::ip::udp::socket receive_socket_;
+        boost::asio::ip::udp::endpoint broadcast_endpoint_;
+        boost::asio::ip::udp::endpoint remote_endpoint_;
+        boost::asio::ip::udp::endpoint wildcard_endpoint_;
+        boost::asio::ip::udp::endpoint local_endpoint_;
+        boost::asio::deadline_timer timer;
+        bytes data = bytes(MAX_LENGTH);
+        ipAddr local_ip;
+        std::map<Filter, Listener> callback = { };
 
 };
 

@@ -22,8 +22,8 @@ int Switch::set(pair<string, string> str) {
 std::string Switch::get(std::string str) {
     std::string ret;
     switch (caseArg(str.c_str())) {
-    case caseArg("ip"):
-        ret = "0.0.0.0";
+        case caseArg("ip"):
+            ret = "0.0.0.0";
         break;
     }
     return ret;

@@ -30,7 +30,8 @@ Filter Filter::tokenid(short i) {
 }
 
 bool Filter::pass(const Packet p) const {
-    macAddr none { 0, 0, 0, 0, 0, 0 };
+    macAddr none {
+            0, 0, 0, 0, 0, 0 };
     if (this->oc != Packet::NONE && this->oc != p.getOpCode())
         return false;
     if (this->switchMac != none && this->switchMac != p.getSwitchMac())
@@ -44,7 +45,7 @@ bool Filter::pass(const Packet p) const {
 
 bool Filter::operator<(const Filter f) const {
     if (this->oc != f.oc)
-    return this->oc > f.oc;
+        return this->oc > f.oc;
     if (this->switchMac != f.switchMac)
         return this->switchMac > f.switchMac;
     if (this->tokenId != f.tokenId)

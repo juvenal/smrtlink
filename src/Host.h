@@ -11,11 +11,12 @@
 #include "Types.h"
 
 class Host {
-public:
-	Host(){};
-	macAddr getMac();
-	ipAddr getIp();
-	std::string getIface();
+    public:
+        Host() {
+        }
+        macAddr getMac();
+        ipAddr getIp();
+        std::string getIface();
 };
 
 #endif /* HOST_H_ */

@@ -35,87 +35,91 @@ int Program::run(vector<string> arg) {
     io_service->reset();
     sock->clear();
     switch (caseArg(cmd.c_str())) {
-    case caseArg("reboot"):
-        if (reboot())
-            return 1;
-        break;
-    case caseArg("reset"):
-        if (!reset())
-            return 0;
-        break;
-    case caseArg("save"):
-        if (save())
-            return 1;
-        break;
-    case caseArg("restore"):
-        if (restore())
-            return 1;
-        break;
-    case caseArg("flash"):
-        if (flash())
-            return 1;
-        break;
-
-    case caseArg("list"):
-        if (list())
-            return 1;
-        break;
-
-    case caseArg("sniff"):
-        if (sniff())
-            return 1;
-        break;
-
-    case caseArg("encode"):
-        if (optind < arg.size()) {
-            std::string s(arg[optind]);
-            optind++;
-            if (!encode(s))
+        case caseArg("reboot"):
+            if (reboot())
                 return 1;
-        } else {
-            fprintf(stderr, "Argument expected after encode\n");
-            return 1;
-        }
         break;
-    case caseArg("set"):
-        while (optind < arg.size()) {
-            if (regex_match(arg[optind].c_str(), sm,
-                    std::regex("^([a-z]+)=(.*)$"))) {
-                if (!lookup.exists(sm[1])) {
-                    cerr << "Unknown argument " << arg[optind] << endl;
+        case caseArg("reset"):
+            if (!reset())
+                return 0;
+        break;
+        case caseArg("save"):
+            if (save())
+                return 1;
+        break;
+        case caseArg("restore"):
+            if (restore())
+                return 1;
+        break;
+        case caseArg("flash"):
+            if (flash())
+                return 1;
+        break;
+
+        case caseArg("list"):
+            if (list())
+                return 1;
+        break;
+
+        case caseArg("sniff"):
+            if (sniff())
+                return 1;
+        break;
+
+        case caseArg("encode"):
+            if (optind < arg.size()) {
+                std::string s(arg[optind]);
+                optind++;
+                if (!encode(s))
                     return 1;
-                }
-                ll.insert(std::pair<std::string, std::string>(sm[1], sm[2]));
-            } else {
-                cerr << "Invalid Syntax " << arg[optind] << endl;
+            }
+            else {
+                fprintf(stderr, "Argument expected after encode\n");
                 return 1;
             }
-            optind++;
-        }
-        if (setProperty(ll))
-            return 1;
         break;
-    case caseArg("get"):
-        while (optind < arg.size()) {
-            if (regex_match(arg[optind].c_str(), sm,
-                    std::regex("^([a-z]+)$"))) {
-                if (!lookup.exists(sm[1])) {
-                    cerr << "Unknown argument " << arg[optind] << endl;
+        case caseArg("set"):
+            while (optind < arg.size()) {
+                if (regex_match(arg[optind].c_str(), sm,
+                        std::regex("^([a-z]+)=(.*)$"))) {
+                    if (!lookup.exists(sm[1])) {
+                        cerr << "Unknown argument " << arg[optind] << endl;
+                        return 1;
+                    }
+                    ll.insert(
+                            std::pair<std::string, std::string>(sm[1], sm[2]));
+                }
+                else {
+                    cerr << "Invalid Syntax " << arg[optind] << endl;
                     return 1;
                 }
-                vect.push_back(sm[1]);
-            } else {
-                cerr << "Invalid argument " << arg[optind] << endl;
-                return 1;
+                optind++;
             }
-            optind++;
-        }
-        if (getProperty(vect))
-            return 1;
+            if (setProperty(ll))
+                return 1;
         break;
-    default:
-        printf("Unknown command: %s\n", cmd.c_str());
-        return 1;
+        case caseArg("get"):
+            while (optind < arg.size()) {
+                if (regex_match(arg[optind].c_str(), sm,
+                        std::regex("^([a-z]+)$"))) {
+                    if (!lookup.exists(sm[1])) {
+                        cerr << "Unknown argument " << arg[optind] << endl;
+                        return 1;
+                    }
+                    vect.push_back(sm[1]);
+                }
+                else {
+                    cerr << "Invalid argument " << arg[optind] << endl;
+                    return 1;
+                }
+                optind++;
+            }
+            if (getProperty(vect))
+                return 1;
+        break;
+        default:
+            printf("Unknown command: %s\n", cmd.c_str());
+            return 1;
     }
     io_service->run();
     return 0;
@@ -125,7 +129,8 @@ int printHeader(Packet p) {
     if (options.flags.HEADER) {
         if (options.flags.HEX) {
             cout << "Received Header:\n\t" << p.getHead() << "\n";
-        } else {
+        }
+        else {
             p.printHeader();
             printf("\n");
         }
@@ -136,48 +141,53 @@ int printHeader(Packet p) {
 int printPacket(Packet p) {
     if (options.flags.HEX) {
         cout << "Received Payload:\n\t" << p.getBody() << "\n";
-    } else {
+    }
+    else {
         for (dataset d : p.getPayload()) {
             //auto lookup = (options.flags.REVERSE) ? snd_lookup : rcv_lookup;
             if (lookup.exists(d.type)) {
                 table::set s = lookup[d.type];
                 if (d.len > 0) {
                     switch (s.format) {
-                    case table::STRING:
-                        cout << "+\t" << s.name << " = " << &d.value[0] << "\n";
+                        case table::STRING:
+                            cout << "+\t" << s.name << " = " << &d.value[0]
+                                    << "\n";
                         break;
-                    case table::BOOL:
-                        cout << "+\t" << s.name << " = "
-                                << (d.value[0] ? "YES" : "NO") << "\n";
+                        case table::BOOL:
+                            cout << "+\t" << s.name << " = "
+                                    << (d.value[0] ? "YES" : "NO") << "\n";
                         break;
-                    case table::HEX:
-                        cout << "+\t" << s.name << " = " << d.value << "\n";
+                        case table::HEX:
+                            cout << "+\t" << s.name << " = " << d.value << "\n";
                         break;
-                    case table::DEC:
-                        cout << "+\t" << s.name << " = ";
-                        if (d.value.size() > 0)
-                            cout << dec << (unsigned) d.value[0];
-                        for (unsigned i = 1; i < d.value.size(); i++)
-                            cout << dec << "." << (unsigned) d.value[i];
-                        cout << "\n";
+                        case table::DEC:
+                            cout << "+\t" << s.name << " = ";
+                            if (d.value.size() > 0)
+                                cout << dec << (unsigned) d.value[0];
+                            for (unsigned i = 1; i < d.value.size(); i++)
+                                cout << dec << "." << (unsigned) d.value[i];
+                            cout << "\n";
                         break;
-                    case table::ACTION:
-                        cout << "Error:" << s.name
-                                << " is marked as 'action' but carries payload."
-                                << d.value << "\n";
+                        case table::ACTION:
+                            cout << "Error:" << s.name
+                                    << " is marked as 'action' but carries payload."
+                                    << d.value << "\n";
                         break;
-                    default:
-                        cout << "+\t" << s.name << " = " << d.value << "\n";
+                        default:
+                            cout << "+\t" << s.name << " = " << d.value << "\n";
                         break;
                     }
-                } else { //empty
+                }
+                else {   //empty
                     cout << dec << ">\t" << s.name << "\n";
                 }
-            } else { //unknown id
+            }
+            else {   //unknown id
                 if (d.len > 0) {
                     cout << "##\t" << d.type << ":\n\t";
                     cout << hex << d.value << dec << "\n";
-                } else { //empty
+                }
+                else {   //empty
                     cout << "#>\t" << d.type << "\n";
                 }
             }
@@ -193,7 +203,8 @@ int Program::list() {
             printHeader(a);
             if (options.flags.HEX) {
                 cout <<"Received Payload:\n"<<a.getBody()<<"\n";
-            } else {
+            }
+            else {
                 datasets d =a.getPayload();
 
                 int b = a.getSwitchMac().hash();
@@ -416,8 +427,9 @@ int Program::set(Packet l, datasets t, Listener c) {
     p.setHostMac(host.getMac());
     bytes n = options.user;
     bytes w = options.password;
-    datasets ld = { { LOGIN_USER, (short) (n.size()), n }, { LOGIN_PASSWORD,
-            (short) (w.size()), w } };
+    datasets ld = {
+            { LOGIN_USER, (short) (n.size()), n }, {
+                    LOGIN_PASSWORD, (short) (w.size()), w } };
     p.setPayload(ld + t);
     sock->listen(c, Filter(Packet::CONFIRM).mac(l.getSwitchMac()));
     sock->send(p);
