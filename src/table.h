@@ -13,13 +13,19 @@
 
 class table {
 public:
-	enum F {STRING,HEX,DEC,ACTION,BOOL,EMPTY};
-	struct set {
-		short type;
-		F format;
+    enum A {
+        RW, RO, WO, NONE, UNKNOWN
+    };
+    enum F {
+        STRING, HEX, DEC, ACTION, BOOL, EMPTY
+    };
+    struct set {
+        short type;
+        F format;
+        A action;
         std::string name;
         std::string id;
-	};
+    };
     table(std::initializer_list<set> l);
     const table::set operator[](std::string);
     const table::set operator[](short);

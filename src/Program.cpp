@@ -81,7 +81,7 @@ int Program::run(vector<string> arg) {
         while (optind < arg.size()) {
             if (regex_match(arg[optind].c_str(), sm,
                     std::regex("^([a-z]+)=(.*)$"))) {
-                if (!snd_lookup.exists(sm[1]) && !rcv_lookup.exists(sm[1])) {
+                if (!lookup.exists(sm[1])) {
                     cerr << "Unknown argument " << arg[optind] << endl;
                     return 1;
                 }
@@ -99,7 +99,7 @@ int Program::run(vector<string> arg) {
         while (optind < arg.size()) {
             if (regex_match(arg[optind].c_str(), sm,
                     std::regex("^([a-z]+)$"))) {
-                if (!snd_lookup.exists(sm[1]) && !rcv_lookup.exists(sm[1])) {
+                if (!lookup.exists(sm[1])) {
                     cerr << "Unknown argument " << arg[optind] << endl;
                     return 1;
                 }
@@ -138,7 +138,7 @@ int printPacket(Packet p) {
         cout << "Received Payload:\n\t" << p.getBody() << "\n";
     } else {
         for (dataset d : p.getPayload()) {
-            auto lookup = (options.flags.REVERSE) ? snd_lookup : rcv_lookup;
+            //auto lookup = (options.flags.REVERSE) ? snd_lookup : rcv_lookup;
             if (lookup.exists(d.type)) {
                 table::set s = lookup[d.type];
                 if (d.len > 0) {
@@ -243,9 +243,9 @@ int Program::setProperty(map<string, string> prop) {
         for (auto p : prop) {
             string s = p.second;
             dataset d;
-            if (rcv_lookup.exists(p.first)) {
-                d.type = rcv_lookup.type(p.first);
-                if (rcv_lookup[p.first].format == table::STRING) {
+            if (lookup.exists(p.first)) {
+                d.type = lookup.type(p.first);
+                if (lookup[p.first].format == table::STRING) {
                     d.len = s.size() + 1;
                     d.value = s;
                     data.push_back(d);
@@ -260,7 +260,7 @@ int Program::setProperty(map<string, string> prop) {
             sw.parse(d);
             sw.print();
 
-            datasets t = { {SND_PING, 0, {}}};
+            datasets t = { {PING, 0, {}}};
             get(a, t, [this,data](Packet a) {
                         datasets d =a.getPayload();
                         Switch sw = Switch();
@@ -288,7 +288,7 @@ int Program::getProperty(vector<string> prop) {
         datasets data = { };
         for (string s : prop) {
             dataset d;
-            d.type = snd_lookup.type(s);
+            d.type = lookup.type(s);
             data.push_back(d);
         }
         cout << "List:\n";
@@ -342,7 +342,7 @@ int Program::reboot() {
                     if (devices.empty()||devices.find(b) == devices.end())
                     devices.insert(pair<int,Switch>(b,Switch()));
                     devices[a.getSwitchMac().hash()].parse(d);
-                    datasets t = { {SND_PING, 0, {}}};
+                    datasets t = { {PING, 0, {}}};
                     get(a, t, [this](Packet a) {
                                 datasets d =a.getPayload();
                                 cout <<devices[a.getSwitchMac().hash()].settings.hostname<<"\t";
@@ -369,7 +369,7 @@ int Program::reset() {
             Switch sw = Switch();
             sw.parse(d);
             cout <<sw.settings.hostname<<"\t";
-            datasets t = { {SND_PING, 0, {}}};
+            datasets t = { {PING, 0, {}}};
             get(a, t, [this](Packet a) {
                         datasets d =a.getPayload();
                         Switch sw = Switch();

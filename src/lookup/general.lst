@@ -1,3 +1,5 @@
+
+
 LOOKUP_SET(PORTS,               ports,      10,     DEC)    //+byte, maybe number of ports
 
 LOOKUP_SET(IGMP_SNOOPING,       igmp,       4352,   HEX)    //???

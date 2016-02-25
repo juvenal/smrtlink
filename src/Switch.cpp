@@ -27,10 +27,10 @@ int Switch::print() {
 
 int Switch::parse(dataset d) {
     switch (d.type) {
-    case RCV_TYPE:
+    case TYPE:
         device.type = d.value;
         break;
-    case RCV_MAC:
+    case MAC:
         device.mac = d.value;
         break;
     case FIRMWARE_VERSION:

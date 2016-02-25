@@ -8,7 +8,6 @@
 #include <string>
 #include "table.h"
 
-
 table::table(std::initializer_list<set> l) {
     int i = 0;
     this->data.resize(l.size());

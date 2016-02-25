@@ -1,30 +1,12 @@
 enum {
-#define LOOKUP_SET(id, name, num, type) RCV_ ## id = num,
-#include "lookup/rcv.lst"
-#include "lookup/general.lst"
-#undef LOOKUP_SET
-#define LOOKUP_SET(id, name, num, type) SND_ ## id = num,
-#include "lookup/snd.lst"
-#include "lookup/general.lst"
-#undef LOOKUP_SET
-#define LOOKUP_SET(id, name, num, type) id = num,
-#include "lookup/rcv.lst"
-#include "lookup/snd.lst"
-#include "lookup/general.lst"
+#define LOOKUP_SET(id, name, num, type, write) id = num,
+#include "lookup/map.lst"
 #undef LOOKUP_SET
 };
 
-static table rcv_lookup {
-#define LOOKUP_SET(id, name, num, type) { RCV_ ## id, table::type, #name, #id },
-#include "lookup/rcv.lst"
-#include "lookup/general.lst"
-#undef LOOKUP_SET
-};
-
-static table snd_lookup {
-#define LOOKUP_SET(id, name, num, type) { SND_ ## id, table::type, #name, #id },
-#include "lookup/snd.lst"
-#include "lookup/general.lst"
+static table lookup {
+#define LOOKUP_SET(id, name, num, type, write) { id, table::type, table::write, #name, #id},
+#include "lookup/map.lst"
 #undef LOOKUP_SET
 };
 

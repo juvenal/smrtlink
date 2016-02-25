@@ -1,0 +1,49 @@
+LOOKUP_SET(TYPE,            type,       1,      STRING, RO)     //+string
+LOOKUP_SET(HOSTNAME,        host,       2,      STRING, RW)     //+string      //SYSTEM_INFO,SYSTEM_INFO,           2,      HEX)    //page sysinfo
+LOOKUP_SET(MAC,             mac,        3,      HEX,    RO)     //+byte[6]
+LOOKUP_SET(IP_ADDR,         ip,         4,      DEC,    RW)     //+byte[4]
+LOOKUP_SET(IP_MASK,         mask,       5,      DEC,    RW)     //+byte[4]
+LOOKUP_SET(GATEWAY,         gateway,    6,      DEC,    RW)     //+byte[4]
+LOOKUP_SET(FIRMWARE_VERSION,firmware,   7,      STRING, RO)
+LOOKUP_SET(HARDWARE_VERSION,hardware,   8,      STRING, RO)
+LOOKUP_SET(DHCP_ENABLED,    dhcp,       9,      BOOL,   RW)     //+bool byte    //IP_CONFIG,IP_CONFIG,          9,      HEX)    //page sysinfo
+
+LOOKUP_SET(PORTS,           ports,      10,     DEC,    RO)     //+byte, maybe number of ports
+
+LOOKUP_SET(LOGIN_USER,      luser,      512,    STRING, NONE)   //string
+LOOKUP_SET(NEW_USER,        user,       513,    STRING, WO)     //string
+LOOKUP_SET(LOGIN_PASSWORD,  lpw,        514,    STRING, NONE)   //string
+LOOKUP_SET(NEW_PASSWORD,    password,   515,    STRING, WO)     //string
+LOOKUP_SET(REBOOT,          reboot,     773,    BOOL,   NONE) //bool byte = save config
+
+LOOKUP_SET(RESET,           reset,      1280,   ACTION, NONE) //
+LOOKUP_SET(FLASH,           flash,      1536,   ACTION, NONE) //update firmware
+
+LOOKUP_SET(PORT_VLAN_FOOOOO,vlan21,     2101,   HEX,    RO)
+LOOKUP_SET(VLAN_FOOOOOO,    vlan22,     2200,   HEX,    RO)     //vlan
+
+LOOKUP_SET(SAVE,            save,       2304,   ACTION, NONE) //save
+LOOKUP_SET(PING,            ping,       2305,   ACTION, NONE) //sent before SET ???
+
+LOOKUP_SET(IGMP_SNOOPING,   igmp,       4352,   HEX,    RW)    //???
+LOOKUP_SET(PORTS_SETTINGS,  psetings,   4096,   HEX,    RW)    //+per port
+LOOKUP_SET(PORT_TRUNK,      trunk,      4608,   HEX,    RW)    //byte[5] last byte bitmask??
+
+LOOKUP_SET(MTU_VLAN,         8192,      8192,   HEX,    UNKNOWN)    //byte[2] first byte bool,second byte port id
+LOOKUP_SET(PORT_VLAN_ENABLED,8448,      8448,   BOOL,   UNKNOWN)   //open page
+LOOKUP_SET(PORT_VLAN,        8449,      8449,   HEX,    UNKNOWN)
+LOOKUP_SET(PORT_VLAN_MAX,    8450,      8450,   DEC,    UNKNOWN)
+LOOKUP_SET(VLAN_ENABLED,     8704,      8704,   BOOL,   UNKNOWN)   //+bool byte
+LOOKUP_SET(VLAN,             8705,      8705,   HEX,    UNKNOWN)    //+one set per vlan
+LOOKUP_SET(VLAN_PVID,        8706,      8706,   HEX,    UNKNOWN)    //+per port
+LOOKUP_SET(VLAN_FOOOO,       8707,      8707,   DEC,    UNKNOWN)    //????
+
+LOOKUP_SET(QOS_BASIC_ENABLED,12288,     12288,  BOOL,   UNKNOWN)   //+bool = QoS Mod
+LOOKUP_SET(QOS_BASIC,        12289,     12289,  HEX,    UNKNOWN)    //+per port ???
+LOOKUP_SET(BW_CONTROL_INGRESS,12544,    12544,  HEX,    UNKNOWN)    //+per port ???
+LOOKUP_SET(BW_CONTROL_EGRESS,12545,     12545,  HEX,    UNKNOWN)    //+per port ???
+LOOKUP_SET(STORM_CONTROL,    12800,     12800,  HEX,    UNKNOWN)    //+per port ???
+LOOKUP_SET(PORT_MIRROR,      16640,     16640,  HEX,    UNKNOWN)    //byte[10] second byte port id???
+LOOKUP_SET(PORT_STATISTICS,  16384,     16384,  HEX,    UNKNOWN)    //+per port ???
+LOOKUP_SET(CABLE_TEST,       16896,     16896,  HEX,    UNKNOWN)    //+per port ???
+LOOKUP_SET(LOOP_PREVENTION,  17152,     17152,  BOOL,   UNKNOWN)   //+bool byte
